@@ -1,44 +1,55 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import Confetti from 'react-confetti'
 
-const flags = [
+const challenges = [
   { q: "Decrypt 'URYYB' (ROT13)", ans: "FLAG{hello}" },
-  { q: "Check the page source for Base64", ans: "FLAG{matrix}" },
+  { q: "Check page source for base64", ans: "FLAG{matrix}" },
   { q: "Console whispers secrets...", ans: "FLAG{overlord}" },
-  { q: "Inspect CSS comments", ans: "FLAG{elite}" },
-  { q: "Final riddle: 'Cyber apex predator'", ans: "FLAG{apex}" },
 ]
 
 export default function CTF(){
   const [step, setStep] = useState(0)
   const [input, setInput] = useState('')
-  const [feedback, setFeedback] = useState('')
+  const [solved, setSolved] = useState(false)
 
   function submit(){
-    if(input.trim() === flags[step].ans){
-      setFeedback("✅ Correct!")
-      setTimeout(()=>{ setStep(step+1); setInput(''); setFeedback('') }, 800)
-    } else {
-      setFeedback("❌ Try again")
+    if(input.trim() === challenges[step].ans){
+      setSolved(true)
+      setTimeout(()=> {
+        setStep(step+1)
+        setInput('')
+        setSolved(false)
+      }, 1500)
     }
   }
 
   return (
     <div className="container">
-      <h1 className="glitch" data-text="CTF Portfolio">CTF Portfolio</h1>
-      {step < flags.length ? (
-        <div className="card">
+      {solved && <Confetti />}
+      <motion.h1 
+        className="glitch"
+        data-text="CTF Portfolio"
+        initial={{opacity:0, y:-20}}
+        animate={{opacity:1, y:0}}
+      >
+        CTF Portfolio
+      </motion.h1>
+
+      {step < challenges.length ? (
+        <motion.div className="card" initial={{scale:0.8, opacity:0}} animate={{scale:1, opacity:1}}>
           <h2>Level {step+1}</h2>
-          <p>{flags[step].q}</p>
+          <p>{challenges[step].q}</p>
           <input value={input} onChange={e=>setInput(e.target.value)} placeholder="Enter FLAG{...}"/>
           <button onClick={submit} className="btn">Submit</button>
-          <p>{feedback}</p>
-        </div>
+        </motion.div>
       ) : (
-        <h2>🎉 You unlocked all levels!</h2>
+        <motion.h2 animate={{scale:1.1}}>🎉 All levels complete!</motion.h2>
       )}
 
-      <Link to="/portfolio" className="skip-btn">View Full Portfolio</Link>
+      <Link to="/portfolio" className="skip-btn">View Portfolio →</Link>
     </div>
   )
 }
+
