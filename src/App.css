@@ -40,3 +40,13 @@
 .read-the-docs {
   color: #888;
 }
+/* Ensure UI is above MatrixRain canvas */
+.app-container {
+  position: relative;
+  z-index: 2;
+}
+
+.container, .card, .skip-btn, .loader {
+  position: relative;
+  z-index: 3;
+}
