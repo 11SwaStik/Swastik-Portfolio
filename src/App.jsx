@@ -1,33 +1,35 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Loading from './components/Loading'
-import MatrixRain from './components/MatrixRain'
-import Background from './components/Background' // optional particles
-import CTF from './pages/CTF'
-import Portfolio from './pages/Portfolio'
+import { useEffect, useState } from "react"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import Loading from "./components/Loading"
+import MatrixRain from "./components/MatrixRain"
+import Background from "./components/Background"
+import CTF from "./pages/CTF"
+import Portfolio from "./pages/Portfolio"
 
-export default function App(){
+
+export default function App() {
   const [loading, setLoading] = useState(true)
 
-  useEffect(()=> {
-    const t = setTimeout(()=>setLoading(false), 1500)
-    return ()=>clearTimeout(t)
-  },[])
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500)
+    return () => clearTimeout(timer)
+  }, [])
 
-  if(loading) return <Loading />
+  if (loading) return <Loading />
 
   return (
     <Router>
-      {/* Matrix code rain background */}
-      <MatrixRain colorPalette={['#ff69b4','#5df2ff','#c38bff']} fontSize={14} />
+      {/* 🔻 Bottom Layer */}
+      <MatrixRain />
 
-      {/* Optional particles background (can comment out if too heavy) */}
-      {/* <Background /> */}
+      {/* 🔻 Mid Layer */}
+      <Background />
 
-      <div className="app-container">
+      {/* 🔝 Top Layer (Your UI) */}
+      <div className="app-ui-layer">
         <Routes>
-          <Route path="/" element={<CTF/>}/>
-          <Route path="/portfolio" element={<Portfolio/>}/>
+          <Route path="/" element={<CTF />} />
+          <Route path="/portfolio" element={<Portfolio />} />
         </Routes>
       </div>
     </Router>
