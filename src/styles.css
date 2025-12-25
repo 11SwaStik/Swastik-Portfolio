@@ -35,3 +35,70 @@ button:hover{ background:var(--pink); color:#000; cursor:pointer; }
 .glitch::before{ animation:glitch 1s infinite; color:var(--cyan); }
 .glitch::after{ animation:glitch 1s infinite reverse; color:var(--violet); }
 @keyframes glitch{0%{clip-path:inset(0 0 80% 0)}50%{clip-path:inset(30% 0 30% 0)}100%{clip-path:inset(60% 0 0 0)}}
+ .app-ui-layer {
+  position: relative;
+  z-index: 5;
+}
+
+.container, .card, .btn, .skip-btn, h1, h2, p, input {
+  position: relative;
+  z-index: 6;
+}
+.progress-wrapper {
+  max-width: 600px;
+  margin: 0.5rem auto 1.5rem;
+  text-align: left;
+}
+.progress-label {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-bottom: 0.25rem;
+}
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,182,193,0.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffb6c1, #5df2ff, #c38bff);
+  box-shadow: 0 0 10px rgba(255,182,193,0.7);
+  transition: width 0.4s ease-out;
+}
+
+.tab-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.tab-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(255,182,193,0.5);
+  background: rgba(0,0,0,0.8);
+  color: var(--pink);
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+.tab-btn:hover {
+  box-shadow: 0 0 10px rgba(93,242,255,0.6);
+  transform: translateY(-1px);
+}
+.tab-btn.active {
+  background: var(--pink);
+  color: #000;
+  box-shadow: 0 0 15px rgba(255,182,193,0.9);
+}
+
+.tab-content {
+  margin-top: 0.5rem;
+  text-align: left;
+}
+.tab-content h2 {
+  margin-top: 0;
+}
