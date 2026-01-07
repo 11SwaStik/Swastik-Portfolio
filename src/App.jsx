@@ -6,30 +6,42 @@ import Background from "./components/Background"
 import CTF from "./pages/CTF"
 import Portfolio from "./pages/Portfolio"
 
-
-export default function App() {
+export default function App(){
   const [loading, setLoading] = useState(true)
+  const [theme, setTheme] = useState("pink")
+  const [recruiterMode, setRecruiterMode] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500)
-    return () => clearTimeout(timer)
+    setTimeout(() => setLoading(false), 1500)
   }, [])
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme)
+  }, [theme])
 
   if (loading) return <Loading />
 
   return (
     <Router>
-      {/* 🔻 Bottom Layer */}
-      <MatrixRain />
+      {!recruiterMode && <MatrixRain />}
+      {!recruiterMode && <Background />}
 
-      {/* 🔻 Mid Layer */}
-      <Background />
+      <button className="theme-toggle" onClick={() =>
+        setTheme(t => t === "pink" ? "green" : "pink")
+      }>
+        {theme === "pink" ? "🟢 Matrix" : "💗 Cyberpunk"}
+      </button>
 
-      {/* 🔝 Top Layer (Your UI) */}
+      <button className="recruiter-toggle" onClick={() =>
+        setRecruiterMode(r => !r)
+      }>
+        {recruiterMode ? "🎮 Hacker Mode" : "🧑‍💼 Recruiter Mode"}
+      </button>
+
       <div className="app-ui-layer">
         <Routes>
-          <Route path="/" element={<CTF />} />
-          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/" element={<CTF recruiterMode={recruiterMode} />} />
+          <Route path="/portfolio" element={<Portfolio recruiterMode={recruiterMode} />} />
         </Routes>
       </div>
     </Router>
