@@ -1,3 +1,17 @@
+:root {
+  --pink: #ffb6c1;
+  --cyan: #5df2ff;
+  --violet: #c38bff;
+  --bg: #000;
+}
+
+[data-theme="green"] {
+  --pink: #00ff9c;
+  --cyan: #00ffc3;
+  --violet: #66ffcc;
+  --bg: #000;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
