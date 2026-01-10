@@ -102,3 +102,22 @@ button:hover{ background:var(--pink); color:#000; cursor:pointer; }
 .tab-content h2 {
   margin-top: 0;
 }
+.system-log {
+  font-size: 0.8rem;
+  max-height: 220px;
+  overflow: hidden;
+}
+
+.system-log pre {
+  text-align: left;
+  margin-top: 0.5rem;
+  color: var(--cyan);
+}
+
+.cursor {
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
