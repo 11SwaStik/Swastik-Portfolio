@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 
-export default function CursorTrail({
+export default function CursorSnake({
   color = "#5df2ff",
-  glowColor = "#ffb6c1",
-  trailLength = 20,
-  thickness = 2
+  glow = "#ffb6c1",
+  maxLength = 20,
+  size = 13,
 }) {
   const canvasRef = useRef(null);
   const points = useRef([]);
@@ -16,15 +16,23 @@ export default function CursorTrail({
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    const chars = "01ABCDEF#@$%";
+
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
+
     window.addEventListener("resize", resize);
 
     const onMove = (e) => {
-      points.current.push({ x: e.clientX, y: e.clientY });
-      if (points.current.length > trailLength) {
+      points.current.push({
+        x: e.clientX,
+        y: e.clientY,
+        char: chars[Math.floor(Math.random() * chars.length)],
+      });
+
+      if (points.current.length > maxLength) {
         points.current.shift();
       }
     };
@@ -33,15 +41,37 @@ export default function CursorTrail({
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = `${size}px monospace`;
 
-      if (points.current.length > 1) {
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
+      points.current.forEach((p, i) => {
+        const alpha = i / points.current.length;
+        ctx.fillStyle = `rgba(93,242,255,${alpha})`;
+        ctx.shadowColor = glow;
+        ctx.shadowBlur = 15 * alpha;
+        ctx.fillText(p.char, p.x, p.y);
+      });
 
-        // Glow
-        ctx.strokeStyle = glowColor;
-        ctx.lineWidth = thickness * 4;
-        ctx.globalAlpha = 0.15;
-        ctx.beginPath();
-        points.current.forEach((p, i) => {
-          if (i
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("resize", resize);
+    };
+  }, [glow, maxLength, size]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 1,
+        pointerEvents: "none",
+      }}
+    />
+  );
+}
