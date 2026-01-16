@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Loading from "./components/Loading"
-import MatrixRain from "./components/MatrixRain"
+import MatrixRain from "./components/CursorSnake"
 import Background from "./components/Background"
 import CTF from "./pages/CTF"
 import Portfolio from "./pages/Portfolio"
+import CursorSnake from "./components/CursorSnake"
+
 
 export default function App(){
   const [loading, setLoading] = useState(true)
