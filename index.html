@@ -1,13 +1,732 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swastik | kirmada — Cybersecurity</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --g:#00ff9f;
+  --r:#ff2e5b;
+  --c:#00e5ff;
+  --y:#f5c518;
+  --p:#bf80ff;
+  --dim:#060609;
+  --s1:#0b0b14;
+  --s2:#10101f;
+  --s3:#16162a;
+  --border:#1f1f38;
+  --text:#b0b0cc;
+  --mono:'Share Tech Mono',monospace;
+  --head:'Orbitron',sans-serif;
+  --body:'Rajdhani',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--dim);color:var(--text);font-family:var(--body);overflow-x:hidden;cursor:none;font-size:16px;}
+
+/* CANVAS LAYERS */
+#snake-canvas,#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+#bg-canvas{z-index:0;}
+#snake-canvas{z-index:10;}
+
+/* SCANLINES */
+.scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);pointer-events:none;z-index:9;animation:flicker 8s infinite;}
+@keyframes flicker{0%,98%,100%{opacity:1;}99%{opacity:.92;}}
+
+/* CURSOR */
+#cur{position:fixed;width:10px;height:10px;background:var(--g);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .1s,height .1s,background .1s;mix-blend-mode:screen;}
+#cur-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(0,255,159,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;width:100%;z-index:1000;padding:.9rem 3rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(31,31,56,.8);background:rgba(6,6,9,.85);backdrop-filter:blur(12px);}
+.nav-logo{font-family:var(--head);font-size:1rem;color:var(--g);letter-spacing:4px;text-decoration:none;display:flex;align-items:center;gap:.6rem;}
+.nav-logo-slash{color:var(--r);margin:0 .1rem;}
+.nav-links{display:flex;gap:1.8rem;list-style:none;}
+.nav-links a{font-family:var(--mono);font-size:.7rem;color:var(--text);text-decoration:none;letter-spacing:2px;transition:color .2s;padding:.2rem 0;border-bottom:1px solid transparent;}
+.nav-links a:hover,.nav-links a.active{color:var(--g);border-bottom-color:var(--g);}
+.nav-right{display:flex;align-items:center;gap:1.2rem;}
+.nav-status{font-family:var(--mono);font-size:.6rem;color:var(--g);display:flex;align-items:center;gap:.4rem;}
+.blink-dot{width:5px;height:5px;background:var(--g);border-radius:50%;animation:bdot 1.3s infinite;}
+@keyframes bdot{0%,100%{opacity:1;}50%{opacity:0;}}
+.ctf-nav-badge{font-family:var(--mono);font-size:.6rem;padding:.25rem .7rem;border:1px solid var(--y);color:var(--y);letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.ctf-nav-badge:hover{background:var(--y);color:#000;}
+
+/* ── HERO ── */
+#hero{height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;z-index:1;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,159,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,159,.03) 1px,transparent 1px);background-size:50px 50px;animation:gs 25s linear infinite;z-index:0;}
+@keyframes gs{0%{background-position:0 0;}100%{background-position:50px 50px;}}
+.hero-radial{position:absolute;width:800px;height:800px;background:radial-gradient(circle,rgba(0,255,159,.055) 0%,transparent 65%);left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;}
+.hero-content{text-align:center;position:relative;z-index:2;}
+.hero-eyebrow{font-family:var(--mono);font-size:.65rem;color:var(--r);letter-spacing:5px;margin-bottom:1.2rem;opacity:.9;}
+.hero-name{font-family:var(--head);font-size:clamp(3.5rem,9vw,8rem);font-weight:900;line-height:1;letter-spacing:6px;color:#fff;position:relative;display:inline-block;}
+.hero-name .g{color:var(--g);}
+.hero-name-glitch{position:relative;display:inline-block;}
+.hero-name-glitch::before,.hero-name-glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;overflow:hidden;}
+.hero-name-glitch::before{color:var(--c);animation:gh1 5s infinite;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);}
+.hero-name-glitch::after{color:var(--r);animation:gh2 5s infinite;clip-path:polygon(0 55%,100% 55%,100% 75%,0 75%);}
+@keyframes gh1{0%,88%,100%{transform:translateX(0);}89%{transform:translateX(-4px);}91%{transform:translateX(3px);}93%{transform:translateX(0);}}
+@keyframes gh2{0%,88%,100%{transform:translateX(0);}90%{transform:translateX(4px);}92%{transform:translateX(-2px);}94%{transform:translateX(0);}}
+.hero-alias{font-family:var(--mono);font-size:1rem;color:var(--c);margin-top:.6rem;letter-spacing:7px;}
+.hero-tagline{font-family:var(--body);font-size:1.15rem;color:var(--text);margin-top:1.6rem;letter-spacing:1.5px;font-weight:300;line-height:1.6;}
+.hero-tagline .hl{color:var(--g);font-weight:600;}
+.hero-cta{display:flex;gap:1rem;justify-content:center;margin-top:2.8rem;flex-wrap:wrap;}
+.btn-hex{font-family:var(--mono);font-size:.72rem;padding:.8rem 2.2rem;background:transparent;letter-spacing:2px;cursor:pointer;transition:all .2s;position:relative;border:none;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);}
+.btn-hex::before{content:'';position:absolute;inset:0;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);}
+.btn-hex.green{color:var(--g);}
+.btn-hex.green::before{border:1px solid var(--g);}
+.btn-hex.green:hover{background:var(--g);color:#000;}
+.btn-hex.red{color:var(--r);}
+.btn-hex.red::before{border:1px solid var(--r);}
+.btn-hex.red:hover{background:var(--r);color:#fff;}
+.hero-scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.4rem;opacity:.35;}
+.scroll-line{width:1px;height:50px;background:linear-gradient(var(--g),transparent);animation:sp 2.2s ease-in-out infinite;}
+@keyframes sp{0%,100%{opacity:.3;}50%{opacity:.8;}}
+.scroll-txt{font-family:var(--mono);font-size:.55rem;letter-spacing:3px;color:var(--g);}
+
+/* ── BOOT TERMINAL ── */
+#boot{padding:5rem 3rem;max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.term{background:var(--s1);border:1px solid var(--border);border-radius:3px;overflow:hidden;box-shadow:0 0 60px rgba(0,255,159,.04);}
+.term-bar{background:#111120;padding:.55rem 1rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid var(--border);}
+.td{width:11px;height:11px;border-radius:50%;}
+.td.r{background:#ff5f56;} .td.y{background:#ffbd2e;} .td.g{background:#27c93f;}
+.term-title{font-family:var(--mono);font-size:.65rem;color:#444;margin-left:.4rem;letter-spacing:1px;}
+.term-body{padding:1.5rem 1.8rem;font-family:var(--mono);font-size:.82rem;line-height:2.1;}
+.tl{display:block;white-space:pre;}
+.tp{color:var(--g);}
+.tk{color:var(--c);}
+.tv{color:var(--y);}
+.to{color:var(--text);}
+.tg{color:var(--g);}
+.tr{color:var(--r);}
+.tcur{display:inline-block;width:7px;height:13px;background:var(--g);animation:bdot .9s infinite;vertical-align:middle;}
+
+/* ── SECTIONS ── */
+.sec{padding:7rem 3rem;position:relative;z-index:1;}
+.sec-inner{max-width:1100px;margin:0 auto;}
+.sec-label{font-family:var(--mono);font-size:.6rem;color:var(--r);letter-spacing:5px;display:block;margin-bottom:.5rem;}
+.sec-title{font-family:var(--head);font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;color:#fff;letter-spacing:3px;}
+.sec-title .dim{color:var(--g);opacity:.35;}
+.sec-line{width:50px;height:1px;background:linear-gradient(90deg,var(--g),transparent);margin-top:.9rem;margin-bottom:3.5rem;}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:start;}
+.about-p{font-size:1.05rem;line-height:2;color:var(--text);margin-bottom:1.1rem;font-weight:300;}
+.about-p .hl{color:var(--g);font-weight:600;}
+.about-p .hlr{color:var(--r);font-weight:600;}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:2.2rem;}
+.stat{background:var(--s1);border:1px solid var(--border);padding:1.1rem 1.3rem;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);position:relative;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--g),transparent);}
+.stat-n{font-family:var(--head);font-size:1.8rem;font-weight:900;color:var(--g);}
+.stat-l{font-family:var(--mono);font-size:.58rem;color:var(--text);letter-spacing:2px;margin-top:.2rem;}
+.role-card{background:var(--s1);border:1px solid var(--border);padding:2rem;position:relative;margin-bottom:1.5rem;}
+.role-card::before{content:'CURRENT DEPLOYMENT';position:absolute;top:-9px;left:1rem;font-family:var(--mono);font-size:.55rem;color:var(--g);background:var(--dim);padding:0 .5rem;letter-spacing:2px;}
+.role-co{font-family:var(--head);font-size:1.2rem;color:var(--c);letter-spacing:3px;}
+.role-t{font-size:.95rem;color:var(--text);margin-top:.3rem;font-weight:300;}
+.role-badge{display:inline-block;font-family:var(--mono);font-size:.58rem;padding:.3rem .8rem;border:1px solid var(--g);color:var(--g);letter-spacing:2px;margin-top:.8rem;}
+.interests{margin-top:1.5rem;}
+.int-item{font-family:var(--mono);font-size:.72rem;color:var(--text);padding:.45rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem;letter-spacing:.5px;}
+.int-item::before{content:'▸';color:var(--g);flex-shrink:0;}
+
+/* ── SKILLS ── */
+#skills{background:var(--s1);}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;}
+.skill-cat{background:var(--dim);border:1px solid var(--border);padding:1.4rem 1.6rem;position:relative;overflow:hidden;transition:border-color .25s;}
+.skill-cat:hover{border-color:rgba(0,255,159,.3);}
+.skill-cat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0;transition:opacity .25s;}
+.skill-cat:hover::after{opacity:1;}
+.skill-cat-h{font-family:var(--mono);font-size:.6rem;color:var(--g);letter-spacing:3px;margin-bottom:1rem;}
+.tags{display:flex;flex-wrap:wrap;gap:.45rem;}
+.tag{font-family:var(--mono);font-size:.65rem;padding:.28rem .75rem;border:1px solid var(--border);color:var(--text);letter-spacing:.5px;transition:all .2s;cursor:default;}
+.tag:hover{border-color:var(--g);color:var(--g);background:rgba(0,255,159,.04);}
+.tag.r:hover{border-color:var(--r);color:var(--r);}
+.tag.c:hover{border-color:var(--c);color:var(--c);}
+.tag.p:hover{border-color:var(--p);color:var(--p);}
+
+/* ── PROJECTS ── */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.3rem;}
+.proj{background:var(--s1);border:1px solid var(--border);padding:1.8rem;position:relative;overflow:hidden;transition:border-color .3s,transform .25s;cursor:default;}
+.proj::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;transform:scaleY(0);transform-origin:top;transition:transform .35s;}
+.proj.g-acc::before{background:var(--g);}
+.proj.r-acc::before{background:var(--r);}
+.proj.c-acc::before{background:var(--c);}
+.proj.p-acc::before{background:var(--p);}
+.proj:hover{transform:translateY(-5px);}
+.proj.g-acc:hover{border-color:rgba(0,255,159,.4);}
+.proj.r-acc:hover{border-color:rgba(255,46,91,.4);}
+.proj.c-acc:hover{border-color:rgba(0,229,255,.4);}
+.proj.p-acc:hover{border-color:rgba(191,128,255,.4);}
+.proj:hover::before{transform:scaleY(1);}
+.proj-id{font-family:var(--mono);font-size:.58rem;color:var(--g);letter-spacing:2px;margin-bottom:.7rem;opacity:.6;}
+.proj-name{font-family:var(--head);font-size:.95rem;color:#fff;letter-spacing:2px;margin-bottom:.7rem;}
+.proj-desc{font-size:.9rem;color:var(--text);line-height:1.75;font-weight:300;margin-bottom:1.1rem;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.35rem;}
+.proj-tag{font-family:var(--mono);font-size:.58rem;padding:.2rem .55rem;background:rgba(0,255,159,.05);border:1px solid rgba(0,255,159,.18);color:var(--g);letter-spacing:.5px;}
+
+/* ── CTF ── */
+#ctf{background:var(--s1);}
+.ctf-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:3rem;align-items:start;}
+.ctf-panel{background:var(--dim);border:1px solid var(--border);padding:2rem;position:relative;}
+.ctf-panel::before{content:'CTF TERMINAL';position:absolute;top:-9px;left:1rem;font-family:var(--mono);font-size:.55rem;color:var(--r);background:var(--s1);padding:0 .5rem;letter-spacing:2px;}
+.ctf-status-row{display:flex;align-items:center;gap:.8rem;margin-bottom:1.8rem;}
+.ctf-lvl{font-family:var(--mono);font-size:.7rem;color:var(--y);letter-spacing:2px;}
+.progress-track{flex:1;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--g),var(--c));transition:width .5s ease;border-radius:2px;}
+.ctf-challenge-q{font-family:var(--mono);font-size:.8rem;color:var(--c);line-height:1.7;margin-bottom:1.4rem;padding:.8rem;background:rgba(0,229,255,.04);border-left:2px solid var(--c);}
+.ctf-input-row{display:flex;gap:.6rem;}
+.ctf-input{flex:1;font-family:var(--mono);font-size:.75rem;background:var(--s1);border:1px solid var(--border);color:var(--g);padding:.6rem .9rem;outline:none;transition:border-color .2s;}
+.ctf-input:focus{border-color:var(--g);}
+.ctf-submit{font-family:var(--mono);font-size:.7rem;padding:.6rem 1.2rem;background:transparent;border:1px solid var(--g);color:var(--g);cursor:pointer;letter-spacing:1px;transition:all .2s;white-space:nowrap;}
+.ctf-submit:hover{background:var(--g);color:#000;}
+.ctf-msg{font-family:var(--mono);font-size:.7rem;margin-top:.8rem;padding:.4rem .6rem;letter-spacing:1px;}
+.ctf-msg.ok{color:var(--g);background:rgba(0,255,159,.07);border-left:2px solid var(--g);}
+.ctf-msg.err{color:var(--r);background:rgba(255,46,91,.07);border-left:2px solid var(--r);}
+.ctf-complete{text-align:center;padding:2rem 1rem;}
+.ctf-complete-title{font-family:var(--head);font-size:1.1rem;color:var(--g);letter-spacing:3px;margin-bottom:.8rem;}
+.ctf-complete-sub{font-family:var(--mono);font-size:.7rem;color:var(--text);line-height:1.8;letter-spacing:1px;}
+.ctf-log-panel{background:var(--dim);border:1px solid var(--border);padding:1.8rem;position:relative;}
+.ctf-log-panel::before{content:'SYSTEM LOG';position:absolute;top:-9px;left:1rem;font-family:var(--mono);font-size:.55rem;color:var(--g);background:var(--s1);padding:0 .5rem;letter-spacing:2px;}
+.ctf-log-body{font-family:var(--mono);font-size:.72rem;line-height:2;max-height:320px;overflow-y:auto;}
+.ctf-log-body::-webkit-scrollbar{width:3px;}
+.ctf-log-body::-webkit-scrollbar-thumb{background:var(--border);}
+.log-line{display:block;}
+.log-line.ok{color:var(--g);}
+.log-line.warn{color:var(--y);}
+.log-line.err{color:var(--r);}
+.log-line.info{color:var(--c);}
+.log-line.dim{color:rgba(176,176,204,.4);}
+.ctf-platforms{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.5rem;}
+.ctf-plat{font-family:var(--mono);font-size:.6rem;padding:.45rem 1rem;border:1px solid var(--border);color:var(--text);letter-spacing:2px;transition:all .2s;}
+.ctf-plat:hover{border-color:var(--y);color:var(--y);}
+
+/* ── SECRET SECTION ── */
+#secret{display:none;padding:5rem 3rem;position:relative;z-index:1;}
+#secret.visible{display:block;}
+#secret .sec-inner{text-align:center;}
+.secret-box{background:var(--s1);border:1px solid rgba(191,128,255,.3);padding:3rem;max-width:700px;margin:0 auto;position:relative;box-shadow:0 0 60px rgba(191,128,255,.06);}
+.secret-box::before{content:'// ACCESS GRANTED';position:absolute;top:-9px;left:1rem;font-family:var(--mono);font-size:.55rem;color:var(--p);background:var(--dim);padding:0 .5rem;letter-spacing:2px;}
+.secret-title{font-family:var(--head);font-size:1.4rem;color:var(--p);letter-spacing:4px;margin-bottom:1rem;}
+.secret-text{font-family:var(--mono);font-size:.78rem;color:var(--text);line-height:2.2;letter-spacing:1px;}
+.secret-text .hl{color:var(--p);}
+
+/* ── CONTACT ── */
+#contact{text-align:center;}
+.contact-box{background:var(--s1);border:1px solid var(--border);padding:4rem 3rem;max-width:800px;margin:0 auto;position:relative;overflow:hidden;}
+.contact-box::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(0,255,159,.025) 0%,transparent 55%);pointer-events:none;}
+.contact-title{font-family:var(--head);font-size:1.3rem;color:#fff;letter-spacing:4px;margin-bottom:.7rem;}
+.contact-sub{font-family:var(--mono);font-size:.7rem;color:var(--text);opacity:.5;letter-spacing:1.5px;line-height:2;margin-bottom:2.5rem;}
+.contact-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.c-link{font-family:var(--mono);font-size:.7rem;padding:.75rem 1.6rem;border:1px solid var(--border);color:var(--text);text-decoration:none;letter-spacing:1.5px;transition:all .2s;display:flex;align-items:center;gap:.5rem;}
+.c-link:hover{border-color:var(--g);color:var(--g);}
+.c-link .ic{color:var(--g);font-size:.9rem;}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:1.8rem 3rem;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
+.f-text{font-family:var(--mono);font-size:.58rem;color:var(--text);opacity:.35;letter-spacing:2px;}
+.f-text span{color:var(--g);opacity:1;}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:.8rem 1.5rem;}
+  .nav-links{display:none;}
+  .sec{padding:4rem 1.5rem;}
+  .about-grid,.ctf-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:.8rem;text-align:center;}
+  .hero-name{font-size:3rem;}
+  #boot{padding:3rem 1.5rem;}
+}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;top:-10px;width:8px;height:8px;border-radius:1px;pointer-events:none;z-index:9997;animation:cfetti 1.4s ease-in forwards;}
+@keyframes cfetti{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND CANVAS -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- CURSOR SNAKE CANVAS -->
+<canvas id="snake-canvas"></canvas>
+
+<!-- SCANLINES -->
+<div class="scanlines"></div>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#hero" class="nav-logo">SW<span class="nav-logo-slash">/</span>K</a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#ctf">ctf</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="ctf-nav-badge" onclick="document.getElementById('ctf').scrollIntoView({behavior:'smooth'})">CTF CHALLENGE</button>
+    <div class="nav-status"><div class="blink-dot"></div>ONLINE</div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-radial"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">CYBERSECURITY SPECIALIST</div>
+    <h1 class="hero-name">
+      <span class="hero-name-glitch g" data-text="SWASTIK">SWASTIK</span>
+    </h1>
+    <div class="hero-alias">// kirmada</div>
+    <p class="hero-tagline"><span class="hl">root access</span> to my sanity —<br>and everyone else's digital life.</p>
+    <div class="hero-cta">
+      <button class="btn-hex green" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">VIEW EXPLOITS</button>
+      <button class="btn-hex red" onclick="document.getElementById('ctf').scrollIntoView({behavior:'smooth'})">TRY THE CTF</button>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-txt">SCROLL</div>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ── BOOT TERMINAL ── -->
+<div id="boot">
+  <div class="term reveal">
+    <div class="term-bar">
+      <div class="td r"></div><div class="td y"></div><div class="td g"></div>
+      <span class="term-title">kirmada@portfolio ~ whoami</span>
+    </div>
+    <div class="term-body" id="term-out"></div>
+  </div>
+</div>
+
+<!-- ── ABOUT ── -->
+<section id="about" class="sec">
+  <div class="sec-inner">
+    <div class="reveal">
+      <span class="sec-label">// 01. ABOUT</span>
+      <h2 class="sec-title">WHO <span class="dim">AM I</span></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="about-grid reveal">
+      <div>
+        <p class="about-p">I'm <span class="hl">Swastik Kirmada</span> — a cybersecurity professional living at the intersection of <span class="hl">offense and defense</span>. I break systems to understand them, then teach others how to protect theirs.</p>
+        <p class="about-p">Currently a <span class="hlr">Subject Matter Expert in Cybersecurity at Scaler</span> — shaping how the next generation fights in the digital battlefield.</p>
+        <p class="about-p">My goal isn't just finding vulnerabilities — it's making <span class="hl">cybersecurity accessible</span> to everyone. Because the best firewall is an informed community.</p>
+        <div class="stats">
+          <div class="stat"><div class="stat-n">04</div><div class="stat-l">PROJECTS SHIPPED</div></div>
+          <div class="stat"><div class="stat-n">L7</div><div class="stat-l">WAF BUILT</div></div>
+          <div class="stat"><div class="stat-n">2+</div><div class="stat-l">YEARS IN FIELD</div></div>
+          <div class="stat"><div class="stat-n">∞</div><div class="stat-l">CURIOSITY</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="role-card">
+          <div class="role-co">SCALER</div>
+          <div class="role-t">Subject Matter Expert — Cybersecurity</div>
+          <div class="role-badge">● ACTIVE</div>
+          <div class="interests">
+            <div class="int-item">Offensive Security & Pen Testing</div>
+            <div class="int-item">Blue Teaming & Cyber Defense</div>
+            <div class="int-item">Security Education & Awareness</div>
+            <div class="int-item">Web Application Security</div>
+            <div class="int-item">Network Security & SIEM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills" class="sec">
+  <div class="sec-inner">
+    <div class="reveal">
+      <span class="sec-label">// 02. ARSENAL</span>
+      <h2 class="sec-title">SKILLS <span class="dim">& TOOLS</span></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-cat">
+        <div class="skill-cat-h">LANGUAGES</div>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Java</span><span class="tag">C++</span><span class="tag">Shell Scripting</span></div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-h">SECURITY TOOLS</div>
+        <div class="tags"><span class="tag r">Burp Suite</span><span class="tag r">Metasploit</span><span class="tag r">Nmap</span><span class="tag r">Wireshark</span><span class="tag r">Snort</span><span class="tag r">Splunk</span></div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-h">CLOUD & DEVSECOPS</div>
+        <div class="tags"><span class="tag c">AWS</span><span class="tag c">Docker Security</span><span class="tag c">Kubernetes Security</span></div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-h">SECURITY DOMAINS</div>
+        <div class="tags"><span class="tag">Network Security</span><span class="tag">Web Security</span><span class="tag">Cloud Security</span><span class="tag">Linux Security</span><span class="tag">Privilege Escalation</span></div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-h">CONCEPTS</div>
+        <div class="tags"><span class="tag">VAPT</span><span class="tag">SIEM</span><span class="tag">Cryptography</span><span class="tag">GRC</span><span class="tag">Cyber Defense</span><span class="tag">Networking</span><span class="tag">OOP</span><span class="tag">DSA</span></div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-h">OTHER TOOLS</div>
+        <div class="tags"><span class="tag p">Atlassian Jira</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects" class="sec">
+  <div class="sec-inner">
+    <div class="reveal">
+      <span class="sec-label">// 03. OPERATIONS</span>
+      <h2 class="sec-title">DEPLOYED <span class="dim">PROJECTS</span></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="proj-grid reveal">
+      <div class="proj g-acc">
+        <div class="proj-id">PROJ_001 // SECURITY</div>
+        <div class="proj-name">GNI SHIELD</div>
+        <div class="proj-desc">Centralized application-context-aware firewall with integrated Layer 7 WAF. Admin dashboard enabling domain and IPv4 blocking. Browser extension blocks malicious sites across devices.</div>
+        <div class="proj-tags"><span class="proj-tag">Layer 7 WAF</span><span class="proj-tag">Firewall</span><span class="proj-tag">Browser Ext</span><span class="proj-tag">Dashboard</span></div>
+      </div>
+      <div class="proj r-acc">
+        <div class="proj-id">PROJ_002 // EDTECH</div>
+        <div class="proj-name">EDUTECH PLATFORM</div>
+        <div class="proj-desc">Live educational platform reducing video search time by 70–80%. Interactive quiz module boosted learning engagement by 40%. Built for scale and real users.</div>
+        <div class="proj-tags"><span class="proj-tag">Live</span><span class="proj-tag">EdTech</span><span class="proj-tag">Quiz Engine</span><span class="proj-tag">+40% Engage</span></div>
+      </div>
+      <div class="proj c-acc">
+        <div class="proj-id">PROJ_003 // OFFENSIVE</div>
+        <div class="proj-name">HASH CRACKER</div>
+        <div class="proj-desc">Linux-based multi-algorithm password cracking tool. Cracks hashes in under 5 minutes. Supports MD5, SHA-1, SHA-256, SHA-384, and SHA-512.</div>
+        <div class="proj-tags"><span class="proj-tag">MD5</span><span class="proj-tag">SHA-256</span><span class="proj-tag">SHA-512</span><span class="proj-tag">Linux</span></div>
+      </div>
+      <div class="proj p-acc">
+        <div class="proj-id">PROJ_004 // RECON</div>
+        <div class="proj-name">NETWORK SCANNER</div>
+        <div class="proj-desc">Internal network discovery using ARP scanning and Nmap. Finds local devices and open ports. speedtest-cli integration improved analysis speed by 20%.</div>
+        <div class="proj-tags"><span class="proj-tag">ARP Scan</span><span class="proj-tag">Nmap</span><span class="proj-tag">Recon</span><span class="proj-tag">Python</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTF ── -->
+<section id="ctf" class="sec">
+  <div class="sec-inner">
+    <div class="reveal">
+      <span class="sec-label">// 04. CHALLENGE</span>
+      <h2 class="sec-title">CTF <span class="dim">& ACHIEVEMENTS</span></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="ctf-grid reveal">
+      <!-- CTF Panel -->
+      <div class="ctf-panel" id="ctf-panel">
+        <div class="ctf-status-row">
+          <span class="ctf-lvl" id="ctf-lvl-txt">LEVEL 1 / 5</span>
+          <div class="progress-track"><div class="progress-fill" id="ctf-prog" style="width:0%"></div></div>
+        </div>
+        <div id="ctf-challenge-area">
+          <div class="ctf-challenge-q" id="ctf-q"></div>
+          <div class="ctf-input-row">
+            <input class="ctf-input" id="ctf-input" placeholder="FLAG{...}" />
+            <button class="ctf-submit" onclick="ctfSubmit()">SUBMIT</button>
+          </div>
+          <div class="ctf-msg" id="ctf-msg" style="display:none;"></div>
+        </div>
+      </div>
+      <!-- Log Panel -->
+      <div class="ctf-log-panel">
+        <div class="ctf-log-body" id="ctf-log"></div>
+        <div class="ctf-platforms">
+          <div class="ctf-plat">HACKTHEBOX</div>
+          <div class="ctf-plat">TRYHACKME</div>
+          <div class="ctf-plat">PICOCTF</div>
+          <div class="ctf-plat">CTFtime</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECRET (unlocked by CTF) ── -->
+<section id="secret">
+  <div class="sec-inner">
+    <div class="secret-box">
+      <div class="secret-title">ROOT ACCESS ACHIEVED</div>
+      <p class="secret-text">
+        You just solved 5 challenges to get here.<br>
+        That's the entire point of this portfolio.<br><br>
+        <span class="hl">kirmada</span> isn't just a name — it's a signal.<br>
+        If you're reading this, you already understand.<br><br>
+        Let's work together. You know where to find me.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact" class="sec">
+  <div class="sec-inner">
+    <div class="reveal">
+      <span class="sec-label" style="text-align:center;display:block;">// 05. CONTACT</span>
+      <h2 class="sec-title" style="text-align:center;">ESTABLISH <span class="dim">CONNECTION</span></h2>
+      <div class="sec-line" style="margin:1rem auto 3.5rem;"></div>
+    </div>
+    <div class="contact-box reveal">
+      <div class="contact-title">PING ME</div>
+      <div class="contact-sub">Open to red team work, collabs, teaching, and tech talks.<br>No spam. Signal only.</div>
+      <div class="contact-links">
+        <a href="mailto:11swastiksharma@gmail.com" class="c-link"><span class="ic">✉</span> EMAIL</a>
+        <a href="https://www.linkedin.com/in/swastik-sharma-73184a252/" target="_blank" class="c-link"><span class="ic">in</span> LINKEDIN</a>
+        <a href="https://github.com/11SwaStik" target="_blank" class="c-link"><span class="ic">{}</span> GITHUB</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="f-text">© 2025 <span>SWASTIK KIRMADA</span> // kirmada</div>
+  <div class="f-text">BUILT WITH <span>INTENT</span> — NOT TEMPLATES</div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);})();
+document.querySelectorAll('a,button,.proj,.tag,.ctf-plat').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';cur.style.background='var(--r)';});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';cur.style.background='var(--g)';});
+});
+
+// ── BG MATRIX RAIN ──
+(function(){
+  const canvas=document.getElementById('bg-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,cols,drops;
+  const chars='01アイウエオカキクケコabcdef#@$%&<>';
+  function init(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;cols=Math.floor(W/22);drops=Array(cols).fill(1);}
+  init();
+  window.addEventListener('resize',init);
+  setInterval(()=>{
+    ctx.fillStyle='rgba(6,6,9,0.06)';
+    ctx.fillRect(0,0,W,H);
+    ctx.font='13px Share Tech Mono';
+    drops.forEach((y,i)=>{
+      const c=chars[Math.floor(Math.random()*chars.length)];
+      const alpha=Math.random()*.13+.02;
+      ctx.fillStyle=`rgba(0,255,159,${alpha})`;
+      ctx.fillText(c,i*22,y*22);
+      if(y*22>H&&Math.random()>.975)drops[i]=0;
+      drops[i]++;
+    });
+  },60);
+})();
+
+// ── CURSOR SNAKE (from old portfolio, upgraded) ──
+(function(){
+  const canvas=document.getElementById('snake-canvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+  const trail=[];const scars=[];const maxLen=26;
+  const glyphs='01ABCDEF#@$%><{}|\\';
+  document.addEventListener('mousemove',e=>{
+    trail.push({x:e.clientX,y:e.clientY,char:glyphs[Math.floor(Math.random()*glyphs.length)]});
+    if(trail.length>maxLen)trail.shift();
+  });
+  document.addEventListener('click',e=>{
+    for(let i=0;i<8;i++)scars.push({x:e.clientX,y:e.clientY,life:1,char:glyphs[Math.floor(Math.random()*glyphs.length)],ox:(Math.random()-0.5)*60,oy:(Math.random()-0.5)*60});
+  });
+  (function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.font='13px Share Tech Mono';
+    trail.forEach((p,i)=>{
+      const a=(i/trail.length)*0.7;
+      ctx.fillStyle=`rgba(0,255,159,${a})`;
+      ctx.shadowColor='#00ff9f';ctx.shadowBlur=8*a;
+      ctx.fillText(p.char,p.x,p.y);
+    });
+    ctx.shadowBlur=0;
+    scars.forEach(s=>{
+      s.life-=0.025;
+      ctx.fillStyle=`rgba(0,229,255,${s.life})`;
+      ctx.shadowColor='#00e5ff';ctx.shadowBlur=15*s.life;
+      ctx.fillText(s.char,s.x+s.ox*(1-s.life),s.y+s.oy*(1-s.life));
+    });
+    for(let i=scars.length-1;i>=0;i--)if(scars[i].life<=0)scars.splice(i,1);
+    ctx.shadowBlur=0;
+    requestAnimationFrame(draw);
+  })();
+})();
+
+// ── TERMINAL TYPEWRITER ──
+(function(){
+  const lines = [
+    {html:'<span class="tp">kirmada@sec:~$ </span><span class="to">cat /etc/identity</span>',delay:0},
+    {html:'&nbsp;',delay:400},
+    {html:'<span class="tk">NAME     </span><span class="to">= </span><span class="tv">"Swastik Kirmada"</span>',delay:700},
+    {html:'<span class="tk">ALIAS    </span><span class="to">= </span><span class="tv">"kirmada"</span>',delay:950},
+    {html:'<span class="tk">ROLE     </span><span class="to">= </span><span class="tv">"Cybersecurity SME @ Scaler"</span>',delay:1200},
+    {html:'<span class="tk">DOMAIN   </span><span class="to">= </span><span class="tv">"Offensive + Blue Teaming"</span>',delay:1450},
+    {html:'<span class="tk">MISSION  </span><span class="to">= </span><span class="tv">"Break. Teach. Defend."</span>',delay:1700},
+    {html:'<span class="tk">STATUS   </span><span class="to">= </span><span class="tg">ACTIVE</span>',delay:1950},
+    {html:'&nbsp;',delay:2200},
+    {html:'<span class="tp">kirmada@sec:~$ </span><span class="tcur"></span>',delay:2400},
+  ];
+  const out=document.getElementById('term-out');
+  lines.forEach(l=>{
+    setTimeout(()=>{
+      const span=document.createElement('span');
+      span.className='tl';span.innerHTML=l.html;
+      out.appendChild(span);
+    },l.delay);
+  });
+})();
+
+// ── CTF SYSTEM ──
+const CHALLENGES = [
+  {q:'Decode this ROT13 cipher: "xvezqn"',a:'FLAG{kirmada}'},
+  {q:'What HTTP method is used to SEND data to a server (all caps)?',a:'FLAG{POST}'},
+  {q:'Port 22 is commonly used by which protocol? Answer: FLAG{protocolname}',a:'FLAG{SSH}'},
+  {q:'The classic SQL injection test. Complete: \' OR \'1\'=\'?\' → FLAG{the missing char}',a:"FLAG{1}"},
+  {q:'Final level. I am the root of all Unix systems. Who am I? FLAG{username}',a:'FLAG{root}'}
+];
+
+let ctfStep = 0;
+const savedStep = parseInt(localStorage.getItem('kirmada_ctf')||'0');
+if(savedStep>0&&savedStep<=CHALLENGES.length)ctfStep=savedStep;
+
+const logLines=[
+  {t:'info',m:'[BOOT] Portfolio system initialized'},
+  {t:'ok',m:'[OK] Secure context established'},
+  {t:'ok',m:'[OK] UI modules loaded'},
+  {t:'warn',m:'[WARN] Unidentified visitor detected'},
+  {t:'info',m:'[SYS] CTF subsystem online'},
+  {t:'dim',m:'[INFO] '+CHALLENGES.length+' challenges loaded'},
+];
+
+function addLog(cls,msg){
+  const log=document.getElementById('ctf-log');
+  const line=document.createElement('span');
+  line.className='log-line '+cls;
+  line.textContent=msg;
+  log.appendChild(line);
+  log.appendChild(document.createElement('br'));
+  log.scrollTop=log.scrollHeight;
+}
+
+function initCTF(){
+  logLines.forEach((l,i)=>setTimeout(()=>addLog(l.t,l.m),i*350));
+  updateCTF();
+  if(ctfStep>0){
+    for(let i=0;i<ctfStep;i++){
+      setTimeout(()=>addLog('ok',`[UNLOCK] Level ${i+1} cleared`),logLines.length*350+i*200);
+    }
+  }
+  if(ctfStep>=CHALLENGES.length)setTimeout(showCTFComplete,logLines.length*350+ctfStep*200+200);
+}
+
+function updateCTF(){
+  const pct=(ctfStep/CHALLENGES.length)*100;
+  document.getElementById('ctf-prog').style.width=pct+'%';
+  document.getElementById('ctf-lvl-txt').textContent='LEVEL '+(Math.min(ctfStep+1,CHALLENGES.length))+' / '+CHALLENGES.length;
+  if(ctfStep<CHALLENGES.length){
+    document.getElementById('ctf-q').textContent=CHALLENGES[ctfStep].q;
+  }
+}
+
+function ctfSubmit(){
+  const input=document.getElementById('ctf-input');
+  const msg=document.getElementById('ctf-msg');
+  const val=input.value.trim().toUpperCase();
+  const ans=CHALLENGES[ctfStep].a.toUpperCase();
+  msg.style.display='block';
+  if(val===ans){
+    msg.className='ctf-msg ok';
+    msg.textContent='✓ ACCESS GRANTED — LEVEL '+(ctfStep+1)+' CLEARED';
+    addLog('ok','[GRANT] Level '+(ctfStep+1)+' flag accepted');
+    spawnConfetti();
+    ctfStep++;
+    localStorage.setItem('kirmada_ctf',ctfStep);
+    input.value='';
+    setTimeout(()=>{
+      msg.style.display='none';
+      updateCTF();
+      if(ctfStep>=CHALLENGES.length)showCTFComplete();
+    },1200);
+  } else {
+    msg.className='ctf-msg err';
+    msg.textContent='✗ ACCESS DENIED — WRONG FLAG';
+    addLog('err','[DENY] Invalid flag submitted');
+    input.style.borderColor='var(--r)';
+    setTimeout(()=>{input.style.borderColor='';},800);
+  }
+}
+
+document.getElementById('ctf-input').addEventListener('keydown',e=>{if(e.key==='Enter')ctfSubmit();});
+
+function showCTFComplete(){
+  document.getElementById('ctf-challenge-area').innerHTML=`
+    <div class="ctf-complete">
+      <div class="ctf-complete-title">ALL LEVELS CLEARED</div>
+      <div class="ctf-complete-sub">You cracked every flag.<br>The secret section is now unlocked.</div>
+    </div>`;
+  document.getElementById('ctf-prog').style.width='100%';
+  document.getElementById('ctf-lvl-txt').textContent='COMPLETE ✓';
+  addLog('ok','[SYS] All flags verified — root access granted');
+  addLog('info','[SYS] Unlocking secret section...');
+  document.getElementById('secret').classList.add('visible');
+  document.getElementById('secret').scrollIntoView({behavior:'smooth',block:'center'});
+  document.querySelector('.nav-links').insertAdjacentHTML('beforeend','<li><a href="#secret" style="color:var(--p)">secret</a></li>');
+}
+
+function spawnConfetti(){
+  const colors=['#00ff9f','#00e5ff','#ff2e5b','#f5c518','#bf80ff'];
+  for(let i=0;i<40;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left=Math.random()*100+'vw';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDelay=Math.random()*.6+'s';
+    el.style.borderRadius=Math.random()>.5?'50%':'1px';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2000);
+  }
+}
+
+initCTF();
+if(ctfStep>=CHALLENGES.length)document.getElementById('secret').classList.add('visible');
+
+// ── SCROLL REVEAL ──
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// ── NAV ACTIVE ──
+const sections=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{
+  let cur2='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-200)cur2=s.id;});
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    const active=a.getAttribute('href')==='#'+cur2;
+    a.classList.toggle('active',active);
+  });
+});
+</script>
+</body>
 </html>
