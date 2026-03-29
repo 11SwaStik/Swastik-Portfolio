@@ -3,730 +3,684 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swastik | kirmada — Cybersecurity</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Swastik Kirmada — Cybersecurity</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --g:#00ff9f;
-  --r:#ff2e5b;
-  --c:#00e5ff;
-  --y:#f5c518;
-  --p:#bf80ff;
-  --dim:#060609;
-  --s1:#0b0b14;
-  --s2:#10101f;
-  --s3:#16162a;
-  --border:#1f1f38;
-  --text:#b0b0cc;
+  --g:#00ff87;
+  --bg:#080808;
+  --s:#0e0e0e;
+  --b:#1a1a1a;
+  --b2:#242424;
+  --t:#e8e8e8;
+  --tm:#888;
+  --td:#444;
   --mono:'Share Tech Mono',monospace;
-  --head:'Orbitron',sans-serif;
-  --body:'Rajdhani',sans-serif;
+  --sans:'Syne',sans-serif;
 }
 html{scroll-behavior:smooth;}
-body{background:var(--dim);color:var(--text);font-family:var(--body);overflow-x:hidden;cursor:none;font-size:16px;}
+body{background:var(--bg);color:var(--t);font-family:var(--mono);overflow-x:hidden;cursor:none;}
 
-/* CANVAS LAYERS */
-#snake-canvas,#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;}
-#bg-canvas{z-index:0;}
-#snake-canvas{z-index:10;}
+#c{position:fixed;width:8px;height:8px;background:var(--g);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s;}
+#cr{position:fixed;width:28px;height:28px;border:1px solid rgba(0,255,135,.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .15s,height .15s;}
+body.hov #c{transform:translate(-50%,-50%) scale(2.4);}
+body.hov #cr{width:48px;height:48px;}
 
-/* SCANLINES */
-.scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);pointer-events:none;z-index:9;animation:flicker 8s infinite;}
-@keyframes flicker{0%,98%,100%{opacity:1;}99%{opacity:.92;}}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px);pointer-events:none;z-index:9000;}
 
-/* CURSOR */
-#cur{position:fixed;width:10px;height:10px;background:var(--g);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .1s,height .1s,background .1s;mix-blend-mode:screen;}
-#cur-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(0,255,159,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+#snd{position:fixed;bottom:2rem;right:2rem;z-index:5000;background:var(--s);border:1px solid var(--b2);width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;font-family:var(--mono);font-size:.68rem;color:var(--td);}
+#snd:hover{border-color:var(--g);color:var(--g);}
+#snd.on{border-color:var(--g);color:var(--g);}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;width:100%;z-index:1000;padding:.9rem 3rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(31,31,56,.8);background:rgba(6,6,9,.85);backdrop-filter:blur(12px);}
-.nav-logo{font-family:var(--head);font-size:1rem;color:var(--g);letter-spacing:4px;text-decoration:none;display:flex;align-items:center;gap:.6rem;}
-.nav-logo-slash{color:var(--r);margin:0 .1rem;}
-.nav-links{display:flex;gap:1.8rem;list-style:none;}
-.nav-links a{font-family:var(--mono);font-size:.7rem;color:var(--text);text-decoration:none;letter-spacing:2px;transition:color .2s;padding:.2rem 0;border-bottom:1px solid transparent;}
-.nav-links a:hover,.nav-links a.active{color:var(--g);border-bottom-color:var(--g);}
-.nav-right{display:flex;align-items:center;gap:1.2rem;}
-.nav-status{font-family:var(--mono);font-size:.6rem;color:var(--g);display:flex;align-items:center;gap:.4rem;}
-.blink-dot{width:5px;height:5px;background:var(--g);border-radius:50%;animation:bdot 1.3s infinite;}
-@keyframes bdot{0%,100%{opacity:1;}50%{opacity:0;}}
-.ctf-nav-badge{font-family:var(--mono);font-size:.6rem;padding:.25rem .7rem;border:1px solid var(--y);color:var(--y);letter-spacing:1px;cursor:pointer;transition:all .2s;}
-.ctf-nav-badge:hover{background:var(--y);color:#000;}
+nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;justify-content:space-between;align-items:center;padding:.9rem 4rem;background:rgba(8,8,8,.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--b);}
+.logo{font-family:var(--sans);font-size:1rem;font-weight:800;color:#fff;text-decoration:none;letter-spacing:1px;}
+.logo em{color:var(--g);font-style:normal;}
+.nl{display:flex;gap:2.5rem;list-style:none;}
+.nl a{font-size:.66rem;color:var(--tm);text-decoration:none;letter-spacing:3px;transition:color .2s;}
+.nl a:hover,.nl a.on{color:var(--g);}
+.nd{display:flex;align-items:center;gap:.6rem;font-size:.58rem;color:var(--td);}
+.ndd{width:5px;height:5px;background:var(--g);border-radius:50%;animation:pp 2s infinite;}
+@keyframes pp{0%,100%{box-shadow:0 0 0 0 rgba(0,255,135,.4);}50%{box-shadow:0 0 0 4px rgba(0,255,135,0);}}
 
-/* ── HERO ── */
-#hero{height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;z-index:1;}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,159,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,159,.03) 1px,transparent 1px);background-size:50px 50px;animation:gs 25s linear infinite;z-index:0;}
-@keyframes gs{0%{background-position:0 0;}100%{background-position:50px 50px;}}
-.hero-radial{position:absolute;width:800px;height:800px;background:radial-gradient(circle,rgba(0,255,159,.055) 0%,transparent 65%);left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;}
-.hero-content{text-align:center;position:relative;z-index:2;}
-.hero-eyebrow{font-family:var(--mono);font-size:.65rem;color:var(--r);letter-spacing:5px;margin-bottom:1.2rem;opacity:.9;}
-.hero-name{font-family:var(--head);font-size:clamp(3.5rem,9vw,8rem);font-weight:900;line-height:1;letter-spacing:6px;color:#fff;position:relative;display:inline-block;}
-.hero-name .g{color:var(--g);}
-.hero-name-glitch{position:relative;display:inline-block;}
-.hero-name-glitch::before,.hero-name-glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;overflow:hidden;}
-.hero-name-glitch::before{color:var(--c);animation:gh1 5s infinite;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);}
-.hero-name-glitch::after{color:var(--r);animation:gh2 5s infinite;clip-path:polygon(0 55%,100% 55%,100% 75%,0 75%);}
-@keyframes gh1{0%,88%,100%{transform:translateX(0);}89%{transform:translateX(-4px);}91%{transform:translateX(3px);}93%{transform:translateX(0);}}
-@keyframes gh2{0%,88%,100%{transform:translateX(0);}90%{transform:translateX(4px);}92%{transform:translateX(-2px);}94%{transform:translateX(0);}}
-.hero-alias{font-family:var(--mono);font-size:1rem;color:var(--c);margin-top:.6rem;letter-spacing:7px;}
-.hero-tagline{font-family:var(--body);font-size:1.15rem;color:var(--text);margin-top:1.6rem;letter-spacing:1.5px;font-weight:300;line-height:1.6;}
-.hero-tagline .hl{color:var(--g);font-weight:600;}
-.hero-cta{display:flex;gap:1rem;justify-content:center;margin-top:2.8rem;flex-wrap:wrap;}
-.btn-hex{font-family:var(--mono);font-size:.72rem;padding:.8rem 2.2rem;background:transparent;letter-spacing:2px;cursor:pointer;transition:all .2s;position:relative;border:none;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);}
-.btn-hex::before{content:'';position:absolute;inset:0;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);}
-.btn-hex.green{color:var(--g);}
-.btn-hex.green::before{border:1px solid var(--g);}
-.btn-hex.green:hover{background:var(--g);color:#000;}
-.btn-hex.red{color:var(--r);}
-.btn-hex.red::before{border:1px solid var(--r);}
-.btn-hex.red:hover{background:var(--r);color:#fff;}
-.hero-scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.4rem;opacity:.35;}
-.scroll-line{width:1px;height:50px;background:linear-gradient(var(--g),transparent);animation:sp 2.2s ease-in-out infinite;}
-@keyframes sp{0%,100%{opacity:.3;}50%{opacity:.8;}}
-.scroll-txt{font-family:var(--mono);font-size:.55rem;letter-spacing:3px;color:var(--g);}
+#hero{min-height:100vh;display:flex;align-items:center;padding:0 4rem;position:relative;overflow:hidden;}
+#hcv{position:absolute;inset:0;z-index:0;}
+.hi{position:relative;z-index:1;max-width:900px;}
+.hpre{font-size:.63rem;color:var(--g);letter-spacing:4px;margin-bottom:1.5rem;opacity:.7;}
+.hpre span{color:var(--td);}
+.hh1{font-family:var(--sans);font-size:clamp(3.8rem,8vw,7.5rem);font-weight:800;line-height:.95;letter-spacing:-1px;color:#fff;margin-bottom:1.5rem;}
+.hh1 .ng{display:block;color:var(--g);position:relative;}
+.hh1 .ng::after{content:attr(data-t);position:absolute;left:2px;top:0;color:rgba(0,255,135,.15);animation:gsh 7s infinite;}
+@keyframes gsh{0%,93%,100%{clip-path:none;transform:none;}94%{clip-path:polygon(0 25%,100% 25%,100% 45%,0 45%);transform:translateX(-3px);}96%{clip-path:polygon(0 58%,100% 58%,100% 78%,0 78%);transform:translateX(2px);}98%{clip-path:none;transform:none;}}
+.hsub{font-size:1rem;color:var(--tm);line-height:1.9;max-width:560px;font-family:var(--sans);font-weight:400;}
+.hsub strong{color:var(--t);font-weight:700;}
+.hact{display:flex;align-items:center;gap:1.5rem;margin-top:2.5rem;flex-wrap:wrap;}
+.btn{font-size:.66rem;letter-spacing:3px;padding:.75rem 2rem;cursor:pointer;transition:all .2s;font-family:var(--mono);border:none;}
+.btnp{background:var(--g);color:#000;}
+.btnp:hover{background:#fff;box-shadow:0 0 30px rgba(0,255,135,.2);}
+.btns{background:transparent;border:1px solid var(--b2);color:var(--tm);}
+.btns:hover{border-color:var(--g);color:var(--g);}
+.hscroll{position:absolute;bottom:2.5rem;left:4rem;display:flex;align-items:center;gap:.8rem;font-size:.58rem;color:var(--td);letter-spacing:3px;z-index:1;}
+.hsl{width:40px;height:1px;background:linear-gradient(90deg,var(--g),transparent);}
 
-/* ── BOOT TERMINAL ── */
-#boot{padding:5rem 3rem;max-width:860px;margin:0 auto;position:relative;z-index:1;}
-.term{background:var(--s1);border:1px solid var(--border);border-radius:3px;overflow:hidden;box-shadow:0 0 60px rgba(0,255,159,.04);}
-.term-bar{background:#111120;padding:.55rem 1rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid var(--border);}
-.td{width:11px;height:11px;border-radius:50%;}
-.td.r{background:#ff5f56;} .td.y{background:#ffbd2e;} .td.g{background:#27c93f;}
-.term-title{font-family:var(--mono);font-size:.65rem;color:#444;margin-left:.4rem;letter-spacing:1px;}
-.term-body{padding:1.5rem 1.8rem;font-family:var(--mono);font-size:.82rem;line-height:2.1;}
-.tl{display:block;white-space:pre;}
-.tp{color:var(--g);}
-.tk{color:var(--c);}
-.tv{color:var(--y);}
-.to{color:var(--text);}
-.tg{color:var(--g);}
-.tr{color:var(--r);}
-.tcur{display:inline-block;width:7px;height:13px;background:var(--g);animation:bdot .9s infinite;vertical-align:middle;}
+.sec{padding:8rem 4rem;position:relative;}
+.si{max-width:1100px;margin:0 auto;}
+.sh2{margin-bottom:4rem;}
+.sl2{font-size:.58rem;color:var(--g);letter-spacing:5px;display:block;margin-bottom:.5rem;}
+.st2{font-family:var(--sans);font-size:clamp(2rem,4vw,3.2rem);font-weight:800;color:#fff;letter-spacing:-1px;line-height:1;}
+.st2 span{color:var(--b2);}
+.sdiv{width:32px;height:2px;background:var(--g);margin-top:1.1rem;}
 
-/* ── SECTIONS ── */
-.sec{padding:7rem 3rem;position:relative;z-index:1;}
-.sec-inner{max-width:1100px;margin:0 auto;}
-.sec-label{font-family:var(--mono);font-size:.6rem;color:var(--r);letter-spacing:5px;display:block;margin-bottom:.5rem;}
-.sec-title{font-family:var(--head);font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;color:#fff;letter-spacing:3px;}
-.sec-title .dim{color:var(--g);opacity:.35;}
-.sec-line{width:50px;height:1px;background:linear-gradient(90deg,var(--g),transparent);margin-top:.9rem;margin-bottom:3.5rem;}
+#about{background:var(--s);}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+.ap{font-family:var(--sans);font-size:1rem;color:var(--tm);line-height:1.9;margin-bottom:1rem;font-weight:400;}
+.ap strong{color:var(--t);font-weight:700;}
+.ap .ac{color:var(--g);}
+.kvb{margin-top:2rem;}
+.kv{display:flex;border-bottom:1px solid var(--b);padding:.65rem 0;font-size:.7rem;}
+.kvk{color:var(--g);width:110px;flex-shrink:0;letter-spacing:1px;}
+.kvv{color:var(--t);}
+.tbox{background:var(--bg);border:1px solid var(--b);margin-top:2rem;}
+.tbar{background:var(--b);padding:.5rem 1rem;display:flex;align-items:center;gap:.45rem;}
+.td3{width:10px;height:10px;border-radius:50%;}
+.td3.r{background:#ff5f57;}.td3.y{background:#febc2e;}.td3.gg{background:#28c840;}
+.tcont{padding:1.2rem 1.4rem;font-size:.74rem;line-height:2.1;min-height:190px;}
+.tl2{display:block;}
+.tp2{color:var(--g);}
+.td4{color:var(--tm);}
+.tv2{color:#fff;}
+.tcur{display:inline-block;width:7px;height:13px;background:var(--g);animation:bc .9s step-end infinite;vertical-align:middle;}
+@keyframes bc{50%{opacity:0;}}
 
-/* ── ABOUT ── */
-.about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:start;}
-.about-p{font-size:1.05rem;line-height:2;color:var(--text);margin-bottom:1.1rem;font-weight:300;}
-.about-p .hl{color:var(--g);font-weight:600;}
-.about-p .hlr{color:var(--r);font-weight:600;}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:2.2rem;}
-.stat{background:var(--s1);border:1px solid var(--border);padding:1.1rem 1.3rem;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);position:relative;}
-.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--g),transparent);}
-.stat-n{font-family:var(--head);font-size:1.8rem;font-weight:900;color:var(--g);}
-.stat-l{font-family:var(--mono);font-size:.58rem;color:var(--text);letter-spacing:2px;margin-top:.2rem;}
-.role-card{background:var(--s1);border:1px solid var(--border);padding:2rem;position:relative;margin-bottom:1.5rem;}
-.role-card::before{content:'CURRENT DEPLOYMENT';position:absolute;top:-9px;left:1rem;font-family:var(--mono);font-size:.55rem;color:var(--g);background:var(--dim);padding:0 .5rem;letter-spacing:2px;}
-.role-co{font-family:var(--head);font-size:1.2rem;color:var(--c);letter-spacing:3px;}
-.role-t{font-size:.95rem;color:var(--text);margin-top:.3rem;font-weight:300;}
-.role-badge{display:inline-block;font-family:var(--mono);font-size:.58rem;padding:.3rem .8rem;border:1px solid var(--g);color:var(--g);letter-spacing:2px;margin-top:.8rem;}
-.interests{margin-top:1.5rem;}
-.int-item{font-family:var(--mono);font-size:.72rem;color:var(--text);padding:.45rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem;letter-spacing:.5px;}
-.int-item::before{content:'▸';color:var(--g);flex-shrink:0;}
+.slayout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b);}
+.sblk{background:var(--bg);padding:2rem;transition:background .2s;}
+.sblk:hover{background:var(--s);}
+.sbh{font-size:.58rem;color:var(--g);letter-spacing:4px;margin-bottom:1.1rem;}
+.stags{display:flex;flex-wrap:wrap;gap:.45rem;}
+.tag{font-size:.63rem;padding:.28rem .75rem;border:1px solid var(--b2);color:var(--td);letter-spacing:.5px;transition:all .2s;cursor:default;}
+.tag:hover{border-color:var(--g);color:var(--g);}
+.pstrip{margin-top:1px;background:var(--bg);padding:2rem;}
+.plbl{font-size:.58rem;color:var(--g);letter-spacing:4px;margin-bottom:1.4rem;}
+.pipeline{display:flex;align-items:center;flex-wrap:nowrap;overflow-x:auto;padding-bottom:.5rem;gap:0;}
+.pipeline::-webkit-scrollbar{height:2px;}
+.pipeline::-webkit-scrollbar-thumb{background:var(--b2);}
+.pstage{flex-shrink:0;background:var(--s);border:1px solid var(--b2);padding:.65rem 1.1rem;font-size:.6rem;letter-spacing:1px;color:var(--tm);transition:all .25s;cursor:default;position:relative;}
+.pstage:hover,.pstage.act{background:rgba(0,255,135,.06);border-color:var(--g);color:var(--g);}
+.pstage.act::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--g);}
+.parr{flex-shrink:0;font-size:.65rem;color:var(--td);padding:0 .3rem;}
+#ptip{font-size:.63rem;color:var(--tm);margin-top:.8rem;min-height:1.1rem;letter-spacing:.5px;}
 
-/* ── SKILLS ── */
-#skills{background:var(--s1);}
-.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;}
-.skill-cat{background:var(--dim);border:1px solid var(--border);padding:1.4rem 1.6rem;position:relative;overflow:hidden;transition:border-color .25s;}
-.skill-cat:hover{border-color:rgba(0,255,159,.3);}
-.skill-cat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0;transition:opacity .25s;}
-.skill-cat:hover::after{opacity:1;}
-.skill-cat-h{font-family:var(--mono);font-size:.6rem;color:var(--g);letter-spacing:3px;margin-bottom:1rem;}
-.tags{display:flex;flex-wrap:wrap;gap:.45rem;}
-.tag{font-family:var(--mono);font-size:.65rem;padding:.28rem .75rem;border:1px solid var(--border);color:var(--text);letter-spacing:.5px;transition:all .2s;cursor:default;}
-.tag:hover{border-color:var(--g);color:var(--g);background:rgba(0,255,159,.04);}
-.tag.r:hover{border-color:var(--r);color:var(--r);}
-.tag.c:hover{border-color:var(--c);color:var(--c);}
-.tag.p:hover{border-color:var(--p);color:var(--p);}
+#projects{background:var(--s);}
+.plist{display:flex;flex-direction:column;gap:1px;background:var(--b);}
+.prow{background:var(--bg);display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:2rem;padding:1.8rem 2rem;transition:background .25s;cursor:default;position:relative;overflow:hidden;}
+.prow::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--g);transition:width .3s;}
+.prow:hover{background:var(--s);}
+.prow:hover::before{width:2px;}
+.pnum{font-size:.58rem;color:var(--td);letter-spacing:2px;}
+.pname{font-family:var(--sans);font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:.35rem;}
+.pdesc{font-size:.7rem;color:var(--tm);line-height:1.7;}
+.pchips{display:flex;gap:.38rem;flex-wrap:wrap;margin-top:.65rem;}
+.chip{font-size:.56rem;padding:.2rem .5rem;border:1px solid var(--b2);color:var(--td);}
+.pmeta{text-align:right;flex-shrink:0;}
+.ptype{font-size:.56rem;color:var(--g);letter-spacing:2px;display:block;margin-bottom:.3rem;}
+.parrow{font-size:.85rem;color:var(--td);transition:color .2s;}
+.prow:hover .parrow{color:var(--g);}
 
-/* ── PROJECTS ── */
-.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.3rem;}
-.proj{background:var(--s1);border:1px solid var(--border);padding:1.8rem;position:relative;overflow:hidden;transition:border-color .3s,transform .25s;cursor:default;}
-.proj::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;transform:scaleY(0);transform-origin:top;transition:transform .35s;}
-.proj.g-acc::before{background:var(--g);}
-.proj.r-acc::before{background:var(--r);}
-.proj.c-acc::before{background:var(--c);}
-.proj.p-acc::before{background:var(--p);}
-.proj:hover{transform:translateY(-5px);}
-.proj.g-acc:hover{border-color:rgba(0,255,159,.4);}
-.proj.r-acc:hover{border-color:rgba(255,46,91,.4);}
-.proj.c-acc:hover{border-color:rgba(0,229,255,.4);}
-.proj.p-acc:hover{border-color:rgba(191,128,255,.4);}
-.proj:hover::before{transform:scaleY(1);}
-.proj-id{font-family:var(--mono);font-size:.58rem;color:var(--g);letter-spacing:2px;margin-bottom:.7rem;opacity:.6;}
-.proj-name{font-family:var(--head);font-size:.95rem;color:#fff;letter-spacing:2px;margin-bottom:.7rem;}
-.proj-desc{font-size:.9rem;color:var(--text);line-height:1.75;font-weight:300;margin-bottom:1.1rem;}
-.proj-tags{display:flex;flex-wrap:wrap;gap:.35rem;}
-.proj-tag{font-family:var(--mono);font-size:.58rem;padding:.2rem .55rem;background:rgba(0,255,159,.05);border:1px solid rgba(0,255,159,.18);color:var(--g);letter-spacing:.5px;}
+.dsogrid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.spanel{background:var(--s);border:1px solid var(--b2);overflow:hidden;}
+.sph{background:var(--b);padding:.75rem 1.2rem;display:flex;justify-content:space-between;align-items:center;font-size:.6rem;letter-spacing:2px;}
+.spt{color:var(--g);}
+.sps{color:var(--tm);}
+.tlist{}
+.ti{display:flex;align-items:center;gap:1rem;padding:.8rem 1.2rem;border-bottom:1px solid var(--b);font-size:.66rem;transition:background .2s;}
+.ti:hover{background:rgba(0,255,135,.025);}
+.ti:last-child{border-bottom:none;}
+.tdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.tdot.bl{background:var(--g);}
+.tdot.wn{background:#f5c518;}
+.tdot.cr{background:#ff4444;animation:pp 1.1s infinite;}
+.tname{flex:1;color:var(--t);}
+.tstat{font-size:.58rem;letter-spacing:1px;}
+.tstat.b{color:var(--g);}
+.tstat.w{color:#f5c518;}
+.tstat.c{color:#ff4444;}
+.dtools{margin-top:1.6rem;}
+.dtrow{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--b);font-size:.66rem;}
+.dtn{color:var(--tm);}
+.dtbar{flex:1;height:2px;background:var(--b2);margin:0 1rem;overflow:hidden;}
+.dtfill{height:100%;background:var(--g);width:0;transition:width 1.2s ease;}
+.dtp{font-size:.58rem;color:var(--g);min-width:28px;text-align:right;}
 
-/* ── CTF ── */
-#ctf{background:var(--s1);}
-.ctf-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:3rem;align-items:start;}
-.ctf-panel{background:var(--dim);border:1px solid var(--border);padding:2rem;position:relative;}
-.ctf-panel::before{content:'CTF TERMINAL';position:absolute;top:-9px;left:1rem;font-family:var(--mono);font-size:.55rem;color:var(--r);background:var(--s1);padding:0 .5rem;letter-spacing:2px;}
-.ctf-status-row{display:flex;align-items:center;gap:.8rem;margin-bottom:1.8rem;}
-.ctf-lvl{font-family:var(--mono);font-size:.7rem;color:var(--y);letter-spacing:2px;}
-.progress-track{flex:1;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--g),var(--c));transition:width .5s ease;border-radius:2px;}
-.ctf-challenge-q{font-family:var(--mono);font-size:.8rem;color:var(--c);line-height:1.7;margin-bottom:1.4rem;padding:.8rem;background:rgba(0,229,255,.04);border-left:2px solid var(--c);}
-.ctf-input-row{display:flex;gap:.6rem;}
-.ctf-input{flex:1;font-family:var(--mono);font-size:.75rem;background:var(--s1);border:1px solid var(--border);color:var(--g);padding:.6rem .9rem;outline:none;transition:border-color .2s;}
-.ctf-input:focus{border-color:var(--g);}
-.ctf-submit{font-family:var(--mono);font-size:.7rem;padding:.6rem 1.2rem;background:transparent;border:1px solid var(--g);color:var(--g);cursor:pointer;letter-spacing:1px;transition:all .2s;white-space:nowrap;}
-.ctf-submit:hover{background:var(--g);color:#000;}
-.ctf-msg{font-family:var(--mono);font-size:.7rem;margin-top:.8rem;padding:.4rem .6rem;letter-spacing:1px;}
-.ctf-msg.ok{color:var(--g);background:rgba(0,255,159,.07);border-left:2px solid var(--g);}
-.ctf-msg.err{color:var(--r);background:rgba(255,46,91,.07);border-left:2px solid var(--r);}
-.ctf-complete{text-align:center;padding:2rem 1rem;}
-.ctf-complete-title{font-family:var(--head);font-size:1.1rem;color:var(--g);letter-spacing:3px;margin-bottom:.8rem;}
-.ctf-complete-sub{font-family:var(--mono);font-size:.7rem;color:var(--text);line-height:1.8;letter-spacing:1px;}
-.ctf-log-panel{background:var(--dim);border:1px solid var(--border);padding:1.8rem;position:relative;}
-.ctf-log-panel::before{content:'SYSTEM LOG';position:absolute;top:-9px;left:1rem;font-family:var(--mono);font-size:.55rem;color:var(--g);background:var(--s1);padding:0 .5rem;letter-spacing:2px;}
-.ctf-log-body{font-family:var(--mono);font-size:.72rem;line-height:2;max-height:320px;overflow-y:auto;}
-.ctf-log-body::-webkit-scrollbar{width:3px;}
-.ctf-log-body::-webkit-scrollbar-thumb{background:var(--border);}
-.log-line{display:block;}
-.log-line.ok{color:var(--g);}
-.log-line.warn{color:var(--y);}
-.log-line.err{color:var(--r);}
-.log-line.info{color:var(--c);}
-.log-line.dim{color:rgba(176,176,204,.4);}
-.ctf-platforms{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.5rem;}
-.ctf-plat{font-family:var(--mono);font-size:.6rem;padding:.45rem 1rem;border:1px solid var(--border);color:var(--text);letter-spacing:2px;transition:all .2s;}
-.ctf-plat:hover{border-color:var(--y);color:var(--y);}
+#ctf{background:var(--s);}
+.ctwrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;}
+.ctprog{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+.ctlbl{font-size:.63rem;color:var(--g);letter-spacing:2px;white-space:nowrap;}
+.ptrak{flex:1;height:2px;background:var(--b2);}
+.pfill{height:100%;background:var(--g);transition:width .5s;width:0%;}
+.ctbox{background:var(--bg);border:1px solid var(--b2);padding:1.6rem;}
+.ctql{font-size:.56rem;color:var(--tm);letter-spacing:2px;margin-bottom:.7rem;}
+.ctq{font-size:.76rem;color:var(--t);line-height:1.7;padding:.75rem;background:rgba(0,255,135,.04);border-left:2px solid var(--g);margin-bottom:1.1rem;}
+.ctrow{display:flex;gap:.5rem;}
+.ctinp{flex:1;background:var(--s);border:1px solid var(--b2);color:var(--g);font-family:var(--mono);font-size:.7rem;padding:.62rem .9rem;outline:none;transition:border-color .2s;}
+.ctinp:focus{border-color:var(--g);}
+.ctsub{background:transparent;border:1px solid var(--g);color:var(--g);font-family:var(--mono);font-size:.62rem;padding:.62rem 1.1rem;cursor:pointer;letter-spacing:2px;transition:all .2s;white-space:nowrap;}
+.ctsub:hover{background:var(--g);color:#000;}
+.ctfb{font-size:.63rem;margin-top:.65rem;padding:.38rem .65rem;letter-spacing:1px;display:none;}
+.ctfb.ok{color:var(--g);background:rgba(0,255,135,.06);border-left:2px solid var(--g);}
+.ctfb.err{color:#ff4444;background:rgba(255,68,68,.06);border-left:2px solid #ff4444;}
+.ctdone{text-align:center;padding:2rem 1rem;}
+.ctdh{font-family:var(--sans);font-size:1.1rem;font-weight:800;color:var(--g);letter-spacing:2px;margin-bottom:.5rem;}
+.ctds{font-size:.66rem;color:var(--tm);line-height:1.9;}
+.ctplats{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.2rem;}
+.ctplat{font-size:.56rem;padding:.38rem .85rem;border:1px solid var(--b2);color:var(--td);letter-spacing:2px;transition:all .2s;}
+.ctplat:hover{border-color:var(--g);color:var(--g);}
+.logbox{background:var(--bg);border:1px solid var(--b2);}
+.lhdr{background:var(--b);padding:.55rem 1rem;font-size:.56rem;color:var(--tm);letter-spacing:2px;display:flex;justify-content:space-between;}
+.lbody{padding:.9rem 1.1rem;font-size:.66rem;line-height:2;max-height:280px;overflow-y:auto;}
+.lbody::-webkit-scrollbar{width:2px;}
+.lbody::-webkit-scrollbar-thumb{background:var(--b2);}
+.ll{display:block;}
+.ll.g{color:var(--g);}
+.ll.d{color:var(--td);}
+.ll.w{color:#f5c518;}
+.ll.e{color:#ff4444;}
+.ll.i{color:#666;}
 
-/* ── SECRET SECTION ── */
-#secret{display:none;padding:5rem 3rem;position:relative;z-index:1;}
-#secret.visible{display:block;}
-#secret .sec-inner{text-align:center;}
-.secret-box{background:var(--s1);border:1px solid rgba(191,128,255,.3);padding:3rem;max-width:700px;margin:0 auto;position:relative;box-shadow:0 0 60px rgba(191,128,255,.06);}
-.secret-box::before{content:'// ACCESS GRANTED';position:absolute;top:-9px;left:1rem;font-family:var(--mono);font-size:.55rem;color:var(--p);background:var(--dim);padding:0 .5rem;letter-spacing:2px;}
-.secret-title{font-family:var(--head);font-size:1.4rem;color:var(--p);letter-spacing:4px;margin-bottom:1rem;}
-.secret-text{font-family:var(--mono);font-size:.78rem;color:var(--text);line-height:2.2;letter-spacing:1px;}
-.secret-text .hl{color:var(--p);}
+#secret{display:none;text-align:center;padding:5rem 4rem;}
+#secret.on{display:block;}
+.sinr{max-width:580px;margin:0 auto;border:1px solid var(--b2);padding:3rem;position:relative;}
+.sinr::before{content:'// ROOT ACCESS';position:absolute;top:-8px;left:1.5rem;font-size:.53rem;color:var(--g);background:var(--bg);padding:0 .5rem;letter-spacing:3px;}
+.sh3{font-family:var(--sans);font-size:1.3rem;font-weight:800;color:var(--g);letter-spacing:3px;margin-bottom:1rem;}
+.st3{font-size:.73rem;color:var(--tm);line-height:2.3;}
+.st3 strong{color:var(--t);}
 
-/* ── CONTACT ── */
-#contact{text-align:center;}
-.contact-box{background:var(--s1);border:1px solid var(--border);padding:4rem 3rem;max-width:800px;margin:0 auto;position:relative;overflow:hidden;}
-.contact-box::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(0,255,159,.025) 0%,transparent 55%);pointer-events:none;}
-.contact-title{font-family:var(--head);font-size:1.3rem;color:#fff;letter-spacing:4px;margin-bottom:.7rem;}
-.contact-sub{font-family:var(--mono);font-size:.7rem;color:var(--text);opacity:.5;letter-spacing:1.5px;line-height:2;margin-bottom:2.5rem;}
-.contact-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
-.c-link{font-family:var(--mono);font-size:.7rem;padding:.75rem 1.6rem;border:1px solid var(--border);color:var(--text);text-decoration:none;letter-spacing:1.5px;transition:all .2s;display:flex;align-items:center;gap:.5rem;}
-.c-link:hover{border-color:var(--g);color:var(--g);}
-.c-link .ic{color:var(--g);font-size:.9rem;}
+#contact{background:var(--s);}
+.cinr{max-width:680px;margin:0 auto;text-align:center;}
+.ch{font-family:var(--sans);font-size:1.2rem;font-weight:800;color:#fff;letter-spacing:3px;margin-bottom:.6rem;}
+.csub{font-size:.66rem;color:var(--tm);letter-spacing:1.5px;line-height:2;margin-bottom:2.5rem;}
+.clinks{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;}
+.clink{font-size:.63rem;padding:.72rem 1.7rem;border:1px solid var(--b2);color:var(--tm);text-decoration:none;letter-spacing:2px;transition:all .2s;}
+.clink:hover{border-color:var(--g);color:var(--g);}
 
-/* ── FOOTER ── */
-footer{border-top:1px solid var(--border);padding:1.8rem 3rem;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
-.f-text{font-family:var(--mono);font-size:.58rem;color:var(--text);opacity:.35;letter-spacing:2px;}
-.f-text span{color:var(--g);opacity:1;}
+footer{border-top:1px solid var(--b);padding:1.5rem 4rem;display:flex;justify-content:space-between;}
+.ft{font-size:.56rem;color:var(--td);letter-spacing:2px;}
+.ft span{color:var(--g);}
 
-/* ── REVEAL ── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
-.reveal.in{opacity:1;transform:none;}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+.rv.in{opacity:1;transform:none;}
 
-/* ── RESPONSIVE ── */
+.cf{position:fixed;pointer-events:none;z-index:9990;font-size:9px;animation:cfall 1.3s ease-in forwards;}
+@keyframes cfall{0%{opacity:1;transform:translateY(0) rotate(0);}100%{opacity:0;transform:translateY(90px) rotate(400deg);}}
+
 @media(max-width:768px){
   nav{padding:.8rem 1.5rem;}
-  .nav-links{display:none;}
+  .nl{display:none;}
   .sec{padding:4rem 1.5rem;}
-  .about-grid,.ctf-grid{grid-template-columns:1fr;}
-  footer{flex-direction:column;gap:.8rem;text-align:center;}
-  .hero-name{font-size:3rem;}
-  #boot{padding:3rem 1.5rem;}
+  #hero{padding:0 1.5rem;}
+  .agrid,.slayout,.dsogrid,.ctwrap{grid-template-columns:1fr;}
+  .prow{grid-template-columns:1fr;gap:.7rem;}
+  .pmeta{text-align:left;}
+  footer{flex-direction:column;gap:.5rem;}
 }
-
-/* CONFETTI */
-.confetti-piece{position:fixed;top:-10px;width:8px;height:8px;border-radius:1px;pointer-events:none;z-index:9997;animation:cfetti 1.4s ease-in forwards;}
-@keyframes cfetti{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
 </style>
 </head>
 <body>
 
-<!-- BACKGROUND CANVAS -->
-<canvas id="bg-canvas"></canvas>
+<div id="c"></div>
+<div id="cr"></div>
+<button id="snd" onclick="toggleSound()" title="Toggle sound">OFF</button>
 
-<!-- CURSOR SNAKE CANVAS -->
-<canvas id="snake-canvas"></canvas>
-
-<!-- SCANLINES -->
-<div class="scanlines"></div>
-
-<!-- CURSOR -->
-<div id="cur"></div>
-<div id="cur-ring"></div>
-
-<!-- ── NAV ── -->
 <nav>
-  <a href="#hero" class="nav-logo">SW<span class="nav-logo-slash">/</span>K</a>
-  <ul class="nav-links">
+  <a href="#hero" class="logo">SW<em>.</em>K</a>
+  <ul class="nl">
     <li><a href="#about">about</a></li>
     <li><a href="#skills">skills</a></li>
     <li><a href="#projects">projects</a></li>
+    <li><a href="#devsecops">devsecops</a></li>
     <li><a href="#ctf">ctf</a></li>
     <li><a href="#contact">contact</a></li>
   </ul>
-  <div class="nav-right">
-    <button class="ctf-nav-badge" onclick="document.getElementById('ctf').scrollIntoView({behavior:'smooth'})">CTF CHALLENGE</button>
-    <div class="nav-status"><div class="blink-dot"></div>ONLINE</div>
-  </div>
+  <div class="nd"><div class="ndd"></div>ONLINE</div>
 </nav>
 
-<!-- ── HERO ── -->
+<!-- HERO -->
 <section id="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-radial"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">CYBERSECURITY SPECIALIST</div>
-    <h1 class="hero-name">
-      <span class="hero-name-glitch g" data-text="SWASTIK">SWASTIK</span>
+  <canvas id="hcv"></canvas>
+  <div class="hi">
+    <div class="hpre">ROOT@KIRMADA <span>~#</span></div>
+    <h1 class="hh1">
+      <span>SWASTIK</span>
+      <span class="ng" data-t="KIRMADA">KIRMADA</span>
     </h1>
-    <div class="hero-alias">// kirmada</div>
-    <p class="hero-tagline"><span class="hl">root access</span> to my sanity —<br>and everyone else's digital life.</p>
-    <div class="hero-cta">
-      <button class="btn-hex green" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">VIEW EXPLOITS</button>
-      <button class="btn-hex red" onclick="document.getElementById('ctf').scrollIntoView({behavior:'smooth'})">TRY THE CTF</button>
+    <p class="hsub">
+      <strong>Cybersecurity specialist.</strong> Red team &amp; blue team.<br>
+      DevSecOps engineer. Security educator.<br>
+      I break systems to understand them. Then I teach others.
+    </p>
+    <div class="hact">
+      <button class="btn btnp" onclick="s2('projects')">VIEW WORK</button>
+      <button class="btn btns" onclick="s2('ctf')">TRY THE CTF</button>
     </div>
   </div>
-  <div class="hero-scroll-hint">
-    <div class="scroll-txt">SCROLL</div>
-    <div class="scroll-line"></div>
-  </div>
+  <div class="hscroll"><div class="hsl"></div>SCROLL</div>
 </section>
 
-<!-- ── BOOT TERMINAL ── -->
-<div id="boot">
-  <div class="term reveal">
-    <div class="term-bar">
-      <div class="td r"></div><div class="td y"></div><div class="td g"></div>
-      <span class="term-title">kirmada@portfolio ~ whoami</span>
-    </div>
-    <div class="term-body" id="term-out"></div>
-  </div>
-</div>
-
-<!-- ── ABOUT ── -->
+<!-- ABOUT -->
 <section id="about" class="sec">
-  <div class="sec-inner">
-    <div class="reveal">
-      <span class="sec-label">// 01. ABOUT</span>
-      <h2 class="sec-title">WHO <span class="dim">AM I</span></h2>
-      <div class="sec-line"></div>
+  <div class="si">
+    <div class="sh2 rv">
+      <span class="sl2">// 01</span>
+      <h2 class="st2">ABOUT<span>.</span></h2>
+      <div class="sdiv"></div>
     </div>
-    <div class="about-grid reveal">
+    <div class="agrid rv">
       <div>
-        <p class="about-p">I'm <span class="hl">Swastik Kirmada</span> — a cybersecurity professional living at the intersection of <span class="hl">offense and defense</span>. I break systems to understand them, then teach others how to protect theirs.</p>
-        <p class="about-p">Currently a <span class="hlr">Subject Matter Expert in Cybersecurity at Scaler</span> — shaping how the next generation fights in the digital battlefield.</p>
-        <p class="about-p">My goal isn't just finding vulnerabilities — it's making <span class="hl">cybersecurity accessible</span> to everyone. Because the best firewall is an informed community.</p>
-        <div class="stats">
-          <div class="stat"><div class="stat-n">04</div><div class="stat-l">PROJECTS SHIPPED</div></div>
-          <div class="stat"><div class="stat-n">L7</div><div class="stat-l">WAF BUILT</div></div>
-          <div class="stat"><div class="stat-n">2+</div><div class="stat-l">YEARS IN FIELD</div></div>
-          <div class="stat"><div class="stat-n">∞</div><div class="stat-l">CURIOSITY</div></div>
+        <p class="ap">I'm <strong>Swastik</strong> — a cybersecurity professional operating across the full spectrum. Offensive red-team work, defensive blue-team ops, and DevSecOps pipelines.</p>
+        <p class="ap">Currently <span class="ac">Subject Matter Expert in Cybersecurity at Scaler</span>, shaping how the next generation understands digital defense.</p>
+        <p class="ap">My conviction: the best security isn't just technical — it's <strong>educated people</strong>. I teach, write, and build to make that happen.</p>
+        <div class="kvb">
+          <div class="kv"><span class="kvk">ROLE</span><span class="kvv">SME Cybersecurity @ Scaler</span></div>
+          <div class="kv"><span class="kvk">DOMAIN</span><span class="kvv">Offensive + Blue Team + DevSecOps</span></div>
+          <div class="kv"><span class="kvk">FOCUS</span><span class="kvv">VAPT · SIEM · Cloud Security · GRC</span></div>
+          <div class="kv"><span class="kvk">STATUS</span><span class="kvv" style="color:var(--g)">ACTIVE</span></div>
         </div>
       </div>
       <div>
-        <div class="role-card">
-          <div class="role-co">SCALER</div>
-          <div class="role-t">Subject Matter Expert — Cybersecurity</div>
-          <div class="role-badge">● ACTIVE</div>
-          <div class="interests">
-            <div class="int-item">Offensive Security & Pen Testing</div>
-            <div class="int-item">Blue Teaming & Cyber Defense</div>
-            <div class="int-item">Security Education & Awareness</div>
-            <div class="int-item">Web Application Security</div>
-            <div class="int-item">Network Security & SIEM</div>
-          </div>
+        <div class="tbox">
+          <div class="tbar"><div class="td3 r"></div><div class="td3 y"></div><div class="td3 gg"></div></div>
+          <div class="tcont" id="tout"></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── SKILLS ── -->
+<!-- SKILLS -->
 <section id="skills" class="sec">
-  <div class="sec-inner">
-    <div class="reveal">
-      <span class="sec-label">// 02. ARSENAL</span>
-      <h2 class="sec-title">SKILLS <span class="dim">& TOOLS</span></h2>
-      <div class="sec-line"></div>
+  <div class="si">
+    <div class="sh2 rv">
+      <span class="sl2">// 02</span>
+      <h2 class="st2">ARSENAL<span>.</span></h2>
+      <div class="sdiv"></div>
     </div>
-    <div class="skills-grid reveal">
-      <div class="skill-cat">
-        <div class="skill-cat-h">LANGUAGES</div>
-        <div class="tags"><span class="tag">Python</span><span class="tag">Java</span><span class="tag">C++</span><span class="tag">Shell Scripting</span></div>
+    <div class="slayout rv">
+      <div class="sblk">
+        <div class="sbh">LANGUAGES</div>
+        <div class="stags"><span class="tag">Python</span><span class="tag">Java</span><span class="tag">C++</span><span class="tag">Shell Scripting</span></div>
       </div>
-      <div class="skill-cat">
-        <div class="skill-cat-h">SECURITY TOOLS</div>
-        <div class="tags"><span class="tag r">Burp Suite</span><span class="tag r">Metasploit</span><span class="tag r">Nmap</span><span class="tag r">Wireshark</span><span class="tag r">Snort</span><span class="tag r">Splunk</span></div>
+      <div class="sblk">
+        <div class="sbh">SECURITY TOOLS</div>
+        <div class="stags"><span class="tag">Burp Suite</span><span class="tag">Metasploit</span><span class="tag">Nmap</span><span class="tag">Wireshark</span><span class="tag">Snort</span><span class="tag">Splunk</span></div>
       </div>
-      <div class="skill-cat">
-        <div class="skill-cat-h">CLOUD & DEVSECOPS</div>
-        <div class="tags"><span class="tag c">AWS</span><span class="tag c">Docker Security</span><span class="tag c">Kubernetes Security</span></div>
+      <div class="sblk">
+        <div class="sbh">CLOUD & DEVSECOPS</div>
+        <div class="stags"><span class="tag">AWS</span><span class="tag">Docker Security</span><span class="tag">Kubernetes Security</span><span class="tag">CI/CD Hardening</span></div>
       </div>
-      <div class="skill-cat">
-        <div class="skill-cat-h">SECURITY DOMAINS</div>
-        <div class="tags"><span class="tag">Network Security</span><span class="tag">Web Security</span><span class="tag">Cloud Security</span><span class="tag">Linux Security</span><span class="tag">Privilege Escalation</span></div>
+      <div class="sblk">
+        <div class="sbh">CONCEPTS</div>
+        <div class="stags"><span class="tag">VAPT</span><span class="tag">SIEM</span><span class="tag">Cryptography</span><span class="tag">GRC</span><span class="tag">Privilege Escalation</span><span class="tag">Network Security</span><span class="tag">Cloud Security</span><span class="tag">Linux Security</span></div>
       </div>
-      <div class="skill-cat">
-        <div class="skill-cat-h">CONCEPTS</div>
-        <div class="tags"><span class="tag">VAPT</span><span class="tag">SIEM</span><span class="tag">Cryptography</span><span class="tag">GRC</span><span class="tag">Cyber Defense</span><span class="tag">Networking</span><span class="tag">OOP</span><span class="tag">DSA</span></div>
+    </div>
+    <div class="pstrip rv">
+      <div class="plbl">DEVSECOPS PIPELINE — HOVER EACH STAGE</div>
+      <div class="pipeline" id="pipeline">
+        <div class="pstage" data-info="Static analysis, secret scanning, code review gates">CODE</div>
+        <div class="parr">→</div>
+        <div class="pstage" data-info="SAST, SCA, dependency vulnerability scanning">SAST / SCA</div>
+        <div class="parr">→</div>
+        <div class="pstage" data-info="Container image scanning, Dockerfile hardening">BUILD</div>
+        <div class="parr">→</div>
+        <div class="pstage" data-info="DAST, API fuzzing, integration security tests">DAST</div>
+        <div class="parr">→</div>
+        <div class="pstage" data-info="Terraform/IaC scanning, Kubernetes policy enforcement">IAC SCAN</div>
+        <div class="parr">→</div>
+        <div class="pstage" data-info="Image signing, SBOM generation, policy gates">SIGN</div>
+        <div class="parr">→</div>
+        <div class="pstage" data-info="Runtime security, WAF, network segmentation, RBAC">RUNTIME</div>
+        <div class="parr">→</div>
+        <div class="pstage act" data-info="SIEM ingestion, alerting, threat detection, IR">MONITOR</div>
       </div>
-      <div class="skill-cat">
-        <div class="skill-cat-h">OTHER TOOLS</div>
-        <div class="tags"><span class="tag p">Atlassian Jira</span></div>
-      </div>
+      <div id="ptip"></div>
     </div>
   </div>
 </section>
 
-<!-- ── PROJECTS ── -->
+<!-- PROJECTS -->
 <section id="projects" class="sec">
-  <div class="sec-inner">
-    <div class="reveal">
-      <span class="sec-label">// 03. OPERATIONS</span>
-      <h2 class="sec-title">DEPLOYED <span class="dim">PROJECTS</span></h2>
-      <div class="sec-line"></div>
+  <div class="si">
+    <div class="sh2 rv">
+      <span class="sl2">// 03</span>
+      <h2 class="st2">PROJECTS<span>.</span></h2>
+      <div class="sdiv"></div>
     </div>
-    <div class="proj-grid reveal">
-      <div class="proj g-acc">
-        <div class="proj-id">PROJ_001 // SECURITY</div>
-        <div class="proj-name">GNI SHIELD</div>
-        <div class="proj-desc">Centralized application-context-aware firewall with integrated Layer 7 WAF. Admin dashboard enabling domain and IPv4 blocking. Browser extension blocks malicious sites across devices.</div>
-        <div class="proj-tags"><span class="proj-tag">Layer 7 WAF</span><span class="proj-tag">Firewall</span><span class="proj-tag">Browser Ext</span><span class="proj-tag">Dashboard</span></div>
+    <div class="plist rv">
+      <div class="prow">
+        <div class="pnum">01 —</div>
+        <div>
+          <div class="pname">GNI Shield</div>
+          <div class="pdesc">Centralized application-context-aware firewall with Layer 7 WAF. Admin dashboard for domain and IPv4 blocking. Browser extension blocks malicious sites across devices.</div>
+          <div class="pchips"><span class="chip">Layer 7 WAF</span><span class="chip">Firewall</span><span class="chip">Browser Ext</span><span class="chip">Dashboard</span></div>
+        </div>
+        <div class="pmeta"><span class="ptype">SECURITY</span><span class="parrow">↗</span></div>
       </div>
-      <div class="proj r-acc">
-        <div class="proj-id">PROJ_002 // EDTECH</div>
-        <div class="proj-name">EDUTECH PLATFORM</div>
-        <div class="proj-desc">Live educational platform reducing video search time by 70–80%. Interactive quiz module boosted learning engagement by 40%. Built for scale and real users.</div>
-        <div class="proj-tags"><span class="proj-tag">Live</span><span class="proj-tag">EdTech</span><span class="proj-tag">Quiz Engine</span><span class="proj-tag">+40% Engage</span></div>
+      <div class="prow">
+        <div class="pnum">02 —</div>
+        <div>
+          <div class="pname">EduTech Platform</div>
+          <div class="pdesc">Live educational platform reducing video search time by 70–80%. Interactive quiz module improved engagement by 40%.</div>
+          <div class="pchips"><span class="chip">Live</span><span class="chip">EdTech</span><span class="chip">Quiz Engine</span><span class="chip">+40% Engage</span></div>
+        </div>
+        <div class="pmeta"><span class="ptype">EDUCATION</span><span class="parrow">↗</span></div>
       </div>
-      <div class="proj c-acc">
-        <div class="proj-id">PROJ_003 // OFFENSIVE</div>
-        <div class="proj-name">HASH CRACKER</div>
-        <div class="proj-desc">Linux-based multi-algorithm password cracking tool. Cracks hashes in under 5 minutes. Supports MD5, SHA-1, SHA-256, SHA-384, and SHA-512.</div>
-        <div class="proj-tags"><span class="proj-tag">MD5</span><span class="proj-tag">SHA-256</span><span class="proj-tag">SHA-512</span><span class="proj-tag">Linux</span></div>
+      <div class="prow">
+        <div class="pnum">03 —</div>
+        <div>
+          <div class="pname">Hash Cracker</div>
+          <div class="pdesc">Linux-based multi-algorithm password cracking tool. MD5, SHA-1, SHA-256, SHA-384, SHA-512 — all cracked in under 5 minutes.</div>
+          <div class="pchips"><span class="chip">MD5</span><span class="chip">SHA-256</span><span class="chip">SHA-512</span><span class="chip">Python</span></div>
+        </div>
+        <div class="pmeta"><span class="ptype">OFFENSIVE</span><span class="parrow">↗</span></div>
       </div>
-      <div class="proj p-acc">
-        <div class="proj-id">PROJ_004 // RECON</div>
-        <div class="proj-name">NETWORK SCANNER</div>
-        <div class="proj-desc">Internal network discovery using ARP scanning and Nmap. Finds local devices and open ports. speedtest-cli integration improved analysis speed by 20%.</div>
-        <div class="proj-tags"><span class="proj-tag">ARP Scan</span><span class="proj-tag">Nmap</span><span class="proj-tag">Recon</span><span class="proj-tag">Python</span></div>
+      <div class="prow">
+        <div class="pnum">04 —</div>
+        <div>
+          <div class="pname">Network Scanner</div>
+          <div class="pdesc">Internal network discovery via ARP scanning and Nmap. Identifies devices and open ports. speedtest-cli integration improved analysis speed by 20%.</div>
+          <div class="pchips"><span class="chip">ARP Scan</span><span class="chip">Nmap</span><span class="chip">Recon</span><span class="chip">Python</span></div>
+        </div>
+        <div class="pmeta"><span class="ptype">RECON</span><span class="parrow">↗</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── CTF ── -->
-<section id="ctf" class="sec">
-  <div class="sec-inner">
-    <div class="reveal">
-      <span class="sec-label">// 04. CHALLENGE</span>
-      <h2 class="sec-title">CTF <span class="dim">& ACHIEVEMENTS</span></h2>
-      <div class="sec-line"></div>
+<!-- DEVSECOPS -->
+<section id="devsecops" class="sec">
+  <div class="si">
+    <div class="sh2 rv">
+      <span class="sl2">// 04</span>
+      <h2 class="st2">DEVSECOPS<span>.</span></h2>
+      <div class="sdiv"></div>
     </div>
-    <div class="ctf-grid reveal">
-      <!-- CTF Panel -->
-      <div class="ctf-panel" id="ctf-panel">
-        <div class="ctf-status-row">
-          <span class="ctf-lvl" id="ctf-lvl-txt">LEVEL 1 / 5</span>
-          <div class="progress-track"><div class="progress-fill" id="ctf-prog" style="width:0%"></div></div>
+    <div class="dsogrid rv">
+      <div>
+        <p class="ap">Security isn't a gate at the end of the pipeline — it's <strong>baked into every stage</strong>. I help teams shift security left, automate threat detection, and harden infrastructure without slowing delivery.</p>
+        <p class="ap">From container hardening and Kubernetes policy enforcement to CI/CD pipeline security and cloud posture on <strong>AWS</strong> — I build systems that are secure by default.</p>
+        <div class="dtools" id="dtools">
+          <div class="dtrow"><span class="dtn">Docker Security</span><div class="dtbar"><div class="dtfill" data-w="88"></div></div><span class="dtp">88%</span></div>
+          <div class="dtrow"><span class="dtn">Kubernetes Security</span><div class="dtbar"><div class="dtfill" data-w="80"></div></div><span class="dtp">80%</span></div>
+          <div class="dtrow"><span class="dtn">AWS Cloud Security</span><div class="dtbar"><div class="dtfill" data-w="82"></div></div><span class="dtp">82%</span></div>
+          <div class="dtrow"><span class="dtn">CI/CD Hardening</span><div class="dtbar"><div class="dtfill" data-w="75"></div></div><span class="dtp">75%</span></div>
+          <div class="dtrow"><span class="dtn">IaC Scanning</span><div class="dtbar"><div class="dtfill" data-w="72"></div></div><span class="dtp">72%</span></div>
         </div>
-        <div id="ctf-challenge-area">
-          <div class="ctf-challenge-q" id="ctf-q"></div>
-          <div class="ctf-input-row">
-            <input class="ctf-input" id="ctf-input" placeholder="FLAG{...}" />
-            <button class="ctf-submit" onclick="ctfSubmit()">SUBMIT</button>
+      </div>
+      <div>
+        <div class="spanel">
+          <div class="sph"><span class="spt">LIVE THREAT MONITOR</span><span class="sps" id="tstat">SCANNING</span></div>
+          <div class="tlist" id="tlist">
+            <div class="ti"><div class="tdot bl"></div><span class="tname">SQL Injection attempt</span><span class="tstat b">BLOCKED</span></div>
+            <div class="ti"><div class="tdot bl"></div><span class="tname">XSS payload detected</span><span class="tstat b">BLOCKED</span></div>
+            <div class="ti"><div class="tdot wn"></div><span class="tname">Port scan from 10.0.0.44</span><span class="tstat w">LOGGED</span></div>
+            <div class="ti"><div class="tdot bl"></div><span class="tname">Brute force — SSH</span><span class="tstat b">BLOCKED</span></div>
+            <div class="ti"><div class="tdot cr"></div><span class="tname">Suspicious container exec</span><span class="tstat c">ALERT</span></div>
+            <div class="ti"><div class="tdot bl"></div><span class="tname">SSRF attempt blocked</span><span class="tstat b">BLOCKED</span></div>
           </div>
-          <div class="ctf-msg" id="ctf-msg" style="display:none;"></div>
-        </div>
-      </div>
-      <!-- Log Panel -->
-      <div class="ctf-log-panel">
-        <div class="ctf-log-body" id="ctf-log"></div>
-        <div class="ctf-platforms">
-          <div class="ctf-plat">HACKTHEBOX</div>
-          <div class="ctf-plat">TRYHACKME</div>
-          <div class="ctf-plat">PICOCTF</div>
-          <div class="ctf-plat">CTFtime</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── SECRET (unlocked by CTF) ── -->
+<!-- CTF -->
+<section id="ctf" class="sec">
+  <div class="si">
+    <div class="sh2 rv">
+      <span class="sl2">// 05</span>
+      <h2 class="st2">CTF<span>.</span></h2>
+      <div class="sdiv"></div>
+    </div>
+    <div class="ctwrap rv">
+      <div>
+        <div class="ctprog">
+          <span class="ctlbl" id="ctlbl">LEVEL 1/5</span>
+          <div class="ptrak"><div class="pfill" id="pfill"></div></div>
+        </div>
+        <div class="ctbox" id="ctbox">
+          <div class="ctql">CHALLENGE</div>
+          <div class="ctq" id="ctq"></div>
+          <div class="ctrow">
+            <input class="ctinp" id="ctinp" placeholder="FLAG{...}" />
+            <button class="ctsub" onclick="ctfGo()">SUBMIT</button>
+          </div>
+          <div class="ctfb" id="ctfb"></div>
+        </div>
+        <div class="ctplats">
+          <div class="ctplat">HACKTHEBOX</div>
+          <div class="ctplat">TRYHACKME</div>
+          <div class="ctplat">PICOCTF</div>
+          <div class="ctplat">CTFtime</div>
+        </div>
+      </div>
+      <div>
+        <div class="logbox">
+          <div class="lhdr"><span>SYSTEM LOG</span><span id="lcnt">0 EVENTS</span></div>
+          <div class="lbody" id="lbody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECRET -->
 <section id="secret">
-  <div class="sec-inner">
-    <div class="secret-box">
-      <div class="secret-title">ROOT ACCESS ACHIEVED</div>
-      <p class="secret-text">
-        You just solved 5 challenges to get here.<br>
-        That's the entire point of this portfolio.<br><br>
-        <span class="hl">kirmada</span> isn't just a name — it's a signal.<br>
-        If you're reading this, you already understand.<br><br>
-        Let's work together. You know where to find me.
-      </p>
-    </div>
+  <div class="sinr">
+    <div class="sh3">ROOT ACCESS ACHIEVED</div>
+    <p class="st3">Five flags. Cleared.<br><br>
+    You didn't skip. You actually solved them.<br>
+    <strong>kirmada respects that.</strong><br><br>
+    Let's build something together.</p>
   </div>
 </section>
 
-<!-- ── CONTACT ── -->
+<!-- CONTACT -->
 <section id="contact" class="sec">
-  <div class="sec-inner">
-    <div class="reveal">
-      <span class="sec-label" style="text-align:center;display:block;">// 05. CONTACT</span>
-      <h2 class="sec-title" style="text-align:center;">ESTABLISH <span class="dim">CONNECTION</span></h2>
-      <div class="sec-line" style="margin:1rem auto 3.5rem;"></div>
+  <div class="si">
+    <div class="sh2 rv" style="text-align:center;">
+      <span class="sl2" style="text-align:center;display:block;">// 06</span>
+      <h2 class="st2" style="text-align:center;">CONTACT<span>.</span></h2>
+      <div class="sdiv" style="margin:1.1rem auto 4rem;"></div>
     </div>
-    <div class="contact-box reveal">
-      <div class="contact-title">PING ME</div>
-      <div class="contact-sub">Open to red team work, collabs, teaching, and tech talks.<br>No spam. Signal only.</div>
-      <div class="contact-links">
-        <a href="mailto:11swastiksharma@gmail.com" class="c-link"><span class="ic">✉</span> EMAIL</a>
-        <a href="https://www.linkedin.com/in/swastik-sharma-73184a252/" target="_blank" class="c-link"><span class="ic">in</span> LINKEDIN</a>
-        <a href="https://github.com/11SwaStik" target="_blank" class="c-link"><span class="ic">{}</span> GITHUB</a>
+    <div class="cinr rv">
+      <div class="ch">PING ME</div>
+      <div class="csub">Open to red team work, DevSecOps roles, teaching, and talks.<br>Signal only. No noise.</div>
+      <div class="clinks">
+        <a href="mailto:11swastiksharma@gmail.com" class="clink">EMAIL</a>
+        <a href="https://www.linkedin.com/in/swastik-sharma-73184a252/" target="_blank" class="clink">LINKEDIN</a>
+        <a href="https://github.com/11SwaStik" target="_blank" class="clink">GITHUB</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── FOOTER ── -->
 <footer>
-  <div class="f-text">© 2025 <span>SWASTIK KIRMADA</span> // kirmada</div>
-  <div class="f-text">BUILT WITH <span>INTENT</span> — NOT TEMPLATES</div>
+  <div class="ft">© 2025 <span>SWASTIK KIRMADA</span></div>
+  <div class="ft">BUILT WITH <span>INTENT</span></div>
 </footer>
 
 <script>
-// ── CURSOR ──
-const cur = document.getElementById('cur');
-const ring = document.getElementById('cur-ring');
+// CURSOR
+const C=document.getElementById('c'),CR=document.getElementById('cr');
 let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
-(function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);})();
-document.querySelectorAll('a,button,.proj,.tag,.ctf-plat').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';cur.style.background='var(--r)';});
-  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';cur.style.background='var(--g)';});
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(a);})();
+document.querySelectorAll('a,button,.prow,.tag,.pstage,.ctplat,.ti').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
 });
 
-// ── BG MATRIX RAIN ──
-(function(){
-  const canvas=document.getElementById('bg-canvas');
-  const ctx=canvas.getContext('2d');
-  let W,H,cols,drops;
-  const chars='01アイウエオカキクケコabcdef#@$%&<>';
-  function init(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;cols=Math.floor(W/22);drops=Array(cols).fill(1);}
-  init();
-  window.addEventListener('resize',init);
-  setInterval(()=>{
-    ctx.fillStyle='rgba(6,6,9,0.06)';
-    ctx.fillRect(0,0,W,H);
-    ctx.font='13px Share Tech Mono';
-    drops.forEach((y,i)=>{
-      const c=chars[Math.floor(Math.random()*chars.length)];
-      const alpha=Math.random()*.13+.02;
-      ctx.fillStyle=`rgba(0,255,159,${alpha})`;
-      ctx.fillText(c,i*22,y*22);
-      if(y*22>H&&Math.random()>.975)drops[i]=0;
-      drops[i]++;
-    });
-  },60);
-})();
+function s2(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
 
-// ── CURSOR SNAKE (from old portfolio, upgraded) ──
+// HERO PARTICLE CANVAS
 (function(){
-  const canvas=document.getElementById('snake-canvas');
-  const ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-  window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
-  const trail=[];const scars=[];const maxLen=26;
-  const glyphs='01ABCDEF#@$%><{}|\\';
-  document.addEventListener('mousemove',e=>{
-    trail.push({x:e.clientX,y:e.clientY,char:glyphs[Math.floor(Math.random()*glyphs.length)]});
-    if(trail.length>maxLen)trail.shift();
-  });
-  document.addEventListener('click',e=>{
-    for(let i=0;i<8;i++)scars.push({x:e.clientX,y:e.clientY,life:1,char:glyphs[Math.floor(Math.random()*glyphs.length)],ox:(Math.random()-0.5)*60,oy:(Math.random()-0.5)*60});
-  });
-  (function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.font='13px Share Tech Mono';
-    trail.forEach((p,i)=>{
-      const a=(i/trail.length)*0.7;
-      ctx.fillStyle=`rgba(0,255,159,${a})`;
-      ctx.shadowColor='#00ff9f';ctx.shadowBlur=8*a;
-      ctx.fillText(p.char,p.x,p.y);
-    });
-    ctx.shadowBlur=0;
-    scars.forEach(s=>{
-      s.life-=0.025;
-      ctx.fillStyle=`rgba(0,229,255,${s.life})`;
-      ctx.shadowColor='#00e5ff';ctx.shadowBlur=15*s.life;
-      ctx.fillText(s.char,s.x+s.ox*(1-s.life),s.y+s.oy*(1-s.life));
-    });
-    for(let i=scars.length-1;i>=0;i--)if(scars[i].life<=0)scars.splice(i,1);
-    ctx.shadowBlur=0;
+  const cv=document.getElementById('hcv'),ctx=cv.getContext('2d');
+  let W,H,pts=[];
+  function init(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;pts=Array.from({length:55},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.1+.3}));}
+  init();window.addEventListener('resize',init);
+  let px=W/2,py=H/2;
+  cv.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();px=e.clientX-r.left;py=e.clientY-r.top;});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(0,255,135,.3)';ctx.fill();});
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);if(d<110){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(0,255,135,${.1*(1-d/110)})`;ctx.lineWidth=.5;ctx.stroke();}}
+    pts.forEach(p=>{const d=Math.hypot(p.x-px,p.y-py);if(d<140){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(px,py);ctx.strokeStyle=`rgba(0,255,135,${.05*(1-d/140)})`;ctx.lineWidth=.5;ctx.stroke();}});
     requestAnimationFrame(draw);
-  })();
+  }
+  draw();
 })();
 
-// ── TERMINAL TYPEWRITER ──
+// TERMINAL
 (function(){
-  const lines = [
-    {html:'<span class="tp">kirmada@sec:~$ </span><span class="to">cat /etc/identity</span>',delay:0},
-    {html:'&nbsp;',delay:400},
-    {html:'<span class="tk">NAME     </span><span class="to">= </span><span class="tv">"Swastik Kirmada"</span>',delay:700},
-    {html:'<span class="tk">ALIAS    </span><span class="to">= </span><span class="tv">"kirmada"</span>',delay:950},
-    {html:'<span class="tk">ROLE     </span><span class="to">= </span><span class="tv">"Cybersecurity SME @ Scaler"</span>',delay:1200},
-    {html:'<span class="tk">DOMAIN   </span><span class="to">= </span><span class="tv">"Offensive + Blue Teaming"</span>',delay:1450},
-    {html:'<span class="tk">MISSION  </span><span class="to">= </span><span class="tv">"Break. Teach. Defend."</span>',delay:1700},
-    {html:'<span class="tk">STATUS   </span><span class="to">= </span><span class="tg">ACTIVE</span>',delay:1950},
-    {html:'&nbsp;',delay:2200},
-    {html:'<span class="tp">kirmada@sec:~$ </span><span class="tcur"></span>',delay:2400},
+  const lines=[
+    {h:'<span class="tp2">root@kirmada:~# </span><span class="td4">whoami</span>',d:0},
+    {h:'&nbsp;',d:400},
+    {h:'<span style="color:#555">NAME    </span><span class="tv2"> = "Swastik Kirmada"</span>',d:700},
+    {h:'<span style="color:#555">ALIAS   </span><span class="tv2"> = "kirmada"</span>',d:960},
+    {h:'<span style="color:#555">ROLE    </span><span class="tv2"> = "SME Cybersecurity @ Scaler"</span>',d:1220},
+    {h:'<span style="color:#555">DOMAIN  </span><span class="tv2"> = "Red Team + Blue Team + DevSecOps"</span>',d:1480},
+    {h:'<span style="color:#555">MISSION </span><span class="tv2"> = "Break. Defend. Teach."</span>',d:1740},
+    {h:'<span style="color:#555">STATUS  </span><span class="tp2"> = ACTIVE</span>',d:2000},
+    {h:'&nbsp;',d:2200},
+    {h:'<span class="tp2">root@kirmada:~# </span><span class="tcur"></span>',d:2400},
   ];
-  const out=document.getElementById('term-out');
-  lines.forEach(l=>{
-    setTimeout(()=>{
-      const span=document.createElement('span');
-      span.className='tl';span.innerHTML=l.html;
-      out.appendChild(span);
-    },l.delay);
-  });
+  const out=document.getElementById('tout');
+  lines.forEach(l=>setTimeout(()=>{const s=document.createElement('span');s.className='tl2';s.innerHTML=l.h;out.appendChild(s);},l.d));
 })();
 
-// ── CTF SYSTEM ──
-const CHALLENGES = [
-  {q:'Decode this ROT13 cipher: "xvezqn"',a:'FLAG{kirmada}'},
-  {q:'What HTTP method is used to SEND data to a server (all caps)?',a:'FLAG{POST}'},
-  {q:'Port 22 is commonly used by which protocol? Answer: FLAG{protocolname}',a:'FLAG{SSH}'},
-  {q:'The classic SQL injection test. Complete: \' OR \'1\'=\'?\' → FLAG{the missing char}',a:"FLAG{1}"},
-  {q:'Final level. I am the root of all Unix systems. Who am I? FLAG{username}',a:'FLAG{root}'}
-];
-
-let ctfStep = 0;
-const savedStep = parseInt(localStorage.getItem('kirmada_ctf')||'0');
-if(savedStep>0&&savedStep<=CHALLENGES.length)ctfStep=savedStep;
-
-const logLines=[
-  {t:'info',m:'[BOOT] Portfolio system initialized'},
-  {t:'ok',m:'[OK] Secure context established'},
-  {t:'ok',m:'[OK] UI modules loaded'},
-  {t:'warn',m:'[WARN] Unidentified visitor detected'},
-  {t:'info',m:'[SYS] CTF subsystem online'},
-  {t:'dim',m:'[INFO] '+CHALLENGES.length+' challenges loaded'},
-];
-
-function addLog(cls,msg){
-  const log=document.getElementById('ctf-log');
-  const line=document.createElement('span');
-  line.className='log-line '+cls;
-  line.textContent=msg;
-  log.appendChild(line);
-  log.appendChild(document.createElement('br'));
-  log.scrollTop=log.scrollHeight;
-}
-
-function initCTF(){
-  logLines.forEach((l,i)=>setTimeout(()=>addLog(l.t,l.m),i*350));
-  updateCTF();
-  if(ctfStep>0){
-    for(let i=0;i<ctfStep;i++){
-      setTimeout(()=>addLog('ok',`[UNLOCK] Level ${i+1} cleared`),logLines.length*350+i*200);
-    }
-  }
-  if(ctfStep>=CHALLENGES.length)setTimeout(showCTFComplete,logLines.length*350+ctfStep*200+200);
-}
-
-function updateCTF(){
-  const pct=(ctfStep/CHALLENGES.length)*100;
-  document.getElementById('ctf-prog').style.width=pct+'%';
-  document.getElementById('ctf-lvl-txt').textContent='LEVEL '+(Math.min(ctfStep+1,CHALLENGES.length))+' / '+CHALLENGES.length;
-  if(ctfStep<CHALLENGES.length){
-    document.getElementById('ctf-q').textContent=CHALLENGES[ctfStep].q;
-  }
-}
-
-function ctfSubmit(){
-  const input=document.getElementById('ctf-input');
-  const msg=document.getElementById('ctf-msg');
-  const val=input.value.trim().toUpperCase();
-  const ans=CHALLENGES[ctfStep].a.toUpperCase();
-  msg.style.display='block';
-  if(val===ans){
-    msg.className='ctf-msg ok';
-    msg.textContent='✓ ACCESS GRANTED — LEVEL '+(ctfStep+1)+' CLEARED';
-    addLog('ok','[GRANT] Level '+(ctfStep+1)+' flag accepted');
-    spawnConfetti();
-    ctfStep++;
-    localStorage.setItem('kirmada_ctf',ctfStep);
-    input.value='';
-    setTimeout(()=>{
-      msg.style.display='none';
-      updateCTF();
-      if(ctfStep>=CHALLENGES.length)showCTFComplete();
-    },1200);
-  } else {
-    msg.className='ctf-msg err';
-    msg.textContent='✗ ACCESS DENIED — WRONG FLAG';
-    addLog('err','[DENY] Invalid flag submitted');
-    input.style.borderColor='var(--r)';
-    setTimeout(()=>{input.style.borderColor='';},800);
-  }
-}
-
-document.getElementById('ctf-input').addEventListener('keydown',e=>{if(e.key==='Enter')ctfSubmit();});
-
-function showCTFComplete(){
-  document.getElementById('ctf-challenge-area').innerHTML=`
-    <div class="ctf-complete">
-      <div class="ctf-complete-title">ALL LEVELS CLEARED</div>
-      <div class="ctf-complete-sub">You cracked every flag.<br>The secret section is now unlocked.</div>
-    </div>`;
-  document.getElementById('ctf-prog').style.width='100%';
-  document.getElementById('ctf-lvl-txt').textContent='COMPLETE ✓';
-  addLog('ok','[SYS] All flags verified — root access granted');
-  addLog('info','[SYS] Unlocking secret section...');
-  document.getElementById('secret').classList.add('visible');
-  document.getElementById('secret').scrollIntoView({behavior:'smooth',block:'center'});
-  document.querySelector('.nav-links').insertAdjacentHTML('beforeend','<li><a href="#secret" style="color:var(--p)">secret</a></li>');
-}
-
-function spawnConfetti(){
-  const colors=['#00ff9f','#00e5ff','#ff2e5b','#f5c518','#bf80ff'];
-  for(let i=0;i<40;i++){
-    const el=document.createElement('div');
-    el.className='confetti-piece';
-    el.style.left=Math.random()*100+'vw';
-    el.style.background=colors[Math.floor(Math.random()*colors.length)];
-    el.style.animationDelay=Math.random()*.6+'s';
-    el.style.borderRadius=Math.random()>.5?'50%':'1px';
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),2000);
-  }
-}
-
-initCTF();
-if(ctfStep>=CHALLENGES.length)document.getElementById('secret').classList.add('visible');
-
-// ── SCROLL REVEAL ──
-const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.08});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-
-// ── NAV ACTIVE ──
-const sections=document.querySelectorAll('section[id]');
-window.addEventListener('scroll',()=>{
-  let cur2='';
-  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-200)cur2=s.id;});
-  document.querySelectorAll('.nav-links a').forEach(a=>{
-    const active=a.getAttribute('href')==='#'+cur2;
-    a.classList.toggle('active',active);
-  });
+// PIPELINE HOVER
+document.querySelectorAll('.pstage').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{document.getElementById('ptip').textContent='→  '+el.dataset.info;tick();});
+  el.addEventListener('mouseleave',()=>document.getElementById('ptip').textContent='');
 });
+
+// THREAT MONITOR
+const threats=[
+  {n:'SQL Injection attempt',s:'BLOCKED',sc:'b',dc:'bl'},
+  {n:'XSS payload detected',s:'BLOCKED',sc:'b',dc:'bl'},
+  {n:'Port scan — 10.0.0.44',s:'LOGGED',sc:'w',dc:'wn'},
+  {n:'Brute force — SSH',s:'BLOCKED',sc:'b',dc:'bl'},
+  {n:'Suspicious container exec',s:'ALERT',sc:'c',dc:'cr'},
+  {n:'SSRF attempt',s:'BLOCKED',sc:'b',dc:'bl'},
+  {n:'Directory traversal',s:'BLOCKED',sc:'b',dc:'bl'},
+  {n:'DNS exfiltration probe',s:'ALERT',sc:'c',dc:'cr'},
+  {n:'Malformed JWT token',s:'LOGGED',sc:'w',dc:'wn'},
+  {n:'Container escape attempt',s:'BLOCKED',sc:'b',dc:'bl'},
+  {n:'RCE via deserialization',s:'BLOCKED',sc:'b',dc:'bl'},
+  {n:'K8s API unauthorized',s:'ALERT',sc:'c',dc:'cr'},
+];
+let ti2=0,tevt=0;
+setInterval(()=>{
+  const list=document.getElementById('tlist');
+  const t=threats[ti2%threats.length];ti2++;
+  const d=document.createElement('div');d.className='ti';d.style.opacity='0';d.style.transition='opacity .4s';
+  d.innerHTML=`<div class="tdot ${t.dc}"></div><span class="tname">${t.n}</span><span class="tstat ${t.sc}">${t.s}</span>`;
+  list.insertBefore(d,list.firstChild);
+  setTimeout(()=>d.style.opacity='1',30);
+  if(list.children.length>6)list.removeChild(list.lastChild);
+  tevt++;document.getElementById('tstat').textContent=tevt+' EVENTS';
+  if(t.dc==='cr')alert2();
+},3000);
+
+// DSO BARS
+const dObs=new IntersectionObserver(en=>{if(en[0].isIntersecting){document.querySelectorAll('.dtfill').forEach(e=>e.style.width=e.dataset.w+'%');dObs.disconnect();}},{threshold:.3});
+dObs.observe(document.getElementById('dtools'));
+
+// CTF
+const CHS=[
+  {q:'Decode this ROT13: "xvezqn" → Submit as FLAG{answer}',a:'FLAG{KIRMADA}'},
+  {q:'Which protocol uses port 22? Submit as FLAG{protocol}',a:'FLAG{SSH}'},
+  {q:'What does VAPT stand for? Submit the abbreviation: FLAG{XXXX}',a:'FLAG{VAPT}'},
+  {q:'Classic SQLi: \' OR \'1\'=\'?\' — what replaces the ? Submit as FLAG{char}',a:"FLAG{1}"},
+  {q:'Final level: what is the superuser account on all Unix/Linux systems? FLAG{username}',a:'FLAG{ROOT}'},
+];
+let step=parseInt(localStorage.getItem('kirmada3_ctf')||'0');
+if(step>CHS.length)step=CHS.length;
+let lc=0;
+function addLog(cls,msg){const b=document.getElementById('lbody');const s=document.createElement('span');s.className='ll '+cls;s.textContent=msg;b.appendChild(s);b.appendChild(document.createElement('br'));b.scrollTop=b.scrollHeight;lc++;document.getElementById('lcnt').textContent=lc+' EVENTS';}
+const BL=[['i','[BOOT] System initializing...'],['g','[OK]   Secure context established'],['i','[CTF]  5 challenges armed'],['d','[SYS]  Awaiting first flag...']];
+BL.forEach((l,i)=>setTimeout(()=>addLog(l[0],l[1]),i*300+600));
+if(step>0)setTimeout(()=>{for(let i=0;i<step;i++)addLog('g','[GRANT] Level '+(i+1)+' cleared');},BL.length*300+800);
+
+function updCTF(){
+  document.getElementById('pfill').style.width=(step/CHS.length*100)+'%';
+  document.getElementById('ctlbl').textContent='LEVEL '+(Math.min(step+1,CHS.length))+'/'+CHS.length;
+  if(step<CHS.length)document.getElementById('ctq').textContent=CHS[step].q;
+}
+updCTF();
+if(step>=CHS.length)showDone();
+
+function ctfGo(){
+  const inp=document.getElementById('ctinp'),fb=document.getElementById('ctfb');
+  const val=inp.value.trim().toUpperCase(),ans=CHS[step].a.toUpperCase();
+  fb.style.display='block';
+  if(val===ans){
+    fb.className='ctfb ok';fb.textContent='✓ FLAG ACCEPTED — LEVEL '+(step+1)+' CLEARED';
+    addLog('g','[GRANT] Level '+(step+1)+' accepted');
+    success();burst();
+    step++;localStorage.setItem('kirmada3_ctf',step);
+    inp.value='';
+    setTimeout(()=>{fb.style.display='none';updCTF();if(step>=CHS.length)showDone();},1200);
+  } else {
+    fb.className='ctfb err';fb.textContent='✗ WRONG FLAG — TRY AGAIN';
+    addLog('e','[DENY]  Invalid flag — level '+(step+1));
+    fail();inp.style.borderColor='#ff4444';setTimeout(()=>inp.style.borderColor='',700);
+  }
+}
+document.getElementById('ctinp').addEventListener('keydown',e=>{if(e.key==='Enter')ctfGo();});
+
+function showDone(){
+  document.getElementById('ctbox').innerHTML='<div class="ctdone"><div class="ctdh">ALL FLAGS CLEARED</div><div class="ctds">Root access granted.<br>Secret section is now unlocked.</div></div>';
+  document.getElementById('pfill').style.width='100%';
+  document.getElementById('ctlbl').textContent='COMPLETE ✓';
+  addLog('g','[SYS] Root access granted');
+  document.getElementById('secret').classList.add('on');
+  setTimeout(()=>document.getElementById('secret').scrollIntoView({behavior:'smooth',block:'center'}),400);
+}
+
+function burst(){
+  const box=document.getElementById('ctbox');const r=box.getBoundingClientRect();
+  for(let i=0;i<20;i++){const e=document.createElement('div');e.className='cf';e.textContent='✦';e.style.cssText=`left:${r.left+Math.random()*r.width}px;top:${r.top+20}px;color:var(--g);animation-delay:${Math.random()*.25}s;`;document.body.appendChild(e);setTimeout(()=>e.remove(),1600);}
+}
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');}),{threshold:.07});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// NAV
+window.addEventListener('scroll',()=>{
+  let cur='';
+  document.querySelectorAll('section[id]').forEach(s=>{if(window.scrollY>=s.offsetTop-220)cur=s.id;});
+  document.querySelectorAll('.nl a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));
+});
+
+// SOUND
+let actx=null,sOn=false,drone=null;
+function gc(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function tone(f,d,t='sine',v=.07){try{const c=gc(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.start();o.stop(c.currentTime+d);}catch(e){}}
+function tick(){if(sOn)tone(900,.04,'square',.035);}
+function success(){if(!sOn)return;[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.12,'sine',.06),i*75));}
+function fail(){if(sOn){tone(180,.13,'sawtooth',.055);setTimeout(()=>tone(120,.28,'sawtooth',.045),130);}}
+function alert2(){if(sOn){tone(440,.07,'square',.035);setTimeout(()=>tone(440,.07,'square',.035),130);}}
+function startDrone(){if(!sOn||drone)return;try{const c=gc(),o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();o.type='sawtooth';o.frequency.value=55;f.type='lowpass';f.frequency.value=180;f.Q.value=4;o.connect(f);f.connect(g);g.connect(c.destination);g.gain.value=.012;o.start();drone={o,g};}catch(e){}}
+function stopDrone(){if(drone){try{drone.g.gain.setValueAtTime(.012,gc().currentTime);drone.g.gain.exponentialRampToValueAtTime(.001,gc().currentTime+1);setTimeout(()=>{try{drone.o.stop();}catch(e){}drone=null;},1100);}catch(e){}drone=null;}}
+function toggleSound(){
+  sOn=!sOn;
+  const btn=document.getElementById('snd');
+  btn.textContent=sOn?'ON':'OFF';
+  btn.classList.toggle('on',sOn);
+  if(sOn){tone(440,.08);startDrone();}else stopDrone();
+}
+let lt=0;
+document.addEventListener('mousemove',()=>{const n=Date.now();if(sOn&&n-lt>90){tone(1100+Math.random()*180,.018,'sine',.006);lt=n;}});
 </script>
 </body>
 </html>
