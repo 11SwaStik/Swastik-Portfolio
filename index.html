@@ -46,10 +46,10 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;justify-content:sp
 #hero{min-height:100vh;display:flex;align-items:center;padding:0 4rem;position:relative;overflow:hidden;}
 #hcv{position:absolute;inset:0;z-index:0;}
 .hi{position:relative;z-index:1;max-width:900px;}
-.hpre{font-size:.63rem;color:var(--g);letter-spacing:4px;margin-bottom:1.5rem;opacity:.7;}
+.hpre{font-size:.62rem;color:var(--g);letter-spacing:4px;margin-bottom:1.2rem;opacity:.6;}
 .hpre span{color:var(--td);}
-.hh1{font-family:var(--sans);font-size:clamp(3.8rem,8vw,7.5rem);font-weight:800;line-height:.95;letter-spacing:-1px;color:#fff;margin-bottom:1.5rem;}
-.hh1 .ng{display:block;color:var(--g);position:relative;}
+.hh1{font-family:var(--sans);font-size:clamp(2rem,4vw,3.8rem);font-weight:700;line-height:1.05;letter-spacing:.02em;color:#fff;margin-bottom:1.2rem;}
+.hh1 .ng{display:block;color:var(--g);position:relative;font-size:clamp(1.8rem,3.5vw,3.2rem);}
 .hh1 .ng::after{content:attr(data-t);position:absolute;left:2px;top:0;color:rgba(0,255,135,.15);animation:gsh 7s infinite;}
 @keyframes gsh{0%,93%,100%{clip-path:none;transform:none;}94%{clip-path:polygon(0 25%,100% 25%,100% 45%,0 45%);transform:translateX(-3px);}96%{clip-path:polygon(0 58%,100% 58%,100% 78%,0 78%);transform:translateX(2px);}98%{clip-path:none;transform:none;}}
 .hsub{font-size:1rem;color:var(--tm);line-height:1.9;max-width:560px;font-family:var(--sans);font-weight:400;}
@@ -222,16 +222,121 @@ footer{border-top:1px solid var(--b);padding:1.5rem 4rem;display:flex;justify-co
   .pmeta{text-align:left;}
   footer{flex-direction:column;gap:.5rem;}
 }
+
+/* ── SwastikLogo + KIRMADA wordmark ── */
+.swk-logo{display:block;flex-shrink:0;overflow:visible;}
+@keyframes swk-pulse{0%,100%{filter:drop-shadow(0 0 3px #00ff87);}50%{filter:drop-shadow(0 0 9px #00ff87) drop-shadow(0 0 18px rgba(93,242,255,.25));}}
+.swk-logo{animation:swk-pulse 3s ease-in-out infinite;}
+.kirmada-wm{font-family:var(--sans);font-size:.82rem;font-weight:800;letter-spacing:.45em;color:#fff;text-shadow:0 0 8px rgba(0,255,135,.5);transition:letter-spacing .25s,text-shadow .25s;}
+.logo:hover .kirmada-wm{letter-spacing:.6em;text-shadow:0 0 12px #00ff87,0 0 28px rgba(0,255,135,.25),2px 0 0 rgba(93,242,255,.4),-2px 0 0 rgba(195,139,255,.4);}
+
+/* ── Intro / boot screen ── */
+#intro{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);overflow:hidden;transition:opacity .65s ease-in-out;}
+#intro.fade-out{opacity:0;pointer-events:none;}
+#intro-canvas{position:absolute;inset:0;z-index:0;}
+#intro-scanlines{position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);}
+#intro-content{position:relative;z-index:3;text-align:center;padding:0 1.5rem;}
+#intro-corner-logo{position:absolute;top:20px;left:22px;z-index:4;opacity:.55;}
+#intro-sysid{position:absolute;top:17px;right:22px;z-index:4;font-size:.6rem;color:#5df2ff;opacity:.45;letter-spacing:.12em;}
+#intro-footer{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 24px;z-index:4;font-size:.56rem;color:#00ff87;opacity:.3;letter-spacing:.1em;}
+#intro-welcome{font-size:clamp(3rem,10vw,7rem);font-weight:900;letter-spacing:.35em;color:#fff;text-shadow:0 0 20px #00ff87,0 0 60px rgba(0,255,135,.2),0 0 2px #fff;margin-bottom:.2em;}
+#intro-subtitle{font-size:clamp(.65rem,2vw,.85rem);color:#00ff87;letter-spacing:.5em;opacity:.7;margin-bottom:3rem;text-transform:uppercase;}
+#intro-btn{background:transparent;border:1px solid #00ff87;color:#00ff87;font-family:var(--mono);font-size:clamp(.8rem,2.5vw,.95rem);letter-spacing:.35em;padding:.85em 2.5em;cursor:pointer;text-transform:uppercase;box-shadow:0 0 18px rgba(0,255,135,.2),inset 0 0 18px rgba(0,255,135,.04);transition:all .2s;}
+#intro-btn:hover{background:rgba(0,255,135,.1);box-shadow:0 0 30px rgba(0,255,135,.45),inset 0 0 20px rgba(0,255,135,.12);color:#fff;}
+#intro-progress-wrap{width:min(420px,80vw);margin:0 auto;display:none;}
+#intro-progress-labels{display:flex;justify-content:space-between;font-size:.67rem;color:#00ff87;opacity:.7;margin-bottom:.4rem;letter-spacing:.1em;}
+#intro-progress-track{width:100%;height:4px;background:rgba(0,255,135,.1);border-radius:2px;overflow:hidden;}
+#intro-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#00ff87,#5df2ff,#c38bff);box-shadow:0 0 12px rgba(0,255,135,.8);transition:width .05s linear;border-radius:2px;}
+#intro-log{margin-top:1.4rem;text-align:left;font-size:clamp(.6rem,1.5vw,.7rem);color:#00ff87;opacity:.8;min-height:8rem;}
+.ilog-line{display:block;margin-bottom:.22rem;animation:ilog-in .2s ease;}
+.ilog-line.ready{color:#5df2ff;text-shadow:0 0 6px #5df2ff;}
+@keyframes ilog-in{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:none;}}
+@keyframes intro-flicker{0%,94%,100%{opacity:1;}95%{opacity:.82;}97%{opacity:.65;}99%{opacity:1;}}
+#intro-welcome{animation:intro-flicker 5s ease-in-out infinite;}
 </style>
 </head>
 <body>
+
+<!-- INTRO / BOOT SCREEN -->
+<div id="intro">
+  <canvas id="intro-canvas"></canvas>
+  <div id="intro-scanlines"></div>
+  <div id="intro-corner-logo">
+    <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="SWK logo">
+      <defs>
+        <filter id="ig"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <linearGradient id="igg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ff87"/><stop offset="55%" stop-color="#5df2ff"/><stop offset="100%" stop-color="#c38bff"/></linearGradient>
+      </defs>
+      <polygon points="50,4 90,27 90,73 50,96 10,73 10,27" fill="none" stroke="url(#igg)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.5"/>
+      <g filter="url(#ig)" stroke="url(#igg)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <polygon points="22,30 38,22 50,30 38,38" opacity=".8"/>
+        <path d="M50,30 L78,22 L64,50 L78,78 L50,70 L22,78 L36,50 L22,30"/>
+        <circle cx="50" cy="50" r="5" fill="url(#igg)" stroke="none" opacity=".9"/>
+        <line x1="50" y1="40" x2="50" y2="44" stroke-width="2" opacity=".6"/><line x1="50" y1="56" x2="50" y2="60" stroke-width="2" opacity=".6"/>
+        <line x1="40" y1="50" x2="44" y2="50" stroke-width="2" opacity=".6"/><line x1="56" y1="50" x2="60" y2="50" stroke-width="2" opacity=".6"/>
+      </g>
+      <g stroke="#00ff87" stroke-width="1.5" fill="none" opacity=".35">
+        <polyline points="14,20 14,14 20,14"/><polyline points="80,14 86,14 86,20"/>
+        <polyline points="86,80 86,86 80,86"/><polyline points="20,86 14,86 14,80"/>
+      </g>
+    </svg>
+  </div>
+  <div id="intro-sysid">NODE://KIRMADA-01 <span style="color:#00ff87">&#9679;</span></div>
+  <div id="intro-content">
+    <div id="intro-welcome">WELCOME</div>
+    <div id="intro-subtitle">// SECURE TERMINAL DETECTED //</div>
+    <button id="intro-btn" onclick="introLoad()">&#9654; LOAD SYSTEM</button>
+    <div id="intro-progress-wrap">
+      <div id="intro-progress-labels"><span>LOADING PORTFOLIO...</span><span id="intro-pct">0%</span></div>
+      <div id="intro-progress-track"><div id="intro-progress-fill"></div></div>
+      <div id="intro-log"></div>
+    </div>
+  </div>
+  <div id="intro-footer">
+    <span>SYS::SWASTIK_PORTFOLIO_v2</span>
+    <span>ENC::AES-256 &#9679; AUTH::VERIFIED</span>
+    <span>PWR::NOMINAL</span>
+  </div>
+</div>
 
 <div id="c"></div>
 <div id="cr"></div>
 <button id="snd" onclick="toggleSound()" title="Toggle sound">OFF</button>
 
 <nav>
-  <a href="#hero" class="logo">SW<em>.</em>K</a>
+  <!-- SWK personal logo + KIRMADA wordmark (replaces old SW.K) -->
+  <a href="#hero" class="logo" style="display:flex;align-items:center;gap:.55rem;text-decoration:none;">
+    <!-- SwastikLogo: personal geometric monogram -->
+    <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="swk-logo" aria-label="SWK logo">
+      <defs>
+        <filter id="swk-glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <linearGradient id="swk-g" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00ff87"/>
+          <stop offset="55%" stop-color="#5df2ff"/>
+          <stop offset="100%" stop-color="#c38bff"/>
+        </linearGradient>
+      </defs>
+      <!-- Outer hex ring -->
+      <polygon points="50,4 90,27 90,73 50,96 10,73 10,27" fill="none" stroke="url(#swk-g)" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.45"/>
+      <!-- Core monogram path -->
+      <g filter="url(#swk-glow)" stroke="url(#swk-g)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <polygon points="22,30 38,22 50,30 38,38" opacity="0.8"/>
+        <path d="M50,30 L78,22 L64,50 L78,78 L50,70 L22,78 L36,50 L22,30"/>
+        <circle cx="50" cy="50" r="5" fill="url(#swk-g)" stroke="none" opacity="0.9"/>
+        <line x1="50" y1="40" x2="50" y2="44" stroke-width="2" opacity="0.6"/>
+        <line x1="50" y1="56" x2="50" y2="60" stroke-width="2" opacity="0.6"/>
+        <line x1="40" y1="50" x2="44" y2="50" stroke-width="2" opacity="0.6"/>
+        <line x1="56" y1="50" x2="60" y2="50" stroke-width="2" opacity="0.6"/>
+      </g>
+      <!-- Corner brackets -->
+      <g stroke="#00ff87" stroke-width="1.5" fill="none" opacity="0.35">
+        <polyline points="14,20 14,14 20,14"/><polyline points="80,14 86,14 86,20"/>
+        <polyline points="86,80 86,86 80,86"/><polyline points="20,86 14,86 14,80"/>
+      </g>
+    </svg>
+    <!-- KIRMADA — compact wordmark -->
+    <span class="kirmada-wm">KIRMADA</span>
+  </a>
   <ul class="nl">
     <li><a href="#about">about</a></li>
     <li><a href="#skills">skills</a></li>
@@ -249,13 +354,13 @@ footer{border-top:1px solid var(--b);padding:1.5rem 4rem;display:flex;justify-co
   <div class="hi">
     <div class="hpre">ROOT@KIRMADA <span>~#</span></div>
     <h1 class="hh1">
-      <span>SWASTIK</span>
-      <span class="ng" data-t="KIRMADA">KIRMADA</span>
+      <span style="display:block;font-size:clamp(2.2rem,5vw,4.5rem);font-weight:800;letter-spacing:.04em;">SWASTIK SHARMA</span>
+      <span class="ng" style="font-size:clamp(.85rem,1.8vw,1.1rem);font-weight:400;letter-spacing:.45em;color:var(--g);display:block;margin-top:.45rem;font-family:var(--mono);">CYBERSECURITY · DEVSECOPS · EDUCATOR</span>
     </h1>
     <p class="hsub">
-      <strong>Cybersecurity specialist.</strong> Red team &amp; blue team.<br>
-      DevSecOps engineer. Security educator.<br>
-      I break systems to understand them. Then I teach others.
+      <strong>Red team &amp; blue team specialist.</strong> I build firewalls,<br>
+      break systems to understand them, and teach others to defend.<br>
+      <span style="color:var(--g);font-size:.85rem;">Currently: SME Cybersecurity @ Scaler</span>
     </p>
     <div class="hact">
       <button class="btn btnp" onclick="s2('projects')">VIEW WORK</button>
@@ -662,25 +767,239 @@ window.addEventListener('scroll',()=>{
   document.querySelectorAll('.nl a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));
 });
 
-// SOUND
-let actx=null,sOn=false,drone=null;
-function gc(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
-function tone(f,d,t='sine',v=.07){try{const c=gc(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.start();o.stop(c.currentTime+d);}catch(e){}}
-function tick(){if(sOn)tone(900,.04,'square',.035);}
+// ════════════════════════════════════════════════════════════
+// SOUND SYSTEM — Web Audio API, zero deps
+// Synthesises all sounds procedurally. No network requests.
+// ════════════════════════════════════════════════════════════
+let actx=null, sOn=false, drone=null;
+
+function gc(){
+  if(!actx) actx=new(window.AudioContext||window.webkitAudioContext)();
+  if(actx.state==='suspended') actx.resume();
+  return actx;
+}
+
+// Generic oscillator helper
+function tone(f,d,t='sine',v=.07){
+  try{
+    const c=gc(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=t;o.frequency.value=f;
+    g.gain.setValueAtTime(v,c.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);
+    o.start();o.stop(c.currentTime+d);
+  }catch(e){}
+}
+
+// CLICK — soft mechanical thump + digital tick
+function playClick(){
+  if(!sOn)return;
+  try{
+    const c=gc(),now=c.currentTime;
+    const mg=c.createGain();mg.gain.value=.18;mg.connect(c.destination);
+    // low thump
+    const o=c.createOscillator();o.type='sine';
+    o.frequency.setValueAtTime(180,now);o.frequency.exponentialRampToValueAtTime(60,now+.08);
+    const eg=c.createGain();eg.gain.setValueAtTime(1,now);eg.gain.exponentialRampToValueAtTime(.001,now+.09);
+    o.connect(eg);eg.connect(mg);o.start(now);o.stop(now+.09);
+    // noise tick
+    const buf=c.createBuffer(1,Math.floor(c.sampleRate*.04),c.sampleRate);
+    const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    const ns=c.createBufferSource();ns.buffer=buf;
+    const bpf=c.createBiquadFilter();bpf.type='bandpass';bpf.frequency.value=3500;bpf.Q.value=1.5;
+    const ng=c.createGain();ng.gain.setValueAtTime(.5,now);ng.gain.exponentialRampToValueAtTime(.001,now+.04);
+    ns.connect(bpf);bpf.connect(ng);ng.connect(mg);ns.start(now);ns.stop(now+.04);
+  }catch(e){}
+}
+
+// HOVER — ultra-subtle high-freq tick
+function playHover(){
+  if(!sOn)return;
+  try{
+    const c=gc(),now=c.currentTime;
+    const o=c.createOscillator();o.type='square';
+    o.frequency.setValueAtTime(2200,now);o.frequency.exponentialRampToValueAtTime(1800,now+.025);
+    const g=c.createGain();g.gain.setValueAtTime(.07,now);g.gain.exponentialRampToValueAtTime(.001,now+.025);
+    const hpf=c.createBiquadFilter();hpf.type='highpass';hpf.frequency.value=1800;
+    o.connect(hpf);hpf.connect(g);g.connect(c.destination);
+    o.start(now);o.stop(now+.025);
+  }catch(e){}
+}
+
+// BOOT — rising sweep > data burst > two-tone chime
+function playBoot(){
+  if(!sOn)return;
+  try{
+    const c=gc(),now=c.currentTime;
+    const mg=c.createGain();mg.gain.value=.26;mg.connect(c.destination);
+    // sweep
+    const sw=c.createOscillator();sw.type='sawtooth';
+    sw.frequency.setValueAtTime(40,now);sw.frequency.exponentialRampToValueAtTime(900,now+1.2);
+    const se=c.createGain();se.gain.setValueAtTime(.4,now);se.gain.linearRampToValueAtTime(.1,now+1.2);
+    const lpf=c.createBiquadFilter();lpf.type='lowpass';lpf.frequency.value=1200;
+    sw.connect(lpf);lpf.connect(se);se.connect(mg);sw.start(now);sw.stop(now+1.2);
+    // data burst
+    const bb=c.createBuffer(1,Math.floor(c.sampleRate*.8),c.sampleRate);
+    const bd=bb.getChannelData(0);
+    for(let i=0;i<bd.length;i++) bd[i]=(Math.random()*2-1)*(i%1200<600?1:0);
+    const bs=c.createBufferSource();bs.buffer=bb;
+    const bpf2=c.createBiquadFilter();bpf2.type='bandpass';bpf2.frequency.value=4000;bpf2.Q.value=.8;
+    const be=c.createGain();be.gain.setValueAtTime(0,now+.8);be.gain.linearRampToValueAtTime(.3,now+1.0);be.gain.linearRampToValueAtTime(0,now+1.6);
+    bs.connect(bpf2);bpf2.connect(be);be.connect(mg);bs.start(now+.8);bs.stop(now+1.6);
+    // chime
+    [0,.12].forEach((dl,i)=>{
+      const f=[880,1320][i],ch=c.createOscillator();ch.type='sine';ch.frequency.value=f;
+      const ce=c.createGain();ce.gain.setValueAtTime(0,now+1.5+dl);ce.gain.linearRampToValueAtTime(.35,now+1.52+dl);ce.gain.exponentialRampToValueAtTime(.001,now+1.9+dl);
+      ch.connect(ce);ce.connect(mg);ch.start(now+1.5+dl);ch.stop(now+1.9+dl);
+    });
+  }catch(e){}
+}
+
+// AMBIENT — brown noise + 60Hz server hum
+function startDrone(){
+  if(drone)return;
+  try{
+    const c=gc();
+    const bufSz=c.sampleRate*2,nb=c.createBuffer(1,bufSz,c.sampleRate),nd=nb.getChannelData(0);
+    let last=0;for(let i=0;i<bufSz;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;nd[i]=last*3.5;}
+    const ns=c.createBufferSource();ns.buffer=nb;ns.loop=true;
+    const lpf=c.createBiquadFilter();lpf.type='lowpass';lpf.frequency.value=200;
+    const ag=c.createGain();ag.gain.setValueAtTime(0,c.currentTime);ag.gain.linearRampToValueAtTime(.055,c.currentTime+3);
+    ns.connect(lpf);lpf.connect(ag);ag.connect(c.destination);ns.start();
+    const hum=c.createOscillator();hum.type='sine';hum.frequency.value=60;
+    const hg=c.createGain();hg.gain.value=.04;
+    hum.connect(hg);hg.connect(c.destination);hum.start();
+    drone={ns,lpf,ag,hum,hg};
+  }catch(e){}
+}
+function stopDrone(){
+  if(!drone)return;
+  try{
+    const c=gc(),now=c.currentTime;
+    drone.ag.gain.linearRampToValueAtTime(0,now+.8);
+    drone.hg.gain.linearRampToValueAtTime(0,now+.8);
+    setTimeout(()=>{try{drone.ns.stop();drone.hum.stop();}catch(e){}drone=null;},900);
+  }catch(e){}drone=null;
+}
+
+// existing helpers kept for CTF feedback sounds
+function tick(){playHover();}
 function success(){if(!sOn)return;[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.12,'sine',.06),i*75));}
-function fail(){if(sOn){tone(180,.13,'sawtooth',.055);setTimeout(()=>tone(120,.28,'sawtooth',.045),130);}}
-function alert2(){if(sOn){tone(440,.07,'square',.035);setTimeout(()=>tone(440,.07,'square',.035),130);}}
-function startDrone(){if(!sOn||drone)return;try{const c=gc(),o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();o.type='sawtooth';o.frequency.value=55;f.type='lowpass';f.frequency.value=180;f.Q.value=4;o.connect(f);f.connect(g);g.connect(c.destination);g.gain.value=.012;o.start();drone={o,g};}catch(e){}}
-function stopDrone(){if(drone){try{drone.g.gain.setValueAtTime(.012,gc().currentTime);drone.g.gain.exponentialRampToValueAtTime(.001,gc().currentTime+1);setTimeout(()=>{try{drone.o.stop();}catch(e){}drone=null;},1100);}catch(e){}drone=null;}}
+function fail(){if(!sOn)return;tone(180,.13,'sawtooth',.055);setTimeout(()=>tone(120,.28,'sawtooth',.045),130);}
+function alert2(){if(!sOn)return;tone(440,.07,'square',.035);setTimeout(()=>tone(440,.07,'square',.035),130);}
+
 function toggleSound(){
   sOn=!sOn;
   const btn=document.getElementById('snd');
   btn.textContent=sOn?'ON':'OFF';
   btn.classList.toggle('on',sOn);
-  if(sOn){tone(440,.08);startDrone();}else stopDrone();
+  if(sOn){playClick();startDrone();}else stopDrone();
 }
+
+// Subtle mouse-move sonic texture (sparse)
 let lt=0;
-document.addEventListener('mousemove',()=>{const n=Date.now();if(sOn&&n-lt>90){tone(1100+Math.random()*180,.018,'sine',.006);lt=n;}});
+document.addEventListener('mousemove',()=>{
+  const n=Date.now();
+  if(sOn&&n-lt>120){tone(1100+Math.random()*200,.016,'sine',.005);lt=n;}
+});
+
+// Wire click/hover sounds to all interactive elements
+document.addEventListener('click',e=>{if(e.target.closest('button,a,.pstage,.ctplat'))playClick();},{passive:true});
+document.addEventListener('mouseover',e=>{if(e.target.closest('button,a,.tag,.pstage,.ctplat,.prow'))playHover();},{passive:true});
+
+// ════════════════════════════════════════════════════════════
+// INTRO SCREEN LOGIC
+// ════════════════════════════════════════════════════════════
+const INTRO_LOGS = [
+  '> Establishing secure channel...',
+  '> Loading kernel modules [████████] 100%',
+  '> Decrypting identity matrix...',
+  '> Mounting /sys/portfolio...',
+  '> Injecting KIRMADA runtime...',
+  '> Firewall active. Threat level: LOW',
+  '> SYSTEM READY',
+];
+
+// Matrix rain canvas on intro screen
+(function(){
+  const cv=document.getElementById('intro-canvas');
+  if(!cv)return;
+  const ctx=cv.getContext('2d');
+  let running=false,cols=[],W,H,raf;
+  const GLYPHS='01ABCDEF><|#@$%!?';
+  function resize(){
+    W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;
+    const n=Math.floor(W/18);
+    cols=Array.from({length:n},(_,i)=>({x:i*18+9,y:Math.random()*-200,speed:1+Math.random()*2.5,trail:[]}));
+  }
+  resize();window.addEventListener('resize',resize);
+  function draw(){
+    ctx.fillStyle='rgba(0,0,0,0.16)';ctx.fillRect(0,0,W,H);
+    ctx.font='12px "Courier New",monospace';
+    cols.forEach(d=>{
+      if(!running)return;
+      d.y+=d.speed;
+      const ch=GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+      d.trail.push({y:d.y,ch});if(d.trail.length>18)d.trail.shift();
+      d.trail.forEach((t,i)=>{
+        const a=i/d.trail.length,isH=i===d.trail.length-1;
+        ctx.fillStyle=isH?`rgba(200,255,220,${a})`:`rgba(0,255,135,${a*.65})`;
+        ctx.fillText(t.ch,d.x,t.y);
+      });
+      if(d.y>H+40){d.y=-20;d.trail=[];}
+    });
+    raf=requestAnimationFrame(draw);
+  }
+  draw();
+  // expose start signal
+  window._introRainStart=()=>{running=true;};
+})();
+
+function introLoad(){
+  sOn=true; // enable sound for boot
+  document.getElementById('snd').textContent='ON';
+  document.getElementById('snd').classList.add('on');
+  playBoot();
+  window._introRainStart&&window._introRainStart();
+
+  // Swap button → progress bar
+  document.getElementById('intro-btn').style.display='none';
+  document.getElementById('intro-progress-wrap').style.display='block';
+  document.getElementById('intro-subtitle').textContent='// INITIALISING SYSTEM //';
+
+  // Progress bar
+  const fill=document.getElementById('intro-progress-fill');
+  const pct=document.getElementById('intro-pct');
+  const DURATION=2500,start=performance.now();
+  function tick2(now){
+    const p=Math.min((now-start)/DURATION,1);
+    fill.style.width=(p*100)+'%';
+    pct.textContent=Math.round(p*100)+'%';
+    if(p<1){requestAnimationFrame(tick2);}
+    else{
+      // Fade out intro → reveal main site
+      setTimeout(()=>{
+        document.getElementById('intro').classList.add('fade-out');
+        setTimeout(()=>{
+          document.getElementById('intro').style.display='none';
+          startDrone(); // start ambient after intro
+        },700);
+      },350);
+    }
+  }
+  requestAnimationFrame(tick2);
+
+  // Trickle log lines
+  INTRO_LOGS.forEach((line,i)=>{
+    setTimeout(()=>{
+      const log=document.getElementById('intro-log');
+      const s=document.createElement('span');
+      s.className='ilog-line'+(line.includes('READY')?' ready':'');
+      s.textContent=line;
+      log.appendChild(s);
+    },200+i*320);
+  });
+}
 </script>
 </body>
 </html>
