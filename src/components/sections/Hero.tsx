@@ -96,7 +96,7 @@ export default function Hero() {
         {/* Right: Interactive Globe */}
         <div
           ref={globeRef}
-          className="w-full max-w-[420px] lg:max-w-[520px] opacity-0"
+          className="w-full max-w-[360px] lg:max-w-[440px] opacity-0"
         >
           <InteractiveGlobe />
         </div>
