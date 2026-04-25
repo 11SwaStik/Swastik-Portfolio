@@ -9,6 +9,7 @@ export function useCTFProgress(totalLevels: number) {
 
   useEffect(() => {
     const saved = parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR-safe hydration from localStorage
     setStep(Math.min(saved, totalLevels));
     setHydrated(true);
   }, [totalLevels]);

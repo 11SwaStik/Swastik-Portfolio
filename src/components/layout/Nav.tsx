@@ -7,7 +7,6 @@ const NAV_LINKS = [
   { id: "skills", label: "skills" },
   { id: "projects", label: "projects" },
   { id: "devsecops", label: "devsecops" },
-  { id: "ctf", label: "ctf" },
   { id: "contact", label: "contact" },
 ];
 
@@ -36,7 +35,6 @@ export default function Nav() {
           height="28"
           viewBox="0 0 100 100"
           xmlns="http://www.w3.org/2000/svg"
-          className="animate-[logo-pulse_3s_ease-in-out_infinite]"
           aria-label="SWK logo"
         >
           <defs>
@@ -85,7 +83,7 @@ export default function Nav() {
             <polyline points="20,86 14,86 14,80" />
           </g>
         </svg>
-        <span className="font-sans text-[0.82rem] font-extrabold tracking-[0.45em] text-white [text-shadow:0_0_8px_rgba(0,255,135,0.5)] transition-all duration-200 group-hover:tracking-[0.6em] group-hover:[text-shadow:0_0_12px_#00ff87,0_0_28px_rgba(0,255,135,0.25)]">
+        <span className="font-sans text-[0.82rem] font-extrabold tracking-[0.45em] text-white transition-colors duration-200 group-hover:text-green">
           KIRMADA
         </span>
       </a>

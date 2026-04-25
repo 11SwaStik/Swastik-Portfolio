@@ -28,12 +28,6 @@ export interface CTFChallenge {
   answer: string;
 }
 
-export interface Threat {
-  name: string;
-  status: "BLOCKED" | "LOGGED" | "ALERT";
-  severity: "low" | "warning" | "critical";
-}
-
 export interface DevSecOpsSkill {
   name: string;
   percentage: number;

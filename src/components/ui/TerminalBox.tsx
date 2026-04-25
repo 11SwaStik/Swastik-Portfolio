@@ -17,7 +17,7 @@ export default function TerminalBox({ lines }: TerminalBoxProps) {
       (entries) => {
         if (entries[0].isIntersecting && !hasAnimated.current) {
           hasAnimated.current = true;
-          lines.forEach((line, i) => {
+          lines.forEach((line) => {
             setTimeout(() => {
               setVisibleLines((prev) => [...prev, line.html]);
             }, line.delay);

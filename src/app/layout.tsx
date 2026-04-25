@@ -18,11 +18,11 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "Swastik Sharma — Cybersecurity Engineer",
   description:
-    "Security engineer, lab builder, and CTF player. Building firewalls, AWS labs, and security tools.",
+    "Security engineer building real infrastructure — AWS, firewalls, DevSecOps pipelines, and security tooling that ships.",
   openGraph: {
     title: "Swastik Sharma — Cybersecurity Engineer",
     description:
-      "Security engineer, lab builder, and CTF player. Building firewalls, AWS labs, and security tools.",
+      "Security engineer building real infrastructure — AWS, firewalls, DevSecOps pipelines, and security tooling that ships.",
     type: "website",
   },
 };

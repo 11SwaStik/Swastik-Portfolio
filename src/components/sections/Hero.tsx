@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
-import ParticleCanvas from "@/components/effects/ParticleCanvas";
 import InteractiveGlobe from "@/components/effects/InteractiveGlobe";
 
 export default function Hero() {
@@ -53,8 +52,6 @@ export default function Hero() {
       id="hero"
       className="min-h-screen flex items-center px-6 md:px-16 relative overflow-hidden"
     >
-      <ParticleCanvas />
-
       <div className="relative z-[1] w-full flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
         {/* Left: Text content */}
         <div className="max-w-[600px] flex-shrink-0">

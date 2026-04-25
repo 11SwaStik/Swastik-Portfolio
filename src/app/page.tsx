@@ -1,69 +1,37 @@
-import {
-  getAbout,
-  getSkills,
-  getPipeline,
-  getProjects,
-  getDevSecOpsSkills,
-  getDevSecOpsDescription,
-  getThreats,
-  getCTFChallenges,
-  getContactLinks,
-} from "@/data/fetchers";
-import { ctfPlatforms } from "@/data/ctf";
+import { aboutParagraphs, keyValues, terminalLines } from "@/data/about";
+import { skillCategories, pipelineStages } from "@/data/skills";
+import { projects } from "@/data/projects";
+import { devsecopsSkills, devsecopsDescription } from "@/data/devsecops";
+import { contactLinks } from "@/data/contact";
+
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
-import CustomCursor from "@/components/layout/CustomCursor";
-import SoundToggle from "@/components/layout/SoundToggle";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Skills from "@/components/sections/Skills";
 import Projects from "@/components/sections/Projects";
 import DevSecOps from "@/components/sections/DevSecOps";
-import PageClient from "./PageClient";
-import BootScreenLoader from "@/components/boot/BootScreenLoader";
+import Contact from "@/components/sections/Contact";
 
-export default async function Home() {
-  const [about, skills, pipeline, projects, devsecopsSkills, devsecopsDesc, threats, ctfChallenges, contactLinks] =
-    await Promise.all([
-      getAbout(),
-      getSkills(),
-      getPipeline(),
-      getProjects(),
-      getDevSecOpsSkills(),
-      getDevSecOpsDescription(),
-      getThreats(),
-      getCTFChallenges(),
-      getContactLinks(),
-    ]);
-
+export default function Home() {
   return (
     <>
-      <BootScreenLoader />
-      <CustomCursor />
-      <SoundToggle />
       <Nav />
-
       <main>
         <Hero />
         <About
-          paragraphs={about.paragraphs}
-          keyValues={about.keyValues}
-          terminalLines={about.terminalLines}
+          paragraphs={aboutParagraphs}
+          keyValues={keyValues}
+          terminalLines={terminalLines}
         />
-        <Skills categories={skills} pipeline={pipeline} />
+        <Skills categories={skillCategories} pipeline={pipelineStages} />
         <Projects projects={projects} />
         <DevSecOps
           skills={devsecopsSkills}
-          description={devsecopsDesc}
-          threats={threats}
+          description={devsecopsDescription}
         />
-        <PageClient
-          ctfChallenges={ctfChallenges}
-          ctfPlatforms={ctfPlatforms}
-          contactLinks={contactLinks}
-        />
+        <Contact links={contactLinks} />
       </main>
-
       <Footer />
     </>
   );

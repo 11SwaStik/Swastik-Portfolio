@@ -8,7 +8,7 @@ export default function SectionHeader({ number, title, center }: SectionHeaderPr
   return (
     <div className={`mb-16 ${center ? "text-center" : ""}`}>
       <span className="text-[0.58rem] text-green tracking-[5px] block mb-2">
-        // {number}
+        {`// ${number}`}
       </span>
       <h2 className="font-sans text-[clamp(2rem,4vw,3.2rem)] font-extrabold text-white tracking-tight leading-none">
         {title}
