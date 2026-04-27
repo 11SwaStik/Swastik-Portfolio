@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Share_Tech_Mono, Syne } from "next/font/google";
+import { Share_Tech_Mono, Syne, Tiro_Devanagari_Sanskrit } from "next/font/google";
 import BootSplash from "@/components/effects/BootSplash";
 import "./globals.css";
 
@@ -13,6 +13,13 @@ const shareTechMono = Share_Tech_Mono({
 const syne = Syne({
   variable: "--font-syne",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const tiroDevanagari = Tiro_Devanagari_Sanskrit({
+  weight: "400",
+  variable: "--font-tiro-devanagari",
+  subsets: ["devanagari", "latin"],
   display: "swap",
 });
 
@@ -36,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${shareTechMono.variable} ${syne.variable}`}
+      className={`${shareTechMono.variable} ${syne.variable} ${tiroDevanagari.variable}`}
     >
       <body>
         <BootSplash />

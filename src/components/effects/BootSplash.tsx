@@ -125,9 +125,28 @@ export default function BootSplash() {
         {"// SKIP"}
       </button>
 
-      <Logo />
+      <div className="flex flex-col items-center">
+        <div
+          className="text-transparent bg-clip-text bg-gradient-to-br from-green via-cyan to-violet text-[clamp(2.6rem,7vw,4.4rem)] leading-none tracking-wider"
+          style={{
+            fontFamily: "var(--font-devanagari)",
+            animation: "boot-reveal 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
+            clipPath: "inset(0 100% 0 0)",
+            opacity: 0,
+            paddingBottom: "0.15em",
+          }}
+        >
+          स्वस्तिक
+        </div>
+        <div
+          className="text-[0.55rem] text-text-dim tracking-[6px] mt-2 font-mono"
+          style={{ animation: "boot-fade-up 500ms 700ms ease-out both" }}
+        >
+          SWASTIK · KIRMADA
+        </div>
+      </div>
 
-      <div className="mt-12 w-[min(560px,90vw)] text-[0.74rem] leading-[2.1] px-4">
+      <div className="mt-10 w-[min(560px,90vw)] text-[0.74rem] leading-[2.1] px-4">
         {LINES.map((line, i) => {
           if (i > progress.line) return <div key={i} className="min-h-[1.7em]" />;
           const fullLen = line.prefix.length + line.body.length;
@@ -188,51 +207,3 @@ export default function BootSplash() {
   );
 }
 
-function Logo() {
-  return (
-    <svg width="64" height="64" viewBox="0 0 100 100" aria-hidden>
-      <defs>
-        <linearGradient id="boot-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#00ff87" />
-          <stop offset="55%" stopColor="#5df2ff" />
-          <stop offset="100%" stopColor="#c38bff" />
-        </linearGradient>
-        <filter id="boot-glow">
-          <feGaussianBlur stdDeviation="1.6" result="b" />
-          <feMerge>
-            <feMergeNode in="b" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      <polygon
-        points="50,4 90,27 90,73 50,96 10,73 10,27"
-        fill="none"
-        stroke="url(#boot-grad)"
-        strokeWidth="1.5"
-        opacity="0.55"
-        style={{
-          strokeDasharray: 360,
-          strokeDashoffset: 360,
-          animation: "boot-draw 600ms ease-out forwards",
-        }}
-      />
-      <g
-        filter="url(#boot-glow)"
-        stroke="url(#boot-grad)"
-        strokeWidth="3.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-        style={{
-          strokeDasharray: 700,
-          strokeDashoffset: 700,
-          animation: "boot-draw 750ms 120ms ease-out forwards",
-        }}
-      >
-        <polygon points="22,30 38,22 50,30 38,38" opacity="0.85" />
-        <path d="M50,30 L78,22 L64,50 L78,78 L50,70 L22,78 L36,50 L22,30" />
-      </g>
-    </svg>
-  );
-}

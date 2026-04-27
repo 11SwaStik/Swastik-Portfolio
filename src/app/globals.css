@@ -16,6 +16,7 @@
 
   --font-mono: var(--font-share-tech-mono), "Courier New", monospace;
   --font-sans: var(--font-syne), system-ui, sans-serif;
+  --font-devanagari: var(--font-tiro-devanagari), "Noto Sans Devanagari", serif;
 }
 
 /* Base */
@@ -28,7 +29,6 @@ body {
   color: var(--color-text);
   font-family: var(--font-mono);
   overflow-x: hidden;
-  cursor: none;
 }
 
 /* Scanline overlay */
@@ -47,11 +47,8 @@ body::after {
   z-index: 9000;
 }
 
-/* Hide custom cursor on touch devices */
+/* Hide scanline overlay on touch devices */
 @media (pointer: coarse) {
-  body {
-    cursor: auto;
-  }
   body::after {
     display: none;
   }
@@ -168,6 +165,22 @@ body::after {
     transform: translateY(6px);
   }
   to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes boot-reveal {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
     opacity: 1;
     transform: none;
   }
