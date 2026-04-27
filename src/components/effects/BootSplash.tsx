@@ -104,18 +104,21 @@ export default function BootSplash() {
       onUpdate: () => {
         const t = driver.v;
 
-        // Chars expand outward in sync with the vortex — gentle spiral,
-        // strong scale-up, smooth fade across the whole travel.
+        // Chars expand outward in sync with the vortex — they need to
+        // clearly cross the viewport, not stay near where the word sat.
+        // Travel past the edges (1.15× radius), scale up dramatically,
+        // and stay visible until the last ~25% so the motion reads as
+        // "screen-filling expansion" instead of a localized burst.
         for (let i = 0; i < chars.length; i++) {
           const c = chars[i];
           const local = Math.min(1, t / 0.95);
           const eased = 1 - Math.pow(1 - local, 2.2);
-          const angle = charParams[i].baseAngle + eased * Math.PI * 1.4;
-          const r = eased * MAX_R * 0.85;
-          const rot = eased * 240;
-          const scale = 1 + eased * 1.6;
-          // Smooth fade from the start — chars fully gone by the end.
-          const opacity = Math.max(0, 1 - eased * eased);
+          const angle = charParams[i].baseAngle + eased * Math.PI * 0.8;
+          const r = eased * MAX_R * 1.15;
+          const rot = eased * 200;
+          const scale = 1 + eased * 2.6;
+          const opacity =
+            local < 0.75 ? 1 : Math.max(0, 1 - (local - 0.75) / 0.25);
           c.style.transform = `translate(${Math.cos(angle) * r}px, ${
             Math.sin(angle) * r
           }px) rotate(${rot}deg) scale(${scale})`;
