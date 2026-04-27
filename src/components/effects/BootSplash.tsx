@@ -1,12 +1,13 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
-import { playAuthClick } from "@/lib/clickSound";
+import { playUnlockSound } from "@/lib/clickSound";
 import { splitGraphemes } from "@/lib/graphemes";
 
 const SESSION_KEY = "kirmada_intro_seen";
 const NAME = "स्वस्तिक";
 const NAME_CHARS = splitGraphemes(NAME);
+const PARTICLE_COUNT = 56;
 
 type Line = {
   ts: string;
@@ -29,12 +30,35 @@ const READY_PAUSE_MS = 220;
 
 type Phase = "intro" | "ready" | "unlocking" | "done";
 
+// Deterministic per-particle params so behavior is stable across runs and
+// no Math.random is needed at runtime (also avoids hydration concerns).
+type ParticleParam = {
+  baseAngle: number;
+  radiusMul: number;
+  spiralTurns: number;
+  delay: number;
+  size: number;
+};
+
+const PARTICLE_PARAMS: ParticleParam[] = Array.from(
+  { length: PARTICLE_COUNT },
+  (_, i) => ({
+    baseAngle: (i / PARTICLE_COUNT) * Math.PI * 2 + ((i % 7) * 0.13),
+    radiusMul: 0.85 + ((i * 17) % 100) / 100 * 1.1,
+    spiralTurns: 0.9 + ((i * 23) % 100) / 100 * 1.3,
+    delay: ((i * 11) % 28) / 100,
+    size: 0.6 + ((i * 13) % 100) / 100 * 1.4,
+  })
+);
+
 export default function BootSplash() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [progress, setProgress] = useState({ line: 0, char: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const flashRef = useRef<HTMLDivElement>(null);
   const charsRef = useRef<HTMLSpanElement[]>([]);
+  const particlesRef = useRef<HTMLSpanElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const isUnlockingRef = useRef(false);
 
@@ -42,15 +66,14 @@ export default function BootSplash() {
     if (isUnlockingRef.current) return;
     isUnlockingRef.current = true;
 
-    // Sound must run synchronously inside the user gesture or browsers
-    // (Safari especially) refuse to start the AudioContext.
-    playAuthClick();
+    // Audio must run inside the user-gesture sync path or browsers
+    // refuse to start the AudioContext.
+    playUnlockSound();
 
     const chars = charsRef.current.filter(Boolean);
+    const particles = particlesRef.current.filter(Boolean);
     const container = containerRef.current;
-
-    // Defensive: if refs aren't wired, just dismiss without animation
-    // rather than running a no-op timeline that looks broken.
+    const flash = flashRef.current;
     if (chars.length === 0 || !container) {
       setPhase("done");
       return;
@@ -58,47 +81,100 @@ export default function BootSplash() {
 
     setPhase("unlocking");
 
-    const N = chars.length;
-    const radius = Math.max(window.innerWidth, window.innerHeight) * 0.55;
-    const angleOffset = -Math.PI / 2; // first char flies upward
+    // Spiral spans the viewport diagonal so particles fly off-screen.
+    const MAX_R = Math.hypot(window.innerWidth, window.innerHeight) * 0.7;
 
-    const tl = gsap.timeline({
-      onComplete: () => setPhase("done"),
-    });
+    const charParams = chars.map((_, i) => ({
+      baseAngle: (i / chars.length) * Math.PI * 2 - Math.PI / 2,
+    }));
+
+    // One driver tween — onUpdate computes spiral positions for all chars
+    // and particles from a single 0→1 progress value. This keeps motion
+    // perfectly synced and avoids spawning ~120 individual tweens.
+    const driver = { v: 0 };
+    const tl = gsap.timeline({ onComplete: () => setPhase("done") });
     tlRef.current = tl;
 
-    // Devanagari graphemes spiral outward — radial position via trig,
-    // each rotating a full turn during travel for a controlled spin.
-    tl.to(
-      chars,
-      {
-        x: (i) => Math.cos(angleOffset + (i / N) * Math.PI * 2) * radius,
-        y: (i) => Math.sin(angleOffset + (i / N) * Math.PI * 2) * radius,
-        rotation: (i) => 360 + i * 40,
-        scale: 1.4,
-        opacity: 0,
-        duration: 1.05,
-        ease: "power2.out",
-        stagger: 0.06,
-      },
-      0
-    );
+    tl.to(driver, {
+      v: 1,
+      duration: 1.55,
+      ease: "none",
+      onUpdate: () => {
+        const t = driver.v;
 
-    // Caption / boot lines / button area / skip link — quieter fade so
-    // the spiral stays the focus.
+        // Chars — controlled spin, 1.5 turns of spiral, scale up, fade in last 30%.
+        for (let i = 0; i < chars.length; i++) {
+          const c = chars[i];
+          const local = Math.min(1, t / 0.95);
+          const eased = 1 - Math.pow(1 - local, 2);
+          const angle = charParams[i].baseAngle + eased * Math.PI * 1.5;
+          const r = eased * MAX_R * 0.55;
+          const rot = eased * 720;
+          const scale = 1 + eased * 0.7;
+          const opacity =
+            local < 0.6 ? 1 : Math.max(0, 1 - (local - 0.6) / 0.4);
+          c.style.transform = `translate(${Math.cos(angle) * r}px, ${
+            Math.sin(angle) * r
+          }px) rotate(${rot}deg) scale(${scale})`;
+          c.style.opacity = String(opacity);
+        }
+
+        // Particles — staggered start, cubic ease-out, more turns + variable radius.
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          const params = PARTICLE_PARAMS[i];
+          const local =
+            (t - params.delay) / Math.max(0.01, 1 - params.delay);
+          if (local <= 0) {
+            p.style.opacity = "0";
+            continue;
+          }
+          const clamped = Math.min(1, local);
+          const eased = 1 - Math.pow(1 - clamped, 3);
+          const angle = params.baseAngle + eased * Math.PI * params.spiralTurns;
+          const r = eased * MAX_R * params.radiusMul;
+          const scale = params.size * (0.8 + clamped * 0.7);
+          const fadeIn = Math.min(1, clamped * 4);
+          const fadeOut =
+            clamped > 0.65 ? Math.max(0, 1 - (clamped - 0.65) / 0.35) : 1;
+          p.style.transform = `translate(${Math.cos(angle) * r}px, ${
+            Math.sin(angle) * r
+          }px) scale(${scale})`;
+          p.style.opacity = String(fadeIn * fadeOut);
+        }
+      },
+    }, 0);
+
+    // Boot UI fades quickly so it doesn't compete with the vortex.
     tl.to(
       ".boot-rest",
-      { opacity: 0, y: -8, duration: 0.45, ease: "power1.in" },
-      0.15
+      { opacity: 0, y: -8, duration: 0.4, ease: "power1.in" },
+      0.05
     );
 
-    // Container wash for clean handoff to the page underneath.
-    tl.to(container, { opacity: 0, duration: 0.4, ease: "power1.in" }, 0.7);
+    // Center bloom — radial flash that grows past the viewport at peak.
+    if (flash) {
+      tl.fromTo(
+        flash,
+        { opacity: 0, scale: 0.35 },
+        { opacity: 0.95, scale: 1.5, duration: 0.35, ease: "power2.out" },
+        0.55
+      ).to(
+        flash,
+        { opacity: 0, scale: 2.2, duration: 0.5, ease: "power2.in" },
+        0.92
+      );
+    }
+
+    // Final container wash for clean handoff to the page underneath.
+    tl.to(
+      container,
+      { opacity: 0, duration: 0.35, ease: "power1.in" },
+      1.18
+    );
   }, []);
 
-  // Drive the typing of boot lines via a single rAF loop. Only setState
-  // when the visible char count actually changes so we don't re-render at
-  // 60 fps.
+  // Drive the typing of boot lines via a single rAF loop.
   useEffect(() => {
     if (sessionStorage.getItem(SESSION_KEY)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR-safe session-replay check
@@ -146,7 +222,6 @@ export default function BootSplash() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // Keyboard shortcut once the splash is ready.
   useEffect(() => {
     if (phase !== "ready") return;
     buttonRef.current?.focus();
@@ -160,7 +235,6 @@ export default function BootSplash() {
     return () => window.removeEventListener("keydown", onKey);
   }, [phase, unlock]);
 
-  // Kill any in-flight GSAP timeline if the component unmounts mid-transition.
   useEffect(() => {
     return () => {
       tlRef.current?.kill();
@@ -172,7 +246,7 @@ export default function BootSplash() {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[9999] bg-bg flex flex-col items-center justify-center font-mono"
+      className="fixed inset-0 z-[9999] bg-bg flex flex-col items-center justify-center font-mono overflow-hidden"
       role="dialog"
       aria-label="Loading"
     >
@@ -187,7 +261,7 @@ export default function BootSplash() {
       <button
         onClick={unlock}
         disabled={phase !== "ready"}
-        className="boot-rest absolute top-6 right-6 text-[0.55rem] text-text-dim tracking-[2px] hover:text-green transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+        className="boot-rest absolute top-6 right-6 text-[0.55rem] text-text-dim tracking-[2px] hover:text-green transition-colors disabled:opacity-30 disabled:cursor-not-allowed z-10"
       >
         {"// SKIP"}
       </button>
@@ -256,6 +330,39 @@ export default function BootSplash() {
           </>
         )}
       </div>
+
+      {/* Particle vortex layer — positioned at viewport center, particles
+          start clustered there and fly outward via GSAP transforms. */}
+      <div className="absolute top-1/2 left-1/2 pointer-events-none">
+        {PARTICLE_PARAMS.map((_, i) => (
+          <span
+            key={i}
+            ref={(el) => {
+              if (el) particlesRef.current[i] = el;
+            }}
+            className="absolute w-[6px] h-[6px] rounded-full bg-green -ml-[3px] -mt-[3px]"
+            style={{
+              boxShadow:
+                "0 0 6px #00ff87, 0 0 14px rgba(0, 255, 135, 0.55), 0 0 28px rgba(93, 242, 255, 0.25)",
+              opacity: 0,
+              willChange: "transform, opacity",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Center bloom — full-screen radial flash that grows at peak. */}
+      <div
+        ref={flashRef}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at center, rgba(0, 255, 135, 0.6) 0%, rgba(93, 242, 255, 0.25) 25%, transparent 60%)",
+          opacity: 0,
+          mixBlendMode: "screen",
+          willChange: "transform, opacity",
+        }}
+      />
     </div>
   );
 }
@@ -267,13 +374,14 @@ interface DevanagariNameProps {
 function DevanagariName({ charsRef }: DevanagariNameProps) {
   return (
     <div
-      className="text-[clamp(2.6rem,7vw,4.4rem)] leading-none tracking-wider"
+      className="text-[clamp(2.6rem,7vw,4.4rem)] leading-none tracking-wider relative z-[1]"
       style={{
         fontFamily: "var(--font-devanagari)",
         animation: "boot-reveal 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
         clipPath: "inset(0 100% 0 0)",
         opacity: 0,
         paddingBottom: "0.15em",
+        filter: "drop-shadow(0 0 18px rgba(0, 255, 135, 0.35))",
       }}
     >
       {NAME_CHARS.map((c, i) => (
