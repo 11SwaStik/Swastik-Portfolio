@@ -7,7 +7,7 @@ import { splitGraphemes } from "@/lib/graphemes";
 const SESSION_KEY = "kirmada_intro_seen";
 const NAME = "स्वस्तिक";
 const NAME_CHARS = splitGraphemes(NAME);
-const PARTICLE_COUNT = 56;
+const PARTICLE_COUNT = 72;
 
 type Line = {
   ts: string;
@@ -40,13 +40,15 @@ type ParticleParam = {
   size: number;
 };
 
+// Particles get a baseline delay so the Devanagari chars lead the motion —
+// the vortex visually emanates from the text rather than racing alongside it.
 const PARTICLE_PARAMS: ParticleParam[] = Array.from(
   { length: PARTICLE_COUNT },
   (_, i) => ({
     baseAngle: (i / PARTICLE_COUNT) * Math.PI * 2 + ((i % 7) * 0.13),
-    radiusMul: 0.85 + ((i * 17) % 100) / 100 * 1.1,
-    spiralTurns: 0.9 + ((i * 23) % 100) / 100 * 1.3,
-    delay: ((i * 11) % 28) / 100,
+    radiusMul: 1.0 + ((i * 17) % 100) / 100 * 1.4,
+    spiralTurns: 1.1 + ((i * 23) % 100) / 100 * 1.6,
+    delay: 0.18 + ((i * 11) % 28) / 100,
     size: 0.6 + ((i * 13) % 100) / 100 * 1.4,
   })
 );
@@ -82,7 +84,7 @@ export default function BootSplash() {
     setPhase("unlocking");
 
     // Spiral spans the viewport diagonal so particles fly off-screen.
-    const MAX_R = Math.hypot(window.innerWidth, window.innerHeight) * 0.7;
+    const MAX_R = Math.hypot(window.innerWidth, window.innerHeight) * 0.85;
 
     const charParams = chars.map((_, i) => ({
       baseAngle: (i / chars.length) * Math.PI * 2 - Math.PI / 2,
@@ -102,20 +104,36 @@ export default function BootSplash() {
       onUpdate: () => {
         const t = driver.v;
 
-        // Chars — controlled spin, 1.5 turns of spiral, scale up, fade in last 30%.
+        // Chars get a "wind-up + release" pattern — first ~0.16s they
+        // pull inward and counter-rotate (winding tension), then they
+        // explode outward in 2.5 spiral turns reaching ~95% of the
+        // viewport radius. The chars lead the vortex, particles trail.
+        const WIND = 0.16;
         for (let i = 0; i < chars.length; i++) {
           const c = chars[i];
           const local = Math.min(1, t / 0.95);
-          const eased = 1 - Math.pow(1 - local, 2);
-          const angle = charParams[i].baseAngle + eased * Math.PI * 1.5;
-          const r = eased * MAX_R * 0.55;
-          const rot = eased * 720;
-          const scale = 1 + eased * 0.7;
-          const opacity =
-            local < 0.6 ? 1 : Math.max(0, 1 - (local - 0.6) / 0.4);
-          c.style.transform = `translate(${Math.cos(angle) * r}px, ${
-            Math.sin(angle) * r
-          }px) rotate(${rot}deg) scale(${scale})`;
+          let x: number, y: number, rot: number, scale: number, opacity: number;
+          if (local < WIND) {
+            const wind = local / WIND;
+            const eased = 1 - Math.pow(1 - wind, 2);
+            x = 0;
+            y = 0;
+            rot = -eased * 80;
+            scale = 1 - eased * 0.18;
+            opacity = 1;
+          } else {
+            const release = (local - WIND) / (1 - WIND);
+            const eased = 1 - Math.pow(1 - release, 2.4);
+            const angle = charParams[i].baseAngle + eased * Math.PI * 2.5;
+            const r = eased * MAX_R * 0.95;
+            x = Math.cos(angle) * r;
+            y = Math.sin(angle) * r;
+            rot = -80 + eased * (1340 + 80);
+            scale = 0.82 + eased * 1.7;
+            opacity =
+              release < 0.78 ? 1 : Math.max(0, 1 - (release - 0.78) / 0.22);
+          }
+          c.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${scale})`;
           c.style.opacity = String(opacity);
         }
 
@@ -381,7 +399,7 @@ function DevanagariName({ charsRef }: DevanagariNameProps) {
         clipPath: "inset(0 100% 0 0)",
         opacity: 0,
         paddingBottom: "0.15em",
-        filter: "drop-shadow(0 0 18px rgba(0, 255, 135, 0.35))",
+        filter: "drop-shadow(0 0 22px rgba(0, 255, 135, 0.55)) drop-shadow(0 0 44px rgba(93, 242, 255, 0.25))",
       }}
     >
       {NAME_CHARS.map((c, i) => (
