@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Share_Tech_Mono, Syne } from "next/font/google";
+import BootSplash from "@/components/effects/BootSplash";
 import "./globals.css";
 
 const shareTechMono = Share_Tech_Mono({
@@ -37,7 +38,10 @@ export default function RootLayout({
       lang="en"
       className={`${shareTechMono.variable} ${syne.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <BootSplash />
+        {children}
+      </body>
     </html>
   );
 }
