@@ -378,16 +378,32 @@ interface DevanagariNameProps {
 }
 
 function DevanagariName({ charsRef }: DevanagariNameProps) {
-  return (
-    <div
-      className="text-[clamp(2.6rem,7vw,4.4rem)] leading-none tracking-wider relative z-[1]"
-      style={{
-        fontFamily: "var(--font-devanagari)",
+  // The entry animation uses clipPath for a left-to-right wipe. Once it
+  // finishes, we drop the clip so the chars aren't scissored to the
+  // parent's text box during the unlock spiral — without this, no matter
+  // how far the chars translate they get cut off at the word's edges.
+  const [revealed, setRevealed] = useState(false);
+
+  const baseStyle: React.CSSProperties = {
+    fontFamily: "var(--font-devanagari)",
+    paddingBottom: "0.15em",
+    filter:
+      "drop-shadow(0 0 22px rgba(0, 255, 135, 0.55)) drop-shadow(0 0 44px rgba(93, 242, 255, 0.25))",
+  };
+  const entryStyle: React.CSSProperties = revealed
+    ? {}
+    : {
         animation: "boot-reveal 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
         clipPath: "inset(0 100% 0 0)",
         opacity: 0,
-        paddingBottom: "0.15em",
-        filter: "drop-shadow(0 0 22px rgba(0, 255, 135, 0.55)) drop-shadow(0 0 44px rgba(93, 242, 255, 0.25))",
+      };
+
+  return (
+    <div
+      className="text-[clamp(2.6rem,7vw,4.4rem)] leading-none tracking-wider relative z-[1]"
+      style={{ ...baseStyle, ...entryStyle }}
+      onAnimationEnd={(e) => {
+        if (e.animationName === "boot-reveal") setRevealed(true);
       }}
     >
       {NAME_CHARS.map((c, i) => (
