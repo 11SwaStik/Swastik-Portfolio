@@ -104,36 +104,21 @@ export default function BootSplash() {
       onUpdate: () => {
         const t = driver.v;
 
-        // Chars get a "wind-up + release" pattern — first ~0.16s they
-        // pull inward and counter-rotate (winding tension), then they
-        // explode outward in 2.5 spiral turns reaching ~95% of the
-        // viewport radius. The chars lead the vortex, particles trail.
-        const WIND = 0.16;
+        // Chars expand outward in sync with the vortex — gentle spiral,
+        // strong scale-up, smooth fade across the whole travel.
         for (let i = 0; i < chars.length; i++) {
           const c = chars[i];
           const local = Math.min(1, t / 0.95);
-          let x: number, y: number, rot: number, scale: number, opacity: number;
-          if (local < WIND) {
-            const wind = local / WIND;
-            const eased = 1 - Math.pow(1 - wind, 2);
-            x = 0;
-            y = 0;
-            rot = -eased * 80;
-            scale = 1 - eased * 0.18;
-            opacity = 1;
-          } else {
-            const release = (local - WIND) / (1 - WIND);
-            const eased = 1 - Math.pow(1 - release, 2.4);
-            const angle = charParams[i].baseAngle + eased * Math.PI * 2.5;
-            const r = eased * MAX_R * 0.95;
-            x = Math.cos(angle) * r;
-            y = Math.sin(angle) * r;
-            rot = -80 + eased * (1340 + 80);
-            scale = 0.82 + eased * 1.7;
-            opacity =
-              release < 0.78 ? 1 : Math.max(0, 1 - (release - 0.78) / 0.22);
-          }
-          c.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${scale})`;
+          const eased = 1 - Math.pow(1 - local, 2.2);
+          const angle = charParams[i].baseAngle + eased * Math.PI * 1.4;
+          const r = eased * MAX_R * 0.85;
+          const rot = eased * 240;
+          const scale = 1 + eased * 1.6;
+          // Smooth fade from the start — chars fully gone by the end.
+          const opacity = Math.max(0, 1 - eased * eased);
+          c.style.transform = `translate(${Math.cos(angle) * r}px, ${
+            Math.sin(angle) * r
+          }px) rotate(${rot}deg) scale(${scale})`;
           c.style.opacity = String(opacity);
         }
 
