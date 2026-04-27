@@ -36,74 +36,69 @@ export default function BootSplash() {
   const containerRef = useRef<HTMLDivElement>(null);
   const charsRef = useRef<HTMLSpanElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const isUnlockingRef = useRef(false);
 
   const unlock = useCallback(() => {
-    setPhase((current) => {
-      if (current !== "ready") return current;
-      playAuthClick();
+    if (isUnlockingRef.current) return;
+    isUnlockingRef.current = true;
 
-      const chars = charsRef.current.filter(Boolean);
-      const N = chars.length;
-      const radius =
-        Math.max(window.innerWidth, window.innerHeight) * 0.55;
-      const angleOffset = -Math.PI / 2; // first char flies upward
+    // Sound must run synchronously inside the user gesture or browsers
+    // (Safari especially) refuse to start the AudioContext.
+    playAuthClick();
 
-      const tl = gsap.timeline({
-        onComplete: () => setPhase("done"),
-      });
-      tlRef.current = tl;
+    const chars = charsRef.current.filter(Boolean);
+    const container = containerRef.current;
 
-      // Devanagari chars spiral outward — radial position via trig,
-      // each one rotates a full turn during travel so the burst feels
-      // like a controlled spin, not a scatter.
-      tl.to(
-        chars,
-        {
-          x: (i) =>
-            Math.cos(angleOffset + (i / N) * Math.PI * 2) * radius,
-          y: (i) =>
-            Math.sin(angleOffset + (i / N) * Math.PI * 2) * radius,
-          rotation: (i) => 360 + i * 40,
-          scale: 1.4,
-          opacity: 0,
-          duration: 1.05,
-          ease: "power2.out",
-          stagger: 0.06,
-        },
-        0
-      );
+    // Defensive: if refs aren't wired, just dismiss without animation
+    // rather than running a no-op timeline that looks broken.
+    if (chars.length === 0 || !container) {
+      setPhase("done");
+      return;
+    }
 
-      // Everything else (caption, boot lines, button, skip link) fades up
-      // and out together — quieter than the spiral so it stays the focus.
-      tl.to(
-        ".boot-rest",
-        {
-          opacity: 0,
-          y: -8,
-          duration: 0.45,
-          ease: "power1.in",
-        },
-        0.15
-      );
+    setPhase("unlocking");
 
-      // Final container wash to clean transition into the page.
-      tl.to(
-        containerRef.current,
-        {
-          opacity: 0,
-          duration: 0.4,
-          ease: "power1.in",
-        },
-        0.7
-      );
+    const N = chars.length;
+    const radius = Math.max(window.innerWidth, window.innerHeight) * 0.55;
+    const angleOffset = -Math.PI / 2; // first char flies upward
 
-      return "unlocking";
+    const tl = gsap.timeline({
+      onComplete: () => setPhase("done"),
     });
+    tlRef.current = tl;
+
+    // Devanagari graphemes spiral outward — radial position via trig,
+    // each rotating a full turn during travel for a controlled spin.
+    tl.to(
+      chars,
+      {
+        x: (i) => Math.cos(angleOffset + (i / N) * Math.PI * 2) * radius,
+        y: (i) => Math.sin(angleOffset + (i / N) * Math.PI * 2) * radius,
+        rotation: (i) => 360 + i * 40,
+        scale: 1.4,
+        opacity: 0,
+        duration: 1.05,
+        ease: "power2.out",
+        stagger: 0.06,
+      },
+      0
+    );
+
+    // Caption / boot lines / button area / skip link — quieter fade so
+    // the spiral stays the focus.
+    tl.to(
+      ".boot-rest",
+      { opacity: 0, y: -8, duration: 0.45, ease: "power1.in" },
+      0.15
+    );
+
+    // Container wash for clean handoff to the page underneath.
+    tl.to(container, { opacity: 0, duration: 0.4, ease: "power1.in" }, 0.7);
   }, []);
 
-  // Drive the typing of boot lines via rAF — single setState only when
-  // the visible character count changes, so we're not re-rendering at 60fps
-  // for nothing.
+  // Drive the typing of boot lines via a single rAF loop. Only setState
+  // when the visible char count actually changes so we don't re-render at
+  // 60 fps.
   useEffect(() => {
     if (sessionStorage.getItem(SESSION_KEY)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR-safe session-replay check
@@ -272,7 +267,7 @@ interface DevanagariNameProps {
 function DevanagariName({ charsRef }: DevanagariNameProps) {
   return (
     <div
-      className="text-transparent bg-clip-text bg-gradient-to-br from-green via-cyan to-violet text-[clamp(2.6rem,7vw,4.4rem)] leading-none tracking-wider"
+      className="text-[clamp(2.6rem,7vw,4.4rem)] leading-none tracking-wider"
       style={{
         fontFamily: "var(--font-devanagari)",
         animation: "boot-reveal 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
@@ -287,7 +282,7 @@ function DevanagariName({ charsRef }: DevanagariNameProps) {
           ref={(el) => {
             if (el) charsRef.current[i] = el;
           }}
-          className="inline-block"
+          className="inline-block bg-clip-text text-transparent bg-gradient-to-br from-green via-cyan to-violet"
           style={{ willChange: "transform, opacity" }}
         >
           {c}
