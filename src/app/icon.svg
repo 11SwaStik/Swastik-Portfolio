@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0a0a14"/>
+      <stop offset="100%" stop-color="#080808"/>
+    </radialGradient>
+    <linearGradient id="petalOuter" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#c38bff"/>
+      <stop offset="60%" stop-color="#5df2ff"/>
+      <stop offset="100%" stop-color="#00ff87"/>
+    </linearGradient>
+    <linearGradient id="petalMid" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#5df2ff"/>
+      <stop offset="100%" stop-color="#c38bff"/>
+    </linearGradient>
+    <linearGradient id="petalInner" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#00ff87"/>
+      <stop offset="100%" stop-color="#5df2ff"/>
+    </linearGradient>
+    <path id="outerPetal" d="M 50,3 Q 38,17 44,30 Q 50,34 56,30 Q 62,17 50,3 Z"/>
+    <path id="midPetal" d="M 50,18 Q 42,28 50,38 Q 58,28 50,18 Z"/>
+    <path id="innerPetal" d="M 50,36 Q 46,42 50,50 Q 54,42 50,36 Z"/>
+  </defs>
+
+  <!-- Dark backing so neon palette reads on any browser tab color -->
+  <circle cx="50" cy="50" r="49" fill="url(#bgGrad)"/>
+
+  <!-- Outermost ring: 12 small dots -->
+  <g fill="#00ff87">
+    <circle cx="50" cy="4" r="1.6"/>
+    <circle cx="73" cy="10.16" r="1.6"/>
+    <circle cx="89.84" cy="27" r="1.6"/>
+    <circle cx="96" cy="50" r="1.6"/>
+    <circle cx="89.84" cy="73" r="1.6"/>
+    <circle cx="73" cy="89.84" r="1.6"/>
+    <circle cx="50" cy="96" r="1.6"/>
+    <circle cx="27" cy="89.84" r="1.6"/>
+    <circle cx="10.16" cy="73" r="1.6"/>
+    <circle cx="4" cy="50" r="1.6"/>
+    <circle cx="10.16" cy="27" r="1.6"/>
+    <circle cx="27" cy="10.16" r="1.6"/>
+  </g>
+
+  <!-- Outer 8 petals (the iconic lotus layer) -->
+  <g fill="url(#petalOuter)" stroke="#1a0a2e" stroke-width="0.7" stroke-linejoin="round">
+    <use href="#outerPetal"/>
+    <use href="#outerPetal" transform="rotate(45 50 50)"/>
+    <use href="#outerPetal" transform="rotate(90 50 50)"/>
+    <use href="#outerPetal" transform="rotate(135 50 50)"/>
+    <use href="#outerPetal" transform="rotate(180 50 50)"/>
+    <use href="#outerPetal" transform="rotate(225 50 50)"/>
+    <use href="#outerPetal" transform="rotate(270 50 50)"/>
+    <use href="#outerPetal" transform="rotate(315 50 50)"/>
+  </g>
+
+  <!-- Mid 8 petals offset 22.5° for the interlocking layer effect -->
+  <g fill="url(#petalMid)" stroke="#1a0a2e" stroke-width="0.55" stroke-linejoin="round" opacity="0.92">
+    <use href="#midPetal" transform="rotate(22.5 50 50)"/>
+    <use href="#midPetal" transform="rotate(67.5 50 50)"/>
+    <use href="#midPetal" transform="rotate(112.5 50 50)"/>
+    <use href="#midPetal" transform="rotate(157.5 50 50)"/>
+    <use href="#midPetal" transform="rotate(202.5 50 50)"/>
+    <use href="#midPetal" transform="rotate(247.5 50 50)"/>
+    <use href="#midPetal" transform="rotate(292.5 50 50)"/>
+    <use href="#midPetal" transform="rotate(337.5 50 50)"/>
+  </g>
+
+  <!-- Inner 6-petal rosette -->
+  <g fill="url(#petalInner)" stroke="#1a0a2e" stroke-width="0.4" stroke-linejoin="round">
+    <use href="#innerPetal"/>
+    <use href="#innerPetal" transform="rotate(60 50 50)"/>
+    <use href="#innerPetal" transform="rotate(120 50 50)"/>
+    <use href="#innerPetal" transform="rotate(180 50 50)"/>
+    <use href="#innerPetal" transform="rotate(240 50 50)"/>
+    <use href="#innerPetal" transform="rotate(300 50 50)"/>
+  </g>
+
+  <!-- Center: ring + bindu -->
+  <circle cx="50" cy="50" r="5.5" fill="none" stroke="#00ff87" stroke-width="0.7"/>
+  <circle cx="50" cy="50" r="2.8" fill="#00ff87"/>
+</svg>
