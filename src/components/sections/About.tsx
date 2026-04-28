@@ -2,15 +2,14 @@
 import SectionHeader from "@/components/ui/SectionHeader";
 import TerminalBox from "@/components/ui/TerminalBox";
 import ScrollReveal from "@/components/effects/ScrollReveal";
-import type { KeyValue, TerminalLine } from "@/data/types";
+import type { TerminalLine } from "@/data/types";
 
 interface AboutProps {
   paragraphs: string[];
-  keyValues: KeyValue[];
   terminalLines: TerminalLine[];
 }
 
-export default function About({ paragraphs, keyValues, terminalLines }: AboutProps) {
+export default function About({ paragraphs, terminalLines }: AboutProps) {
   return (
     <section id="about" className="bg-surface py-32 px-6 md:px-16">
       <div className="max-w-[1100px] mx-auto">
@@ -31,21 +30,6 @@ export default function About({ paragraphs, keyValues, terminalLines }: AboutPro
                   dangerouslySetInnerHTML={{ __html: p }}
                 />
               ))}
-              <div className="mt-8">
-                {keyValues.map((kv) => (
-                  <div
-                    key={kv.key}
-                    className="flex border-b border-border py-2.5 text-[0.7rem]"
-                  >
-                    <span className="text-green w-[110px] shrink-0 tracking-[1px]">
-                      {kv.key}
-                    </span>
-                    <span className={kv.highlight ? "text-green" : "text-text"}>
-                      {kv.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
             </div>
             <div>
               <TerminalBox lines={terminalLines} />

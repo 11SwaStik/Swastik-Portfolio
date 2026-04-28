@@ -1,4 +1,4 @@
-import { aboutParagraphs, keyValues, terminalLines } from "@/data/about";
+import { aboutParagraphs, terminalLines } from "@/data/about";
 import { skillCategories, pipelineStages } from "@/data/skills";
 import { projects } from "@/data/projects";
 import { devsecopsSkills, devsecopsDescription } from "@/data/devsecops";
@@ -19,11 +19,7 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <About
-          paragraphs={aboutParagraphs}
-          keyValues={keyValues}
-          terminalLines={terminalLines}
-        />
+        <About paragraphs={aboutParagraphs} terminalLines={terminalLines} />
         <Skills categories={skillCategories} pipeline={pipelineStages} />
         <Projects projects={projects} />
         <DevSecOps

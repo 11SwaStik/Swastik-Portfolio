@@ -1,18 +1,10 @@
-import type { KeyValue, TerminalLine } from "./types";
+import type { TerminalLine } from "./types";
 
 export const aboutParagraphs = [
   'I\'m <strong>Swastik</strong> — security engineer, lab builder, and the person who treats every system as something to be understood from the inside out. Root access to my sanity.',
   'At <span class="text-green">Scaler</span>, I manage AWS infrastructure for learners — building custom AMIs, designing IAM policies, and architecting hands-on Linux and Windows labs where people actually learn by doing, not watching.',
   'Before that I built <strong>AgniShield</strong> — a browser-based firewall that lets an admin block harmful sites, log employee traffic, restrict IPs and DNS, all from a single extension. It won <strong class="text-green">1st place</strong> at our college project showcase.',
   'I led content at my college\'s cybersecurity club. This portfolio exists because I\'d rather show work than talk about it.',
-];
-
-export const keyValues: KeyValue[] = [
-  { key: "CURRENT", value: "SME Cybersecurity @ Scaler" },
-  { key: "BUILDS", value: "Firewalls · AWS Labs · Security Tools" },
-  { key: "TEACHES", value: "Linux · Cloud · Offensive Security" },
-  { key: "WON", value: "1st — College Project Showcase", highlight: true },
-  { key: "STATUS", value: "ACTIVE · BUILDING", highlight: true },
 ];
 
 export const terminalLines: TerminalLine[] = [

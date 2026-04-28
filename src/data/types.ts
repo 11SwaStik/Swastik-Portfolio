@@ -43,12 +43,6 @@ export interface DevSecOpsSkill {
   percentage: number;
 }
 
-export interface KeyValue {
-  key: string;
-  value: string;
-  highlight?: boolean;
-}
-
 export interface TerminalLine {
   html: string;
   delay: number;
