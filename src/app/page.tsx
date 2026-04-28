@@ -20,22 +20,22 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <MandalaDivider align="left" />
+        <MandalaDivider />
         <About
           paragraphs={aboutParagraphs}
           keyValues={keyValues}
           terminalLines={terminalLines}
         />
-        <MandalaDivider align="right" />
+        <MandalaDivider />
         <Skills categories={skillCategories} pipeline={pipelineStages} />
-        <MandalaDivider align="left" />
+        <MandalaDivider />
         <Projects projects={projects} />
-        <MandalaDivider align="right" />
+        <MandalaDivider />
         <DevSecOps
           skills={devsecopsSkills}
           description={devsecopsDescription}
         />
-        <MandalaDivider align="left" />
+        <MandalaDivider />
         <Contact links={contactLinks} />
       </main>
       <Footer />
