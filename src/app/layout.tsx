@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Share_Tech_Mono, Syne, Tiro_Devanagari_Sanskrit } from "next/font/google";
 import BootSplash from "@/components/effects/BootSplash";
-import MandalaOverlay from "@/components/effects/MandalaOverlay";
 import "./globals.css";
 
 const shareTechMono = Share_Tech_Mono({
@@ -48,7 +47,6 @@ export default function RootLayout({
     >
       <body>
         <BootSplash />
-        <MandalaOverlay />
         {children}
       </body>
     </html>
