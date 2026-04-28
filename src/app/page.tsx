@@ -12,7 +12,6 @@ import Skills from "@/components/sections/Skills";
 import Projects from "@/components/sections/Projects";
 import DevSecOps from "@/components/sections/DevSecOps";
 import Contact from "@/components/sections/Contact";
-import MandalaDivider from "@/components/effects/MandalaDivider";
 
 export default function Home() {
   return (
@@ -20,22 +19,17 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <MandalaDivider />
         <About
           paragraphs={aboutParagraphs}
           keyValues={keyValues}
           terminalLines={terminalLines}
         />
-        <MandalaDivider />
         <Skills categories={skillCategories} pipeline={pipelineStages} />
-        <MandalaDivider />
         <Projects projects={projects} />
-        <MandalaDivider />
         <DevSecOps
           skills={devsecopsSkills}
           description={devsecopsDescription}
         />
-        <MandalaDivider />
         <Contact links={contactLinks} />
       </main>
       <Footer />
