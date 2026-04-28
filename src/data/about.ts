@@ -19,5 +19,4 @@ export const terminalLines: TerminalLine[] = [
   { html: '<span class="text-text-dim">  "status"   : </span><span class="text-green">"active"</span>', delay: 1800 },
   { html: '<span class="text-text-dim">}</span>', delay: 2000 },
   { html: "&nbsp;", delay: 2150 },
-  { html: '<span class="text-green">root@kirmada:~# </span><span class="inline-block w-[7px] h-[13px] bg-green align-middle animate-[blink-cursor_.9s_step-end_infinite]"></span>', delay: 2300 },
 ];

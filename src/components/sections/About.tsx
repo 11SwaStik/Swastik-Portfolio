@@ -32,7 +32,7 @@ export default function About({ paragraphs, terminalLines }: AboutProps) {
               ))}
             </div>
             <div>
-              <TerminalBox lines={terminalLines} />
+              <TerminalBox lines={terminalLines} interactive />
             </div>
           </div>
         </ScrollReveal>
