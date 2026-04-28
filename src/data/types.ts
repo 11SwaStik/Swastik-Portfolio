@@ -1,12 +1,22 @@
+export type ProjectStatus = "ACTIVE" | "LIVE" | "STABLE" | "TESTING" | "ARCHIVED";
+
+export interface ProjectMetric {
+  label: string;
+  value: string;
+}
+
 export interface Project {
   id: string;
   number: string;
   name: string;
-  badge?: string;
+  status: ProjectStatus;
+  impact: string;
   description: string;
+  metric?: ProjectMetric;
   chips: string[];
   type: string;
   url?: string;
+  repoUrl?: string;
 }
 
 export interface SkillCategory {
