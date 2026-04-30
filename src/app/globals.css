@@ -259,3 +259,19 @@ body::after {
   }
 }
 
+/* Route transition overlay — fade in 200ms, hold ~500ms, fade out 300ms. */
+@keyframes transition-overlay {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.96;
+  }
+  70% {
+    opacity: 0.96;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
