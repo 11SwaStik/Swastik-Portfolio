@@ -2,6 +2,7 @@
 import { useState } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import HighlightModule from "@/components/ui/HighlightModule";
+import Watchlist from "@/components/ui/Watchlist";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import type { SkillCategory, PipelineStage } from "@/data/types";
 
@@ -46,6 +47,7 @@ export default function Skills({ categories, pipeline }: SkillsProps) {
               </div>
             ))}
             <HighlightModule />
+            <Watchlist />
           </div>
         </ScrollReveal>
 
