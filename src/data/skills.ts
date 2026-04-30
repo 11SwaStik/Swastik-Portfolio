@@ -33,12 +33,50 @@ export const skillCategories: SkillCategory[] = [
 ];
 
 export const pipelineStages: PipelineStage[] = [
-  { id: "code", label: "CODE", info: "Static analysis, secret scanning, code review gates" },
-  { id: "sast", label: "SAST / SCA", info: "SAST, SCA, dependency vulnerability scanning" },
-  { id: "build", label: "BUILD", info: "Container image scanning, Dockerfile hardening" },
-  { id: "dast", label: "DAST", info: "DAST, API fuzzing, integration security tests" },
-  { id: "iac", label: "IAC SCAN", info: "Terraform/IaC scanning, Kubernetes policy enforcement" },
-  { id: "sign", label: "SIGN", info: "Image signing, SBOM generation, policy gates" },
-  { id: "runtime", label: "RUNTIME", info: "Runtime security, WAF, network segmentation, RBAC" },
-  { id: "monitor", label: "MONITOR", info: "SIEM ingestion, alerting, threat detection, IR", active: true },
+  {
+    id: "plan",
+    label: "PLAN",
+    info: "Threat modeling, abuse cases, and security requirements defined before code is written.",
+  },
+  {
+    id: "code",
+    label: "CODE",
+    info: "Secure coding standards, pre-commit hooks, secrets detection, IDE security plugins.",
+  },
+  {
+    id: "sast-sca",
+    label: "SAST / SCA",
+    info: "Static analysis on source (SAST) plus third-party dependency and license scanning (SCA) — Semgrep, Snyk, OWASP DC.",
+  },
+  {
+    id: "build",
+    label: "BUILD",
+    info: "Hardened CI runners, SBOM generation, and build provenance attestation (SLSA).",
+  },
+  {
+    id: "dast",
+    label: "DAST",
+    info: "Dynamic security testing against a running app — fuzzing, API security, OWASP ZAP.",
+  },
+  {
+    id: "iac",
+    label: "IAC SCAN",
+    info: "Terraform, Kubernetes manifests, and container images scanned for misconfigurations and CVEs — Checkov, Trivy, tfsec.",
+  },
+  {
+    id: "sign",
+    label: "SIGN",
+    info: "Cryptographic image signing and supply-chain attestation — Cosign, Sigstore, in-toto.",
+  },
+  {
+    id: "runtime",
+    label: "RUNTIME",
+    info: "Container runtime protection, RASP, anomaly detection on syscalls and network — Falco, Sysdig.",
+  },
+  {
+    id: "monitor",
+    label: "MONITOR",
+    info: "SIEM ingestion, log analysis, alerting, threat detection, and incident response.",
+    active: true,
+  },
 ];

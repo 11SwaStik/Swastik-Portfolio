@@ -19,7 +19,7 @@ export default function HighlightModule() {
     <div className="bg-bg p-8 transition-colors duration-200 hover:bg-surface">
       <div className="flex items-center justify-between mb-4 gap-3">
         <div className="text-[0.58rem] text-cyan tracking-[4px]">
-          MODULE: AI-SECURITY
+          AI-SECURITY
         </div>
         <span className="flex items-center gap-1.5 text-[0.5rem] text-cyan/80 tracking-[2px] shrink-0">
           <span className="w-1 h-1 rounded-full bg-cyan animate-[highlight-pulse_3.5s_ease-in-out_infinite]" />
