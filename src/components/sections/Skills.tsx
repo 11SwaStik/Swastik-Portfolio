@@ -20,14 +20,8 @@ export default function Skills({ categories, pipeline }: SkillsProps) {
           <SectionHeader number="02" title="ARSENAL" />
         </ScrollReveal>
 
-        {/* Featured emerging-capability module above the regular grid */}
-        <ScrollReveal>
-          <div className="mb-px">
-            <HighlightModule />
-          </div>
-        </ScrollReveal>
-
-        {/* Skills grid */}
+        {/* Skills grid — AI-SECURITY emerging module slots in as a
+            regular cell alongside the four core categories. */}
         <ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border">
             {categories.map((cat) => (
@@ -51,6 +45,7 @@ export default function Skills({ categories, pipeline }: SkillsProps) {
                 </div>
               </div>
             ))}
+            <HighlightModule />
           </div>
         </ScrollReveal>
 
