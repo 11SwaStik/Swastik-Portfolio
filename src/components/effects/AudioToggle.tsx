@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const AUDIO_SRC = "/sounds/the_mountain-space-133254.mp3";
 const STORAGE_KEY = "kirmada_audio_on";
-const TARGET_VOLUME = 0.22;
-const FADE_MS = 600;
+const TARGET_VOLUME = 0.2;
+const FADE_MS = 500;
 
 // Per-bar animation tuning — mixed durations + delays so the bars don't
 // move in lockstep. Reads as an organic waveform rather than a metronome.
