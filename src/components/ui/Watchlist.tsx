@@ -1,10 +1,10 @@
-// Edit these to match what you're actually exploring — these are
-// plausible defaults for a security engineer leaning into ML.
+// Edit when the active focus shifts.
 const WATCHLIST: { label: string; note: string }[] = [
-  { label: "Anomaly detection on Zeek logs", note: "side project" },
-  { label: "Adversarial ML for IDS", note: "reading" },
-  { label: "Embedding-based alert clustering", note: "exploring" },
-  { label: "TryHackMe — AI Red Team", note: "in progress" },
+  { label: "Prompt injection + RAG poisoning", note: "research" },
+  { label: "Autonomous pentesting agents", note: "exploring" },
+  { label: "AI-driven shell hunting (PS + Bash)", note: "side project" },
+  { label: "HackerGPT / PentestAI", note: "evaluating" },
+  { label: "GenAI in cybersec workflows", note: "reading" },
 ];
 
 /**
@@ -33,11 +33,11 @@ export default function Watchlist() {
         {WATCHLIST.map((item) => (
           <li
             key={item.label}
-            className="flex items-baseline gap-2 text-[0.66rem] leading-[1.5]"
+            className="text-[0.66rem] leading-[1.55] pl-[18px] -indent-[18px]"
           >
-            <span className="text-cyan/60 shrink-0">→</span>
+            <span className="text-cyan/60 mr-1.5">→</span>
             <span className="text-text">{item.label}</span>
-            <span className="text-text-dim text-[0.55rem] font-mono shrink-0">
+            <span className="text-text-dim text-[0.55rem] font-mono ml-1.5 whitespace-nowrap">
               — {item.note}
             </span>
           </li>
