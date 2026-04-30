@@ -232,6 +232,24 @@ body::after {
   color: #fff;
 }
 
+/* Universal hover feedback — buttons, links, project rows, chips, etc.
+   Every interactive element marked data-hover gets the same lift and
+   timing, so the UI feels uniformly responsive without each component
+   having to redeclare transitions. Per-element glow / color shifts
+   come from the existing component-specific hover utilities. */
+[data-hover] {
+  transition-property: transform, color, background-color, border-color, box-shadow, opacity, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+[data-hover]:hover {
+  transform: translateY(-1px);
+}
+[data-hover]:active {
+  transform: translateY(0);
+  transition-duration: 80ms;
+}
+
 .auth-btn:hover {
   animation: boot-glitch 0.4s steps(2, jump-none) infinite;
 }
