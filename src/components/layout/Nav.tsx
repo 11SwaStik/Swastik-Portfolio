@@ -25,16 +25,14 @@ export default function Nav() {
       {/* Logo */}
       <a
         href="#hero"
-        className="flex items-center gap-2 no-underline group"
+        className="no-underline group"
         onClick={(e) => {
           e.preventDefault();
           scrollTo("hero");
         }}
+        aria-label="Go to top"
       >
         <Logo size={28} gradientId="nav-logo-grad" />
-        <span className="font-sans text-[0.82rem] font-extrabold tracking-[0.45em] text-white transition-colors duration-200 group-hover:text-green">
-          KIRMADA
-        </span>
       </a>
 
       {/* Desktop nav links */}

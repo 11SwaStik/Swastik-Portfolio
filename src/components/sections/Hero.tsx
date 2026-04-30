@@ -58,7 +58,7 @@ export default function Hero() {
           <h1>
             <span
               ref={nameRef}
-              className="block font-sans text-[clamp(3rem,7vw,6.5rem)] font-extrabold tracking-tight leading-none text-white opacity-0"
+              className="block font-sans text-[clamp(2.25rem,4.8vw,4.5rem)] font-extrabold tracking-tight leading-[1.05] text-white opacity-0"
             >
               SWASTIK SHARMA
             </span>
