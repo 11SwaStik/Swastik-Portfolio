@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
+import HighlightModule from "@/components/ui/HighlightModule";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import type { SkillCategory, PipelineStage } from "@/data/types";
 
@@ -17,6 +18,13 @@ export default function Skills({ categories, pipeline }: SkillsProps) {
       <div className="max-w-[1100px] mx-auto">
         <ScrollReveal>
           <SectionHeader number="02" title="ARSENAL" />
+        </ScrollReveal>
+
+        {/* Featured emerging-capability module above the regular grid */}
+        <ScrollReveal>
+          <div className="mb-px">
+            <HighlightModule />
+          </div>
         </ScrollReveal>
 
         {/* Skills grid */}
