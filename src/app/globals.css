@@ -258,3 +258,22 @@ body::after {
     height: 92%;
   }
 }
+
+/* SystemStatus first-render flicker — settles at 0.7 opacity. CRT vibe. */
+@keyframes status-flicker-in {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.5;
+  }
+  40% {
+    opacity: 0.1;
+  }
+  60% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
