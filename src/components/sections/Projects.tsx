@@ -1,5 +1,8 @@
+"use client";
+import { useState } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ScrollReveal from "@/components/effects/ScrollReveal";
+import ProjectDetailPanel from "@/components/ui/ProjectDetailPanel";
 import type { Project } from "@/data/types";
 
 interface ProjectsProps {
@@ -7,6 +10,9 @@ interface ProjectsProps {
 }
 
 export default function Projects({ projects }: ProjectsProps) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = projects.find((p) => p.id === selectedId) ?? null;
+
   return (
     <section id="projects" className="bg-surface py-32 px-6 md:px-16">
       <div className="max-w-[1100px] mx-auto">
@@ -16,63 +22,66 @@ export default function Projects({ projects }: ProjectsProps) {
         <ScrollReveal>
           <div className="flex flex-col">
             {projects.map((project) => (
-              <ProjectRow key={project.id} project={project} />
+              <ProjectRow
+                key={project.id}
+                project={project}
+                onClick={() => setSelectedId(project.id)}
+              />
             ))}
           </div>
         </ScrollReveal>
       </div>
+
+      {selected && (
+        <ProjectDetailPanel
+          project={selected}
+          onClose={() => setSelectedId(null)}
+        />
+      )}
     </section>
   );
 }
 
-function ProjectRow({ project }: { project: Project }) {
-  const isLink = Boolean(project.url);
-  const sharedClass =
-    "group block border-t border-border last:border-b py-7 md:py-8 transition-colors";
-
-  const content = (
-    <div className="flex items-start justify-between gap-6">
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-3 flex-wrap mb-2">
-          <span className="text-[0.6rem] text-text-dim font-mono tracking-[2px]">
-            {project.number}
-          </span>
-          <h3 className="font-sans text-[1.25rem] md:text-[1.45rem] font-bold text-white group-hover:text-green transition-colors leading-tight">
-            {project.name}
-          </h3>
-          {project.metric && (
-            <span className="text-[0.58rem] text-green tracking-[2px] font-mono">
-              {project.metric.value}
+function ProjectRow({
+  project,
+  onClick,
+}: {
+  project: Project;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group block w-full text-left border-t border-border last:border-b py-7 md:py-8 cursor-pointer transition-colors hover:bg-bg/40"
+      data-hover
+    >
+      <div className="flex items-start justify-between gap-6">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline gap-3 flex-wrap mb-2">
+            <span className="text-[0.6rem] text-text-dim font-mono tracking-[2px]">
+              {project.number}
             </span>
-          )}
+            <h3 className="font-sans text-[1.25rem] md:text-[1.45rem] font-bold text-white group-hover:text-green transition-colors leading-tight">
+              {project.name}
+            </h3>
+            {project.metric && (
+              <span className="text-[0.58rem] text-green tracking-[2px] font-mono">
+                {project.metric.value}
+              </span>
+            )}
+          </div>
+          <p className="text-[0.8rem] md:text-[0.86rem] text-text-muted leading-[1.7] mb-3 max-w-[680px]">
+            {project.impact}
+          </p>
+          <div className="text-[0.6rem] text-text-dim font-mono tracking-[1px]">
+            {project.chips.join("  ·  ")}
+          </div>
         </div>
-        <p className="text-[0.8rem] md:text-[0.86rem] text-text-muted leading-[1.7] mb-3 max-w-[680px]">
-          {project.impact}
-        </p>
-        <div className="text-[0.6rem] text-text-dim font-mono tracking-[1px]">
-          {project.chips.join("  ·  ")}
-        </div>
-      </div>
-      {isLink && (
         <span className="text-text-dim group-hover:text-green transition-colors text-base shrink-0 mt-1">
-          ↗
+          →
         </span>
-      )}
-    </div>
+      </div>
+    </button>
   );
-
-  if (isLink) {
-    return (
-      <a
-        href={project.url}
-        target="_blank"
-        rel="noreferrer"
-        className={sharedClass}
-        data-hover
-      >
-        {content}
-      </a>
-    );
-  }
-  return <div className={sharedClass}>{content}</div>;
 }
