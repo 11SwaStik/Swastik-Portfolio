@@ -8,10 +8,18 @@ export const projects: Project[] = [
     status: "ACTIVE",
     type: "FLAGSHIP",
     impact:
-      "Browser-extension firewall — admin-grade network policy without the hardware.",
-    metric: { label: "AWARDED", value: "1st Place" },
+      "Browser-extension firewall replacing perimeter hardware with a centrally-managed policy layer.",
     description:
-      "Most companies spend thousands on enterprise firewalls. I built one that lives in a browser extension. AgniShield lets an admin block harmful or distracting sites across all employee devices, log traffic, restrict IPs and DNS — no hardware, no complex setup. One extension. Full control. Built to solve a real workplace problem: how do you protect a network and maintain productivity without being invasive?",
+      "Layer-7 + DNS filtering enforced client-side via a managed Chromium extension. Admins push site, IP, and DNS rules across all endpoints from a single console — no per-device install, no perimeter rewiring.",
+    details: [
+      "Centrally-managed Chromium extension distributing policy to all endpoints",
+      "Site filtering, IP and DNS rule enforcement, and traffic logging",
+      "Designed for SMB networks without dedicated security hardware",
+    ],
+    metrics: [
+      { label: "AWARDED", value: "1st Place" },
+      { label: "DEPLOYMENT", value: "Endpoint-native" },
+    ],
     chips: ["Browser Extension", "Admin Dashboard", "IP Block", "DNS Filter", "Layer 7"],
   },
   {
@@ -21,10 +29,18 @@ export const projects: Project[] = [
     status: "LIVE",
     type: "INFRASTRUCTURE",
     impact:
-      "Production AWS labs delivering hands-on offensive + defensive training to thousands of learners.",
-    metric: { label: "LEARNERS", value: "1,000+" },
+      "Production AWS lab environment running concurrent offensive and defensive exercises at scale.",
     description:
-      "Designed and deployed hands-on cybersecurity labs on AWS for thousands of learners. Built custom AMIs pre-loaded with tools, configured IAM policies with least-privilege principles, and architected isolated Linux and Windows environments for offensive and defensive training — so students don't just read about attacks, they run them in a safe, controlled space.",
+      "Custom AMIs, scoped IAM, and isolated Linux/Windows ranges for hands-on cybersecurity training. Sessions are policy-bounded so concurrent learners cannot affect each other or the host account.",
+    details: [
+      "Custom AMIs pre-loaded with offensive and defensive tooling",
+      "Least-privilege IAM scoped per session",
+      "Network and account isolation between concurrent ranges",
+    ],
+    metrics: [
+      { label: "LEARNERS", value: "1,000+" },
+      { label: "PLATFORMS", value: "Linux · Windows" },
+    ],
     chips: ["AWS", "Custom AMIs", "IAM", "Linux", "Windows"],
   },
   {
@@ -34,10 +50,18 @@ export const projects: Project[] = [
     status: "STABLE",
     type: "OFFENSIVE",
     impact:
-      "Dictionary-attack utility making weak password storage tangible for learners.",
-    metric: { label: "COVERAGE", value: "MD5 · SHA-1/256/384/512" },
+      "Multi-algorithm dictionary cracker demonstrating practical weakness in unsalted hash storage.",
     description:
-      "A Python tool that cracks MD5, SHA-1, SHA-256, SHA-384 and SHA-512 hashes using dictionary attacks on Linux. Built to understand how weak password storage gets exploited — and to make that tangible for students learning about authentication security.",
+      "Python utility supporting MD5, SHA-1, and SHA-2 family hashes with configurable wordlists. Used as a teaching artifact for authentication security and as a reference baseline for modern KDF resistance.",
+    details: [
+      "Pluggable hash interface — MD5, SHA-1, SHA-256, SHA-384, SHA-512",
+      "Dictionary attack with configurable wordlist input",
+      "Used in instructional contexts to contrast unsalted hashes with modern KDFs",
+    ],
+    metrics: [
+      { label: "COVERAGE", value: "MD5 · SHA-1/2 family" },
+      { label: "CONTEXT", value: "Educational" },
+    ],
     chips: ["Python", "MD5", "SHA-256", "SHA-512", "Linux"],
   },
   {
@@ -47,10 +71,18 @@ export const projects: Project[] = [
     status: "STABLE",
     type: "RECON",
     impact:
-      "First-five-minutes-of-a-pentest recon tool — see what an attacker sees before they do.",
-    metric: { label: "PROBES", value: "ARP + Nmap" },
+      "Internal network discovery combining Layer-2 ARP sweep with service-level enumeration.",
     description:
-      "Internal network reconnaissance tool using ARP scanning and Nmap to discover live hosts, open ports and running services. The kind of tool you run in the first five minutes of a pentest — built to understand what an attacker sees before you do.",
+      "Recon utility producing an inventory of live hosts, exposed ports, and running services. Built for the early-recon phase of an internal assessment.",
+    details: [
+      "ARP sweep for Layer-2 host discovery in segmented networks",
+      "Nmap-driven port and service version enumeration",
+      "Inventory output of hosts, ports, and detected services",
+    ],
+    metrics: [
+      { label: "PROBES", value: "ARP + Nmap" },
+      { label: "LAYERS", value: "L2 + L3" },
+    ],
     chips: ["ARP", "Nmap", "Python", "Recon"],
   },
   {
@@ -60,10 +92,18 @@ export const projects: Project[] = [
     status: "LIVE",
     type: "EDTECH",
     impact:
-      "Live learning platform — roadmaps, quizzes, and quests in one place.",
-    metric: { label: "USERS", value: "1,000+" },
+      "Cybersecurity learning platform serving 1,000+ active learners through structured curriculum and hands-on exercises.",
     description:
-      "A live learning platform built for 1000+ students. EduTech brings together tutorials, domain roadmaps, practice questions, quizzes and rewards — all in one place. 84 lessons, 10+ hands-on quests, and a community spanning Discord, Twitter and Instagram. The idea was simple: make it easier to find the right resource and actually stick with it.",
+      "Web platform unifying lessons, scenario-based quests, and assessment into a single tracked progression. Backed by a peer community for support and instructor feedback.",
+    details: [
+      "84 lessons across multiple security domains",
+      "10+ scenario-based hands-on quests",
+      "Domain roadmaps, quizzes, and rewards-based progression tracking",
+    ],
+    metrics: [
+      { label: "USERS", value: "1,000+" },
+      { label: "LESSONS", value: "84" },
+    ],
     chips: ["Next.js", "Quizzes", "Roadmaps", "Vercel"],
     url: "https://edutech-seven.vercel.app/",
   },

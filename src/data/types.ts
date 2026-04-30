@@ -12,7 +12,8 @@ export interface Project {
   status: ProjectStatus;
   impact: string;
   description: string;
-  metric?: ProjectMetric;
+  details: string[];
+  metrics: ProjectMetric[];
   chips: string[];
   type: string;
   url?: string;

@@ -24,13 +24,13 @@ interface ProjectDetailPanelProps {
 }
 
 const ANIM_MS = 300;
+const STAGGER_MS = 55;
 
 /**
- * Slide-over detail panel for a single project. Mounts when a project
- * is selected, slides in from the right with a dimmed backdrop.
- * Closing animates out before unmount via an internal `exiting` state.
- *
- * Closes on: backdrop click, X button, Escape key.
+ * Slide-over detail panel for a project module. Slides in from the
+ * right with a dimmed/blurred backdrop, content reveals in staggered
+ * waves so the eye lands on each section in sequence. Closes on
+ * backdrop click, X button, or Escape.
  */
 export default function ProjectDetailPanel({
   project,
@@ -49,7 +49,6 @@ export default function ProjectDetailPanel({
   }, [onClose]);
 
   useEffect(() => {
-    // Trigger enter transition after first paint.
     const raf = requestAnimationFrame(() => setEntered(true));
     closeBtnRef.current?.focus();
 
@@ -58,7 +57,6 @@ export default function ProjectDetailPanel({
     };
     window.addEventListener("keydown", onKey);
 
-    // Prevent the page from scrolling under the panel.
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -71,9 +69,13 @@ export default function ProjectDetailPanel({
 
   const visible = entered && !exiting;
 
+  // Stagger helper — index of the content block determines its delay.
+  const staggerStyle = (i: number): React.CSSProperties => ({
+    animation: `boot-fade-up 350ms ${ANIM_MS + i * STAGGER_MS}ms ease-out both`,
+  });
+
   return (
     <>
-      {/* Backdrop */}
       <div
         onClick={handleClose}
         aria-hidden
@@ -84,12 +86,11 @@ export default function ProjectDetailPanel({
         }}
       />
 
-      {/* Panel */}
       <aside
         role="dialog"
         aria-modal="true"
         aria-label={`${project.name} details`}
-        className="fixed top-0 right-0 bottom-0 w-full md:w-[560px] bg-bg border-l border-border-2 z-[101] transition-transform ease-out overflow-y-auto"
+        className="fixed top-0 right-0 bottom-0 w-full md:w-[580px] bg-bg border-l border-border-2 z-[101] transition-transform ease-out overflow-y-auto"
         style={{
           transitionDuration: `${ANIM_MS}ms`,
           transform: visible ? "translateX(0)" : "translateX(100%)",
@@ -120,30 +121,51 @@ export default function ProjectDetailPanel({
           </button>
         </div>
 
-        {/* Body */}
+        {/* Body — each block staggers in after the panel slide */}
         <div className="p-6 md:p-8 pb-12">
-          <div className="text-[0.6rem] text-text-dim font-mono tracking-[2px] mb-2">
-            {project.number}
+          <div style={staggerStyle(0)}>
+            <div className="text-[0.6rem] text-text-dim font-mono tracking-[2px] mb-2">
+              {project.number}
+            </div>
+            <h2 className="font-sans text-[1.6rem] md:text-[1.9rem] font-extrabold text-white tracking-tight leading-tight mb-3">
+              {project.name}
+            </h2>
           </div>
-          <h2 className="font-sans text-[1.6rem] md:text-[1.9rem] font-extrabold text-white tracking-tight leading-tight mb-3">
-            {project.name}
-          </h2>
-          <p className="text-[0.85rem] text-text-muted leading-[1.7] mb-7">
+
+          <p
+            style={staggerStyle(1)}
+            className="text-[0.85rem] text-text-muted leading-[1.7] mb-7"
+          >
             {project.impact}
           </p>
 
-          {project.metric && (
-            <div className="border-t border-b border-border-2 py-4 mb-8 flex items-baseline justify-between gap-4">
-              <span className="text-[0.55rem] text-text-dim font-mono tracking-[2.5px]">
-                {project.metric.label}
-              </span>
-              <span className="font-sans text-[1.2rem] md:text-[1.4rem] font-bold text-green tabular-nums text-right">
-                {project.metric.value}
-              </span>
+          {project.metrics.length > 0 && (
+            <div
+              style={staggerStyle(2)}
+              className={`grid gap-px bg-border-2 mb-8 ${
+                project.metrics.length > 1 ? "grid-cols-2" : "grid-cols-1"
+              }`}
+            >
+              {project.metrics.map((m) => (
+                <div key={m.label} className="bg-bg p-4">
+                  <div className="text-[0.5rem] text-text-dim font-mono tracking-[2.5px] mb-1.5">
+                    {m.label}
+                  </div>
+                  <div className="font-sans text-[1.05rem] md:text-[1.15rem] font-bold text-green tabular-nums">
+                    {m.value}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
-          <Section title="TECH STACK">
+          <Section title="DESCRIPTION" style={staggerStyle(3)}>
+            <p className="text-[0.78rem] text-text-muted leading-[1.85]">
+              {project.description}
+            </p>
+          </Section>
+
+          <Section title="TECH STACK" style={staggerStyle(4)}>
             <div className="flex flex-wrap gap-2">
               {project.chips.map((chip) => (
                 <span
@@ -156,14 +178,27 @@ export default function ProjectDetailPanel({
             </div>
           </Section>
 
-          <Section title="DETAILS">
-            <p className="text-[0.78rem] text-text-muted leading-[1.85]">
-              {project.description}
-            </p>
-          </Section>
+          {project.details.length > 0 && (
+            <Section title="DETAILS" style={staggerStyle(5)}>
+              <ul className="flex flex-col gap-2.5">
+                {project.details.map((d) => (
+                  <li
+                    key={d}
+                    className="flex items-start gap-2.5 text-[0.78rem] text-text-muted leading-[1.7]"
+                  >
+                    <span className="text-green/70 shrink-0 mt-1.5 leading-none">▸</span>
+                    <span>{d}</span>
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
 
           {(project.url || project.repoUrl) && (
-            <div className="flex gap-2 flex-wrap mt-8 pt-6 border-t border-border-2">
+            <div
+              style={staggerStyle(6)}
+              className="flex gap-2 flex-wrap mt-8 pt-6 border-t border-border-2"
+            >
               {project.url && (
                 <a
                   href={project.url}
@@ -197,12 +232,14 @@ export default function ProjectDetailPanel({
 function Section({
   title,
   children,
+  style,
 }: {
   title: string;
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }) {
   return (
-    <div className="mb-7">
+    <div className="mb-7" style={style}>
       <h3 className="text-[0.55rem] text-green font-mono tracking-[3px] mb-3">
         {title}
       </h3>

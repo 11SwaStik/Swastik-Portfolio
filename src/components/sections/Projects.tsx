@@ -3,15 +3,28 @@ import { useState } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import ProjectDetailPanel from "@/components/ui/ProjectDetailPanel";
+import SystemLoader from "@/components/ui/SystemLoader";
 import type { Project } from "@/data/types";
 
 interface ProjectsProps {
   projects: Project[];
 }
 
+const LOADER_MS = 240;
+
 export default function Projects({ projects }: ProjectsProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
   const selected = projects.find((p) => p.id === selectedId) ?? null;
+
+  const handleOpen = (id: string) => {
+    if (selectedId || loadingId) return;
+    setLoadingId(id);
+    setTimeout(() => {
+      setSelectedId(id);
+      setLoadingId(null);
+    }, LOADER_MS);
+  };
 
   return (
     <section id="projects" className="bg-surface py-32 px-6 md:px-16">
@@ -25,13 +38,14 @@ export default function Projects({ projects }: ProjectsProps) {
               <ProjectRow
                 key={project.id}
                 project={project}
-                onClick={() => setSelectedId(project.id)}
+                onClick={() => handleOpen(project.id)}
               />
             ))}
           </div>
         </ScrollReveal>
       </div>
 
+      {loadingId && <SystemLoader />}
       {selected && (
         <ProjectDetailPanel
           project={selected}
@@ -49,6 +63,7 @@ function ProjectRow({
   project: Project;
   onClick: () => void;
 }) {
+  const firstMetric = project.metrics[0];
   return (
     <button
       type="button"
@@ -65,9 +80,9 @@ function ProjectRow({
             <h3 className="font-sans text-[1.25rem] md:text-[1.45rem] font-bold text-white group-hover:text-green transition-colors leading-tight">
               {project.name}
             </h3>
-            {project.metric && (
+            {firstMetric && (
               <span className="text-[0.58rem] text-green tracking-[2px] font-mono">
-                {project.metric.value}
+                {firstMetric.value}
               </span>
             )}
           </div>
