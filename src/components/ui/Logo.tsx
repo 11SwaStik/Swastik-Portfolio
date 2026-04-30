@@ -1,4 +1,5 @@
 interface LogoProps {
+
   size?: number;
   className?: string;
   /** Unique gradient id — required if rendering more than one Logo on the same page */

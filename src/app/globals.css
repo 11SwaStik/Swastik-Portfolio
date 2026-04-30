@@ -16,7 +16,7 @@
 
   --font-mono: var(--font-share-tech-mono), "Courier New", monospace;
   --font-sans: var(--font-syne), system-ui, sans-serif;
-  --font-devanagari: var(--font-tiro-devanagari), "Noto Sans Devanagari", serif;
+  --font-devanagari: var(--font-noto-devanagari), "Noto Sans Devanagari", system-ui, sans-serif;
 }
 
 /* Base */
