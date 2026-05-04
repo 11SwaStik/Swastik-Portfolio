@@ -79,7 +79,7 @@ export default function ProjectDetailPanel({
       <div
         onClick={handleClose}
         aria-hidden
-        className="fixed inset-0 z-[100] bg-black/55 backdrop-blur-[2px] transition-opacity ease-out"
+        className="fixed inset-0 z-[1010] bg-black/55 backdrop-blur-[2px] transition-opacity ease-out"
         style={{
           transitionDuration: `${ANIM_MS}ms`,
           opacity: visible ? 1 : 0,
@@ -90,7 +90,7 @@ export default function ProjectDetailPanel({
         role="dialog"
         aria-modal="true"
         aria-label={`${project.name} details`}
-        className="fixed top-0 right-0 bottom-0 w-full md:w-[580px] bg-bg border-l border-border-2 z-[101] transition-transform ease-out overflow-y-auto"
+        className="fixed top-0 right-0 bottom-0 w-full md:w-[580px] bg-bg border-l border-border-2 z-[1020] transition-transform ease-out overflow-y-auto"
         style={{
           transitionDuration: `${ANIM_MS}ms`,
           transform: visible ? "translateX(0)" : "translateX(100%)",
