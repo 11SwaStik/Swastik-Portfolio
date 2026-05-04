@@ -46,6 +46,9 @@ export default function BootSplash() {
     if (isUnlockingRef.current) return;
     isUnlockingRef.current = true;
     playUnlockSound();
+    // Ride the same user gesture to start the ambient audio. Event is
+    // received by AudioToggle, which handles the play + fade-in.
+    window.dispatchEvent(new CustomEvent("kirmada:audio-start"));
 
     const chars = charsRef.current.filter(Boolean);
     const particles = particlesRef.current.filter(Boolean);
