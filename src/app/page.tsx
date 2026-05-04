@@ -1,7 +1,7 @@
 import { aboutParagraphs, terminalLines } from "@/data/about";
 import { skillCategories, pipelineStages } from "@/data/skills";
 import { projects } from "@/data/projects";
-import { devsecopsIntro, devsecopsGroups } from "@/data/devsecops";
+import { devsecopsGroups } from "@/data/devsecops";
 import { contactLinks } from "@/data/contact";
 
 import Nav from "@/components/layout/Nav";
@@ -22,7 +22,7 @@ export default function Home() {
         <About paragraphs={aboutParagraphs} terminalLines={terminalLines} />
         <Skills categories={skillCategories} pipeline={pipelineStages} />
         <Projects projects={projects} />
-        <DevSecOps intro={devsecopsIntro} groups={devsecopsGroups} />
+        <DevSecOps groups={devsecopsGroups} />
         <Contact links={contactLinks} />
       </main>
       <Footer />

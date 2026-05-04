@@ -1,10 +1,5 @@
 import type { DevSecOpsGroup } from "./types";
 
-// Honest framing — practices studied in coursework and applied in
-// lab environments, not yet at production scale. Edit when that changes.
-export const devsecopsIntro =
-  "How I approach security in pipelines and infrastructure — drawn from coursework, lab projects, and the AWS Security ranges at Scaler. Studied and applied in lab environments; building toward production fluency.";
-
 export const devsecopsGroups: DevSecOpsGroup[] = [
   {
     title: "CONTAINER HARDENING",
@@ -14,6 +9,7 @@ export const devsecopsGroups: DevSecOpsGroup[] = [
       "Multi-stage builds — build tools never reach the runtime image",
       "Image scanned with Trivy before push",
     ],
+    why: "Less in the container means less for an attacker to use. Strip out the shell, run as a regular user, and scan the image before it ships.",
   },
   {
     title: "KUBERNETES POSTURE",
@@ -23,6 +19,7 @@ export const devsecopsGroups: DevSecOpsGroup[] = [
       "Sealed Secrets / External Secrets — no plaintext in git",
       "RBAC scoped per workload, not per cluster",
     ],
+    why: "Kubernetes defaults are open. These settings flip that around — pods can't do dangerous things unless allowed, namespaces don't talk by default, and secrets never sit in git as plaintext.",
   },
   {
     title: "CI/CD SECURITY GATES",
@@ -32,6 +29,7 @@ export const devsecopsGroups: DevSecOpsGroup[] = [
       "OIDC short-lived tokens for cloud auth — no long-lived keys",
       "SBOM generation at build time",
     ],
+    why: "The pipeline is where most security mistakes leak through — a stray credential, a dependency with a known CVE, a missed review. Gates catch these before they reach production.",
   },
   {
     title: "CLOUD POSTURE (AWS)",
@@ -41,5 +39,6 @@ export const devsecopsGroups: DevSecOpsGroup[] = [
       "Security Hub + GuardDuty findings as remediation input",
       "VPC + Security Group baseline review before launch",
     ],
+    why: "Most cloud breaches aren't fancy exploits — they're misconfigurations. Tight permissions, closed-by-default storage, and actually reading the alerts catches the boring 90% of issues.",
   },
 ];

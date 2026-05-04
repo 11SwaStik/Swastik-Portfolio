@@ -42,6 +42,7 @@ export interface CTFChallenge {
 export interface DevSecOpsGroup {
   title: string;
   items: string[];
+  why: string;
 }
 
 export interface TerminalLine {
