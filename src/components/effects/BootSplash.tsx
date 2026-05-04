@@ -8,7 +8,7 @@ const SESSION_KEY = "kirmada_intro_seen";
 const NAME = "स्वस्तिक";
 const NAME_CHARS = splitGraphemes(NAME);
 const PARTICLE_COUNT = 72;
-const READY_DELAY_MS = 1100;
+const READY_DELAY_MS = 700;
 
 type ParticleParam = {
   baseAngle: number;
