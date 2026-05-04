@@ -64,9 +64,9 @@ export default function Hero() {
             </span>
             <span
               ref={taglineRef}
-              className="block text-[clamp(0.85rem,1.6vw,1rem)] font-normal tracking-[0.4em] text-green font-mono mt-4 italic opacity-0"
+              className="block text-[clamp(0.78rem,1.5vw,0.95rem)] font-normal tracking-[0.3em] text-green font-mono mt-4 opacity-0"
             >
-              &ldquo;Root access to my sanity.&rdquo;
+              Cybersecurity engineer · building secure systems at scale.
             </span>
           </h1>
           <div
