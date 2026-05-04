@@ -50,7 +50,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="min-h-screen flex items-center px-6 md:px-16 relative overflow-hidden"
+      className="min-h-screen flex items-center px-6 md:px-16 pt-24 pb-16 md:pt-20 md:pb-12 relative overflow-hidden"
     >
       <div className="relative z-[1] w-full flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
         {/* Left: Text content */}
