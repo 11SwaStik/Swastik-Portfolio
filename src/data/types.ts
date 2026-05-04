@@ -39,9 +39,9 @@ export interface CTFChallenge {
   answer: string;
 }
 
-export interface DevSecOpsSkill {
-  name: string;
-  percentage: number;
+export interface DevSecOpsGroup {
+  title: string;
+  items: string[];
 }
 
 export interface TerminalLine {
