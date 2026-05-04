@@ -1,7 +1,7 @@
 import type { TerminalLine } from "./types";
 
 export const aboutParagraphs = [
-  'Security engineer at <span class="text-green">Scaler</span>. I run the AWS lab infrastructure where thousands of students practice cybersecurity — custom AMIs preloaded with offensive and defensive tooling, IAM scoped tighter than my deadlines, isolated Linux and Windows ranges that boot fresh every session.',
+  'SME (subject matter expert) for cybersecurity at <span class="text-green">Scaler</span>. I run the AWS lab infrastructure where thousands of students practice security — custom AMIs preloaded with offensive and defensive tooling, IAM scoped tighter than my deadlines, isolated Linux and Windows ranges that boot fresh every session.',
   'The whole point is letting students do things they\'re not supposed to do anywhere else. So far the host account is still standing.',
 ];
 

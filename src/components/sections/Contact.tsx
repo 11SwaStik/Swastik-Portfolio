@@ -15,14 +15,8 @@ export default function Contact({ links }: ContactProps) {
         </ScrollReveal>
         <ScrollReveal>
           <div className="max-w-[680px] mx-auto text-center">
-            <div className="font-sans text-[1.2rem] font-extrabold text-white tracking-[3px] mb-2.5">
+            <div className="font-sans text-[1.2rem] font-extrabold text-white tracking-[3px] mb-10">
               PING ME
-            </div>
-            <div className="text-[0.66rem] text-text-muted tracking-[1.5px] leading-[2] mb-10">
-              Open to security roles, DevSecOps work, and building things that
-              matter.
-              <br />
-              Signal only. No noise.
             </div>
             <div className="flex gap-3 justify-center flex-wrap">
               {links.map((link) => (
