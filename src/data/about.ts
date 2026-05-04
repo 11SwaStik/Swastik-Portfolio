@@ -1,10 +1,8 @@
 import type { TerminalLine } from "./types";
 
 export const aboutParagraphs = [
-  'I\'m <strong>Swastik</strong> — security engineer, lab builder, and the person who treats every system as something to be understood from the inside out. Root access to my sanity.',
-  'At <span class="text-green">Scaler</span>, I manage AWS infrastructure for learners — building custom AMIs, designing IAM policies, and architecting hands-on Linux and Windows labs where people actually learn by doing, not watching.',
-  'Before that I built <strong>AgniShield</strong> — a browser-based firewall that lets an admin block harmful sites, log employee traffic, restrict IPs and DNS, all from a single extension. It won <strong class="text-green">1st place</strong> at our college project showcase.',
-  'I led content at my college\'s cybersecurity club. This portfolio exists because I\'d rather show work than talk about it.',
+  'Security engineer at <span class="text-green">Scaler</span>. I run the AWS lab infrastructure where thousands of students practice cybersecurity — custom AMIs preloaded with offensive and defensive tooling, IAM scoped tighter than my deadlines, isolated Linux and Windows ranges that boot fresh every session.',
+  'The whole point is letting students do things they\'re not supposed to do anywhere else. So far the host account is still standing.',
 ];
 
 export const terminalLines: TerminalLine[] = [
