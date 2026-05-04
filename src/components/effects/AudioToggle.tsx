@@ -57,8 +57,8 @@ export default function AudioToggle() {
   useEffect(() => {
     const audio = new Audio(AUDIO_SRC);
     audio.loop = true;
-    audio.volume = 0;
-    audio.preload = "metadata";
+    audio.volume = TARGET_VOLUME;
+    audio.preload = "auto";
     audioRef.current = audio;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- gates render until audio element exists
     setHydrated(true);
@@ -68,10 +68,7 @@ export default function AudioToggle() {
     if (localStorage.getItem(STORAGE_KEY) === "1") {
       audio
         .play()
-        .then(() => {
-          fadeVolume(0, TARGET_VOLUME);
-          setPlaying(true);
-        })
+        .then(() => setPlaying(true))
         .catch(() => {
           /* autoplay blocked — wait for click */
         });
@@ -82,7 +79,7 @@ export default function AudioToggle() {
       audio.pause();
       audio.src = "";
     };
-  }, [fadeVolume]);
+  }, []);
 
   // Auto-start when BootSplash dispatches the audio-start event on
   // AUTHENTICATE / SKIP click. Riding that user gesture is the only way
@@ -92,11 +89,10 @@ export default function AudioToggle() {
       if (playingRef.current) return;
       const audio = audioRef.current;
       if (!audio) return;
-      audio.volume = 0;
+      audio.volume = TARGET_VOLUME;
       audio
         .play()
         .then(() => {
-          fadeVolume(0, TARGET_VOLUME);
           setPlaying(true);
           try {
             localStorage.setItem(STORAGE_KEY, "1");
@@ -110,13 +106,14 @@ export default function AudioToggle() {
     };
     window.addEventListener("kirmada:audio-start", onStart);
     return () => window.removeEventListener("kirmada:audio-start", onStart);
-  }, [fadeVolume]);
+  }, []);
 
   const toggle = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio) return;
 
     if (playing) {
+      // Smooth fade-out on pause — the only place the fade still runs.
       fadeVolume(audio.volume, 0, () => audio.pause());
       setPlaying(false);
       try {
@@ -127,10 +124,9 @@ export default function AudioToggle() {
       return;
     }
 
-    audio.volume = 0;
+    audio.volume = TARGET_VOLUME;
     try {
       await audio.play();
-      fadeVolume(0, TARGET_VOLUME);
       setPlaying(true);
       try {
         localStorage.setItem(STORAGE_KEY, "1");
