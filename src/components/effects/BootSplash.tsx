@@ -190,7 +190,7 @@ export default function BootSplash() {
             style={{
               fontFamily: "var(--font-devanagari)",
               animation: "boot-reveal 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
-              clipPath: "inset(0 100% 0 0)",
+              clipPath: "inset(-200% 100% -200% 0)",
               opacity: 0,
               paddingBottom: "0.12em",
               filter:

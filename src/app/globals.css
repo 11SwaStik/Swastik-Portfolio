@@ -172,7 +172,7 @@ body::after {
 
 @keyframes boot-reveal {
   0% {
-    clip-path: inset(0 100% 0 0);
+    clip-path: inset(-200% 100% -200% 0);
     opacity: 0;
     transform: translateY(8px);
   }
@@ -180,7 +180,7 @@ body::after {
     opacity: 1;
   }
   100% {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(-200% 0 -200% 0);
     opacity: 1;
     transform: none;
   }
