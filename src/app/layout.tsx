@@ -25,7 +25,14 @@ const notoDevanagari = Noto_Sans_Devanagari({
   display: "swap",
 });
 
+// Resolves to the canonical production URL on Vercel; falls back to
+// localhost in dev. Used as the base for absolute og:image URLs.
+const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "Swastik Sharma — Cybersecurity Engineer",
   description:
     "Security engineer building real infrastructure — AWS, firewalls, DevSecOps pipelines, and security tooling that ships.",
@@ -34,6 +41,12 @@ export const metadata: Metadata = {
     description:
       "Security engineer building real infrastructure — AWS, firewalls, DevSecOps pipelines, and security tooling that ships.",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Swastik Sharma — Cybersecurity Engineer",
+    description:
+      "Security engineer building real infrastructure — AWS, firewalls, DevSecOps pipelines, and security tooling that ships.",
   },
 };
 
