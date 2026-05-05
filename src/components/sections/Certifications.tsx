@@ -62,6 +62,9 @@ function CertCard({ cert }: CertCardProps) {
 
   const inner = (
     <>
+      {/* Diagonal sheen — sweeps across on hover, snaps back when pointer leaves */}
+      <span className="cert-sheen" aria-hidden />
+
       <div className="flex items-center justify-between mb-6 font-mono text-[0.55rem] tracking-[2.5px]">
         <span className="flex items-center gap-1.5 text-green">
           <span className="w-1.5 h-1.5 rounded-full bg-green animate-[pulse-dot_2s_infinite]" />
