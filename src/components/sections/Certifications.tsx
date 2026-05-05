@@ -31,28 +31,30 @@ interface CertCardProps {
   cert: Certification;
 }
 
-const TILT_MAX_DEG = 5; // Subtle — anything bigger feels gimmicky.
+const TILT_MAX_DEG = 9; // Bigger tilt — paired with the holographic shine.
 
 function CertCard({ cert }: CertCardProps) {
   const cardRef = useRef<HTMLElement>(null);
 
-  // Mouse-tracked tilt + lift. Refs + direct style writes so this
-  // doesn't trigger React re-renders during pointer movement.
+  // Mouse position drives four CSS variables: --mx/--my for the radial
+  // shine spot, --rx/--ry for the 3D rotation. CSS handles the rest.
   const handleMove = (e: React.PointerEvent<HTMLElement>) => {
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width - 0.5;
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
-    card.style.transform = `perspective(1000px) rotateX(${
-      -py * TILT_MAX_DEG
-    }deg) rotateY(${px * TILT_MAX_DEG}deg) translateY(-2px)`;
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    card.style.setProperty("--mx", `${px * 100}%`);
+    card.style.setProperty("--my", `${py * 100}%`);
+    card.style.setProperty("--rx", `${(0.5 - py) * TILT_MAX_DEG * 2}deg`);
+    card.style.setProperty("--ry", `${(px - 0.5) * TILT_MAX_DEG * 2}deg`);
   };
 
   const handleLeave = () => {
     const card = cardRef.current;
     if (!card) return;
-    card.style.transform = "";
+    card.style.setProperty("--rx", "0deg");
+    card.style.setProperty("--ry", "0deg");
   };
 
   const cardClass =
@@ -95,7 +97,6 @@ function CertCard({ cert }: CertCardProps) {
         onPointerMove={handleMove}
         onPointerLeave={handleLeave}
         className={cardClass}
-        data-hover
       >
         {inner}
       </a>

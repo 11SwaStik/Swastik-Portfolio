@@ -254,16 +254,79 @@ body::after {
   animation: boot-glitch 0.4s steps(2, jump-none) infinite;
 }
 
-/* Certification card hover — subtle double-glow on top of the JS-driven
-   3D tilt. Transform is set inline by onPointerMove handlers; the short
-   transition smooths the snap-back on pointer leave. */
+/* Certification card — cursor-tracked 3D tilt + holographic shine.
+   JS handler sets --mx/--my (cursor position 0–100%) and --rx/--ry
+   (rotation in degrees). Everything else is CSS. */
 .cert-card {
-  transition: transform 120ms ease-out, box-shadow 220ms ease-out;
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  overflow: hidden;
+  transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 140ms ease-out, box-shadow 260ms ease-out;
   will-change: transform;
 }
+
+/* Holographic shine — radial gradient that follows the cursor.
+   Sits above the card bg, below the content. */
+.cert-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    420px circle at var(--mx) var(--my),
+    rgba(0, 255, 135, 0.12) 0%,
+    rgba(93, 242, 255, 0.07) 28%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+  z-index: 1;
+}
+
+/* Subtle gradient border highlight that intensifies on hover. */
+.cert-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid transparent;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 135, 0) 0%,
+    rgba(0, 255, 135, 0.25) 30%,
+    rgba(93, 242, 255, 0.25) 65%,
+    rgba(195, 139, 255, 0) 100%
+  ) border-box;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+  z-index: 2;
+}
+
+.cert-card > * {
+  position: relative;
+  z-index: 3;
+}
+
 .cert-card:hover {
-  box-shadow: 0 0 24px rgba(0, 255, 135, 0.08),
-    0 0 56px rgba(93, 242, 255, 0.04);
+  transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry))
+    translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45),
+    0 0 32px rgba(0, 255, 135, 0.12),
+    0 0 72px rgba(93, 242, 255, 0.06);
+}
+
+.cert-card:hover::before,
+.cert-card:hover::after {
+  opacity: 1;
 }
 
 /* Audio toggle waveform — bars pulse between two heights with smooth
