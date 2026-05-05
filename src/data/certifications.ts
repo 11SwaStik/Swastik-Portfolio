@@ -24,7 +24,7 @@ export const certifications: Certification[] = [
     issuer: "Microsoft",
     year: "2024",
     category: "FUNDAMENTALS",
-    url: "https://www.coursera.org/account/accomplishments/verify/RY9V6XHNLNR",
+    url: "https://www.coursera.org/account/accomplishments/verify/RY9V6XHNLNRQ",
   },
   {
     id: "microsoft-network",
