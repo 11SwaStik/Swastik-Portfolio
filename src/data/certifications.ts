@@ -1,8 +1,5 @@
 import type { Certification } from "./types";
 
-// Update each MOOC with the actual course title and verification URL.
-// CEHv12 entry is fully populated from the resume; the credentialId
-// links through to EC-Council's verify portal.
 export const certifications: Certification[] = [
   {
     id: "cehv12",
@@ -14,24 +11,27 @@ export const certifications: Certification[] = [
     url: "https://aspen.eccouncil.org/Verify",
   },
   {
-    id: "google-cybersec-1",
+    id: "google-foundations",
     name: "Foundations of Cybersecurity",
     issuer: "Google",
     year: "2024",
     category: "FOUNDATIONS",
+    url: "https://www.coursera.org/account/accomplishments/verify/48BVS5BPBVFM",
   },
   {
-    id: "google-cybersec-2",
-    name: "Networks & Network Security",
-    issuer: "Google",
-    year: "2024",
-    category: "NETWORK",
-  },
-  {
-    id: "microsoft-cybersec",
-    name: "Security, Compliance & Identity (SC-900)",
+    id: "microsoft-intro",
+    name: "Introduction to Computers and Operating Systems and Security",
     issuer: "Microsoft",
     year: "2024",
-    category: "CLOUD SECURITY",
+    category: "FUNDAMENTALS",
+    url: "https://www.coursera.org/account/accomplishments/verify/RY9V6XHNLNR",
+  },
+  {
+    id: "microsoft-network",
+    name: "Managing Network Security",
+    issuer: "Microsoft",
+    year: "2024",
+    category: "NETWORK",
+    url: "https://www.coursera.org/account/accomplishments/verify/8C4X4T5L5BNJ",
   },
 ];
