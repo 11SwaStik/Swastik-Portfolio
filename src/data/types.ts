@@ -55,3 +55,13 @@ export interface ContactLink {
   href: string;
   external?: boolean;
 }
+
+export interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  year: string;
+  category: string;
+  credentialId?: string;
+  url?: string;
+}

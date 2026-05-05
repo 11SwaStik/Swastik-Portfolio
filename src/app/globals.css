@@ -254,6 +254,18 @@ body::after {
   animation: boot-glitch 0.4s steps(2, jump-none) infinite;
 }
 
+/* Certification card hover — subtle double-glow on top of the JS-driven
+   3D tilt. Transform is set inline by onPointerMove handlers; the short
+   transition smooths the snap-back on pointer leave. */
+.cert-card {
+  transition: transform 120ms ease-out, box-shadow 220ms ease-out;
+  will-change: transform;
+}
+.cert-card:hover {
+  box-shadow: 0 0 24px rgba(0, 255, 135, 0.08),
+    0 0 56px rgba(93, 242, 255, 0.04);
+}
+
 /* Audio toggle waveform — bars pulse between two heights with smooth
    easing. Per-bar duration + delay set inline so the bars don't move
    in lockstep, reading as an organic waveform rather than a metronome. */
