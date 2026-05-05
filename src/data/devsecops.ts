@@ -9,7 +9,7 @@ export const devsecopsGroups: DevSecOpsGroup[] = [
       "Multi-stage builds — build tools never reach the runtime image",
       "Image scanned with Trivy before push",
     ],
-    why: "Less in the container means less for an attacker to use. Strip out the shell, run as a regular user, and scan the image before it ships.",
+    why: "Container security follows the principle of minimal attack surface. Removing the shell, running as a non-root user, and scanning images for known CVEs reduces both lateral movement potential and supply-chain risk.",
   },
   {
     title: "KUBERNETES POSTURE",
@@ -19,7 +19,7 @@ export const devsecopsGroups: DevSecOpsGroup[] = [
       "Sealed Secrets / External Secrets — no plaintext in git",
       "RBAC scoped per workload, not per cluster",
     ],
-    why: "Kubernetes defaults are open. These settings flip that around — pods can't do dangerous things unless allowed, namespaces don't talk by default, and secrets never sit in git as plaintext.",
+    why: "Kubernetes defaults to permissive — workloads can run privileged, communicate freely across namespaces, and consume secrets in plaintext. Posture controls invert this with explicit admission policy, default-deny networking, and out-of-band secret distribution.",
   },
   {
     title: "CI/CD SECURITY GATES",
@@ -29,7 +29,7 @@ export const devsecopsGroups: DevSecOpsGroup[] = [
       "OIDC short-lived tokens for cloud auth — no long-lived keys",
       "SBOM generation at build time",
     ],
-    why: "The pipeline is where most security mistakes leak through — a stray credential, a dependency with a known CVE, a missed review. Gates catch these before they reach production.",
+    why: "The pipeline is the highest-leverage point for shifting security left. Static analysis, dependency scanning, and secrets detection run on every commit, surfacing issues during code review rather than after deployment — when remediation cost is significantly higher.",
   },
   {
     title: "CLOUD POSTURE (AWS)",
@@ -39,6 +39,6 @@ export const devsecopsGroups: DevSecOpsGroup[] = [
       "Security Hub + GuardDuty findings as remediation input",
       "VPC + Security Group baseline review before launch",
     ],
-    why: "Most cloud breaches aren't fancy exploits — they're misconfigurations. Tight permissions, closed-by-default storage, and actually reading the alerts catches the boring 90% of issues.",
+    why: "Cloud incidents are dominated by misconfiguration, not novel exploits. Continuous IAM scoping, secure-by-default storage, and centralized findings ingestion address the bulk of identifiable risk before adversary techniques become relevant.",
   },
 ];
