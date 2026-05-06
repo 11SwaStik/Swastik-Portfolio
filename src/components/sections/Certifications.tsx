@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ScrollReveal from "@/components/effects/ScrollReveal";
+import { playClick } from "@/lib/uiSound";
 import type { Certification } from "@/data/types";
 
 interface CertificationsProps {
@@ -99,6 +100,7 @@ function CertCard({ cert }: CertCardProps) {
         rel="noreferrer"
         onPointerMove={handleMove}
         onPointerLeave={handleLeave}
+        onClick={playClick}
         className={cardClass}
       >
         {inner}

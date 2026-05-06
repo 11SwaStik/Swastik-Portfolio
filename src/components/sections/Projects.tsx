@@ -4,6 +4,7 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import ScrollReveal from "@/components/effects/ScrollReveal";
 import ProjectDetailPanel from "@/components/ui/ProjectDetailPanel";
 import SystemLoader from "@/components/ui/SystemLoader";
+import { playOpen } from "@/lib/uiSound";
 import type { Project } from "@/data/types";
 
 interface ProjectsProps {
@@ -19,6 +20,7 @@ export default function Projects({ projects }: ProjectsProps) {
 
   const handleOpen = (id: string) => {
     if (selectedId || loadingId) return;
+    playOpen();
     setLoadingId(id);
     setTimeout(() => {
       setSelectedId(id);

@@ -6,6 +6,7 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from "react";
+import { playCommand } from "@/lib/uiSound";
 
 interface Line {
   html: string;
@@ -124,6 +125,7 @@ export default function TerminalBox({ lines, interactive = false }: TerminalBoxP
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (input.trim().length > 0) playCommand();
     const result = runCommand(input);
     if (result === "CLEAR") {
       setHistory([]);
