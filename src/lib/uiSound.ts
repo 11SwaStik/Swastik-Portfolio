@@ -32,14 +32,14 @@ function jitter(base: number, range: number): number {
 
 // Per-sound throttle so accidental rapid double-fires don't stack.
 const lastPlayed: Record<string, number> = {};
-const THROTTLE_MS = 60;
+const DEFAULT_THROTTLE_MS = 60;
 
-function shouldPlay(key: string): boolean {
+function shouldPlay(key: string, throttleMs = DEFAULT_THROTTLE_MS): boolean {
   if (typeof window === "undefined") return false;
   if (isAmbientOn()) return false;
   const now = performance.now();
   const last = lastPlayed[key] ?? 0;
-  if (now - last < THROTTLE_MS) return false;
+  if (now - last < throttleMs) return false;
   lastPlayed[key] = now;
   return true;
 }
@@ -95,6 +95,32 @@ export function playClick(): void {
   osc.connect(gain).connect(audio.destination);
   osc.start(t);
   osc.stop(t + 0.07);
+}
+
+/**
+ * Tiny key tick — for typing inside the terminal input.
+ * Triangle wave, brief and quiet. Wide pitch jitter so repeated
+ * keystrokes don't sound robotic. Shorter throttle (15ms) so fast
+ * typists don't drop ticks. ~30ms total.
+ */
+export function playKeystroke(): void {
+  if (!shouldPlay("keystroke", 15)) return;
+  const audio = getCtx();
+  if (!audio) return;
+  ensureRunning(audio);
+  const t = audio.currentTime;
+
+  const osc = audio.createOscillator();
+  const gain = audio.createGain();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(jitter(1700, 360), t);
+  osc.frequency.exponentialRampToValueAtTime(jitter(680, 100), t + 0.02);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(jitter(0.06, 0.02), t + 0.001);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
+  osc.connect(gain).connect(audio.destination);
+  osc.start(t);
+  osc.stop(t + 0.04);
 }
 
 /**

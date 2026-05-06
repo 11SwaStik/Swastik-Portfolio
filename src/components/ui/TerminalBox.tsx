@@ -6,7 +6,18 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from "react";
-import { playCommand } from "@/lib/uiSound";
+import { playCommand, playKeystroke } from "@/lib/uiSound";
+
+// Keys that should produce a typing tick. Letters, digits, punctuation,
+// and space all match `length === 1`. Others are explicit.
+const KEYSTROKE_NAVIGATION = new Set([
+  "Backspace",
+  "Tab",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+]);
 
 interface Line {
   html: string;
@@ -137,6 +148,15 @@ export default function TerminalBox({ lines, interactive = false }: TerminalBoxP
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    // Typing tick — fires for character keys + nav. Skip Enter (the
+    // command sound covers it) and bare modifiers.
+    if (
+      e.key !== "Enter" &&
+      (e.key.length === 1 || KEYSTROKE_NAVIGATION.has(e.key))
+    ) {
+      playKeystroke();
+    }
+
     if (history.length === 0) return;
     if (e.key === "ArrowUp") {
       e.preventDefault();

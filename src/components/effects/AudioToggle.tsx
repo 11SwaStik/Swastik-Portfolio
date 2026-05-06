@@ -21,12 +21,6 @@ export default function AudioToggle() {
   const fadeRafRef = useRef<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const [hydrated, setHydrated] = useState(false);
-  // Mirror of `playing` for the audio-start listener so it doesn't have
-  // to re-attach on every play/pause toggle.
-  const playingRef = useRef(false);
-  useEffect(() => {
-    playingRef.current = playing;
-  }, [playing]);
 
   const fadeVolume = useCallback(
     (from: number, to: number, onDone?: () => void) => {
@@ -79,33 +73,6 @@ export default function AudioToggle() {
       audio.pause();
       audio.src = "";
     };
-  }, []);
-
-  // Auto-start when BootSplash dispatches the audio-start event on
-  // AUTHENTICATE / SKIP click. Riding that user gesture is the only way
-  // to play audio without browser autoplay blocking us.
-  useEffect(() => {
-    const onStart = () => {
-      if (playingRef.current) return;
-      const audio = audioRef.current;
-      if (!audio) return;
-      audio.volume = TARGET_VOLUME;
-      audio
-        .play()
-        .then(() => {
-          setPlaying(true);
-          try {
-            localStorage.setItem(STORAGE_KEY, "1");
-          } catch {
-            /* private mode */
-          }
-        })
-        .catch(() => {
-          /* play failed — gesture wasn't enough or audio not ready */
-        });
-    };
-    window.addEventListener("kirmada:audio-start", onStart);
-    return () => window.removeEventListener("kirmada:audio-start", onStart);
   }, []);
 
   const toggle = useCallback(async () => {
